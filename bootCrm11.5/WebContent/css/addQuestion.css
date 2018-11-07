@@ -25,7 +25,7 @@
 	padding-left: 10px;
 }
 .question-content,.descPanel,.keyPanel, .tab-content .batch-type{
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 textarea{
     width:100%;/*自动适应父布局宽度*/
@@ -45,7 +45,7 @@ textarea{
 }
 
 .tab-content .question-content, #manualInput{
-    padding: 60px 40px 25px 40px;
+    padding: 20px 40px 15px 40px;
     font-size: 12px;
 }
 
@@ -101,3 +101,8 @@ input[type="checkbox"], input[type="radio"] {
     width: 15px;
     height: 15px;
 }
+
+#saveAndAddBtn{
+    margin-left: 50px;
+}
+
