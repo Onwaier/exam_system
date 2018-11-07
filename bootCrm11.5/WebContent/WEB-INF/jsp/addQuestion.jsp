@@ -359,7 +359,7 @@
 	<script type="text/javascript">
 		$(".addKeyBtn").click(function(e){
 			var optionArray = new Array("A", "B", "C", "D", "E", "F", "G")
-		    var input_type = $("#questionType").val()=="1" ? "radio" : "checkbox";
+		    var input_type = $("#questionType").val()=="单选题" ? "radio" : "checkbox";
 		    var html =  '   <div class="keyLeft">'+
 		                '        <input type="' + input_type + '" class="radioOrCheck" name="answer" value = "" onclick = "getValue()"/>'+
 		                '	 	<textarea rows="2" cols="80" class = "radioEdit" id = "edit_option" name = "option"></textarea>'+
@@ -374,7 +374,7 @@
 					$(keyLefts[i]).find("textarea").attr("name", "option" + optionArray[i]);
 					$(keyLefts[i]).find("textarea").attr("id", "edit_option" + optionArray[i]);
 			}
-		    if (keyLength==7) {
+		    if (keyLefts.length==7) {
 		        $(".addKeyBtn").css("display", "none");
 		        return false;
 		    }
@@ -385,7 +385,6 @@
 		    $(".addKeyBtn").css("display", "block");
 		    $(obj).parents(".keyLeft").remove();
 		    var keyLefts = $(".keyLeft");
-		    alert(keyLefts.length);
 		    for(var i = 0; i < keyLefts.length; i++){
 		    		$(keyLefts[i]).find("input").attr("value", optionArray[i]);
 					$(keyLefts[i]).find("textarea").attr("name", "option" + optionArray[i]);
