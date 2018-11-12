@@ -585,10 +585,25 @@
                     var str = JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
                     obj = eval(str);
                     for(var i = 0; i < obj.length; ++i){
-                   	 $.post("<%=basePath%>question/add.action",obj[i],function(data){
+                    	obj[i].answerOption = obj[i].answer;
+                    	obj[i].answerJudge = obj[i].answer;
+                    	obj[i].type == "填空题"?obj[i].answerFill = obj[i].answer.split("#"):obj[i].answerFill = [];
+                    	obj[i].answerCloze = obj[i].answer;
+                  /*   	post方法不得行,各种问题...改为ajax就阔以了. */
+	                    $.ajax({  
+	                        type:'post',  
+	                        dataType : "json",
+	                        url: "<%=basePath%>question/add.action",
+	                        data:obj[i],  
+	                        success:function(data){  
+	                        	alert("题目批量添加成功！");
+	                             //debugger;
+	                        }  
+	                    });    
+                  <%-- $.post("<%=basePath%>question/add.action",obj[i],function(data){
        					alert("题目批量添加成功！");
-        					//window.location.reload();
-        				});
+        					//winanswerClozedow.location.reload();
+        				});  --%>
                     }
                 }; 
                 if(rABS) {
