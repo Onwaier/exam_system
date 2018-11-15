@@ -632,7 +632,18 @@
                         '		</span>'+
                         '	</div>';
 				    $(".addKeyBtn").before(html);
-				    
+				    if(i == 4){
+				    	var keyLefts = $(".keyLeft");
+				    	$(keyLefts[4]).find("textarea").val('${row.optionE}');
+				    }
+				    else if(i == 5){
+				    	var keyLefts = $(".keyLeft");
+				    	$(keyLefts[5]).find("textarea").val('${row.optionF}');
+				    }
+				    else if(i == 6){
+				    	var keyLefts = $(".keyLeft");
+				    	$(keyLefts[6]).find("textarea").val('${row.optionG}');
+				    }
 				}
 				var keyLefts = $(".keyLeft");
 				for(var i = 0; i < keyLefts.length; i++){
