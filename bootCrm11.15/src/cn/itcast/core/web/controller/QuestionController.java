@@ -103,7 +103,7 @@ public class QuestionController {
 		
 		System.out.println("\n/question/add " + "  answerOption: " + answerOption + "   answerJudge: " + answerJudge + "   answerCloze: " + answerCloze);
 
-		System.out.println("/question/add  qid: " + qid + "  optionA: " + optionE + "  optionE: " + optionE + "   type: " + type + "   difficulty: " + difficulty + "  position: " + pictureUrl + "\n");
+		System.out.println("/question/add  qid: " + qid + "  optionA: " + optionA + "   type: " + type + "   difficulty: " + difficulty + "  position: " + pictureUrl + "\n");
 		
 		
 		questionService.addQuestion(qid, subject, type, optionA, optionB, optionC, optionD, optionE, optionF, optionG, 

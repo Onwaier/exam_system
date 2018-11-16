@@ -64,7 +64,21 @@
 		</div>
 		<!-- /.navbar-header -->
 		
-		
+		<div>	
+	        <form class="navbar-form navbar-right navbar-search-form" role="form">
+	        	<div class="input-group">
+					<span class="input-group-btn">
+						</button>
+						<button class="btn btn-primary navbar-input-button" onclick="window.location.href='${pageContext.request.contextPath }/question/showFile.action'" type="button">
+							下载模板
+						</button>
+						<button class="btn btn-primary navbar-input-button" onclick="window.location.href='${pageContext.request.contextPath }/question/wordInput.action'" type="button">
+							word题目导入数据库
+						</button>
+					</span>
+				</div><!-- /input-group -->	            
+	        </form> 
+    	</div>
 		 
 		<!-- /.navbar-top-links -->
 
@@ -83,15 +97,33 @@
 
 		<div id="page-wrapper">
 			
-			
+			<div class = "row">
+				<ul id="myTab" class="nav nav-pills nav-justified">
+					<li class="active col-xs-6" id="navManulInput">
+						<a href="#manualInput" data-toggle="tab">
+							 手动录入
+							
+						</a>
+					</li>
+					<li class = "col-xs-6" id = "navFileInput">
+						<a href="#fileInput" data-toggle="tab">
+							批量录入
+							 <span class = "fileIcon">
+							<i class="fa fa-file-excel-o" style = "display: none" id = "excelIcon"></i>
+                   			<i class="fa fa-file-word-o" style = "display: none" id = "wordIcon"></i>
+							</span>
+						</a>
+						
+                	</li>
+				</ul>
+			</div>
 			
 			<div id="myTabContent" class="tab-content">
 				
 				<div class="tab-pane fade in active" id="manualInput">
-					<c:forEach items="${page.rows}" var="row">
 					<form class="form-inline" action="${pageContext.request.contextPath }/question/add.action" method="post" onsubmit="return checkAddQuestion()">		
 						<div class="batch-type">
-<%-- 							<c:forEach items="${page.rows}" var="row"> --%>
+					
 									<span class="intro chapter">章节</span>
 									<select	class="form-control" name = "chapter">
 										<option value="">--请选择--</option>
@@ -102,7 +134,6 @@
 									</select>
 			
 										<span class="intro type">试题类型</span>
-										<input id="editQuestionType" type="hidden"  value="${row.type}" >
 										<select	class="form-control" id="questionType" name="type">
 											<option value="0">--请选择--</option>
 											<option value="单选题">单选题</option>
@@ -115,15 +146,14 @@
 										</select> 
 			
 										<span class="intro difficulty">难度</span>
-										<input id="editQuestionDifficulty" type="hidden"  value="${row.difficulty}" >
-										<select	class="form-control" id="questionDifficulty" name="difficulty">
+										<select	class="form-control" name="difficulty">
 											<option value="0">--请选择--</option>
 											<option value="简单">简单</option>
 											<option value="中等">中等</option>
 											<option value="困难">困难</option>
 										</select>    
-										
-									
+								
+								
 						</div>
 						
 						<div class="question-content">
@@ -133,8 +163,7 @@
 	                                    <span class="intro">这里填写题目描述</span>
 	                                </div>
 	                                <div class = "editor">
-	                                <textarea rows="2" cols="80" type="text"  id="subject" value="${row.subject}" name="subject">${row.subject}</textarea> 
-<%-- 	                                	<textarea >${row.subject}</textarea> --%>
+	                                <textarea rows="2" cols="80" type="text"  id="subject" value="${subject }" name="subject"></textarea>
 	                                </div>
 	                                
 	                        </div>
@@ -147,20 +176,20 @@
 	                            <div>
 		                            	<div class="keyLeft">
 	                                        <input type="radio" class="radioOrCheck" name="answerOption" value="A" onclick="getValue()" />
-	                                        <textarea rows="2" cols="80" class = "radioEdit" id="edit_optionA"  name="optionA">${row.optionA}</textarea>
+	                                        <textarea rows="2" cols="80" class = "radioEdit" id="edit_optionA"  name="optionA"></textarea>
 		                                </div>
 	                                   <div class="keyLeft">
 	                                       <input type="radio" class="radioOrCheck" name="answerOption" value="B" />
-	                                       <textarea rows="2" cols="80" class = "radioEdit" id="edit_optionB"  name="optionB">${row.optionB}</textarea>
+	                                       <textarea rows="2" cols="80" class = "radioEdit" id="edit_optionB"  name="optionB"></textarea>
 	                                   </div>
 	                                   <div class="keyLeft">
 	                                       <input type="radio" class="radioOrCheck" name="answerOption" value="C" />
-	                                       <textarea rows="2" cols="80" class = "radioEdit" id="edit_optionC"  name="optionC">${row.optionC}</textarea>
+	                                       <textarea rows="2" cols="80" class = "radioEdit" id="edit_optionC"  name="optionC"></textarea>
 	                                       <span class = "removeKey" onclick="removeKeys(this)"><i class="fa fa-trash" aria-hidden="true"></i></span>
 	                                   </div>
 	                                   <div class="keyLeft">
 	                                       <input type="radio" class="radioOrCheck" name="answerOption" value="D" />
-	                                       <textarea rows="2" cols="80" class = "radioEdit" id="edit_optionD"  name="optionD">${row.optionD}</textarea>
+	                                       <textarea rows="2" cols="80" class = "radioEdit" id="edit_optionD"  name="optionD"></textarea>
 	                                       <span class = "removeKey" onclick="removeKeys(this)"><i class="fa fa-trash" aria-hidden="true"></i></span>
 	                                   </div>
 	                                   <div class="addKeyBtn">
@@ -206,7 +235,7 @@
 	                                    <span class="intro">这里填写答案</span>
 	                                </div>
 	                                <div class = "editor">
-		                                <textarea rows="2" cols="80" id="answerCloze"  name="answerCloze">${row.answer}</textarea>
+		                                <textarea rows="2" cols="80" id="answerCloze"  name="answerCloze"></textarea>
 	                                </div>
 	                          </div>
 	                          
@@ -217,10 +246,9 @@
 	                                </div>
 	                                <div>
 	<!--                                 	<textarea rows="2" cols="80"></textarea> -->
-	                                	<textarea rows="2" cols="80"   id="analysis" value="${analysis}" name="analysis">${row.analysis}</textarea>
+	                                	<textarea rows="2" cols="80"   id="analysis" value="${analysis}" name="analysis"></textarea>
 	                                </div>
-	                          </div>  
-	                          </c:forEach>                       
+	                          </div>                         
 						</div>
 					
 						<button class="btn btn-primary navbar-input-button" onclick="window.open('${pageContext.request.contextPath }/question/fileUpload.action', 'loadPicture')" type="button">添加图片</button>				
@@ -315,11 +343,20 @@
 	</script>
 
 	
-
+	<script type="text/javascript">
+	function getValue(){
+		var radio = document.getElementsByName("answer");
+		for (i=0; i<radio.length; i++) {
+			if (radio[i].checked) {
+				return (radio[i].value);
+			}
+		}
+	}
+	</script>
 	
 	
 	<!--根据题型显示不同的录入界面-->
-<!-- 	<script type="text/javascript">
+	<script type="text/javascript">
 		var typeArray = new Array("radioOfQuestion", "fillOfQuestion", "judgeOfQuestion", "clozeOfQuestion");
 		var typeDict = {"--请选择--":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
 		var type = document.getElementById("questionType");
@@ -358,7 +395,7 @@
 			}
 		}
 	</script>
-	 -->
+	
 	
 	<!--添加与删除选项-->
 	<script type="text/javascript">
@@ -454,7 +491,6 @@
 				case 1:
 					var keyLefts = $(".keyLeft");
 					var flag = false;
-					alert(keyLefts.length);
 					for(var i = 0; i < keyLefts.length; ++i){
 						var radioEdit = $(keyLefts[i]).find("textarea").val();
 						if(radioEdit == "" || radioEdit == null){
@@ -482,7 +518,6 @@
 							alert("选项内容不能为空");
 							return false;
 						}
-						alert($(keyLefts[i]).find("input").prop("checked"));
 						if($(keyLefts[i]).find("input").prop("checked") != false){
 							++cnt;
 						}
@@ -493,15 +528,25 @@
 					}
 					break; 
 				case 3:
-
+					
+					
 					break;
 				case 4:
+					
+					var fills = $(".keyFillContent").find("input");
+					for(var i = 0; i < fills.length; ++i){
+						if($(fills[i]).val() == ""){
+							alert("填空答案不能为空！");
+							return false;
+						}
 
+					}
+					
 					break;
 				case 5:
 				case 6:
 				case 7:
-					var answer = $("#questionAnswer").val();
+					var answer = $("#answerCloze").val();
 					if(answer == null || answer == ""){
 						alert("答案不能为空！");
 						return false;
@@ -513,61 +558,104 @@
 		}
 	</script>
 	
-<!-- 	根据后台的传值选择需要编辑题目的题型与难度 -->
-	<script type="text/javascript">
-		$(document).ready(function(){ 
-	    var flagType=$("#editQuestionType").val();
-	    var flagDifficulty=$("#editQuestionDifficulty").val();
-	    //根据值让option选中 
-	       $("#questionType option[value='"+flagType+"']").attr("selected","selected");
-	       $("#questionDifficulty option[value='"+flagDifficulty+"']").attr("selected","selected");
-	       
-	   /*  根据type显示不同的界面 */
-	   var typeArray = new Array("radioOfQuestion", "fillOfQuestion", "judgeOfQuestion", "clozeOfQuestion");
-	     var typeDict = {"--请选择--":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
-	     var val = typeDict[flagType];
-	     switch(val){
-		//alert(val);
-	     case 1:document.getElementById(typeArray[0]).style.display = "block";
-			var radioOrChecks = document.getElementsByClassName("radioOrCheck");
-			var i;
-			for(i in radioOrChecks)
-				radioOrChecks[i].type = "radio";
-			break;
-			case 2:document.getElementById(typeArray[0]).style.display = "block";
-			var radioOrChecks = document.getElementsByClassName("radioOrCheck");
-			var i;
-			for(i in radioOrChecks)
-				radioOrChecks[i].type = "checkbox";
-			break;
-			case 3:
-				document.getElementById(typeArray[0]).style.display = "none";
-				document.getElementById(typeArray[2]).style.display = "block";
-			break;
-			case 4:
-				document.getElementById(typeArray[0]).style.display = "none";
-				document.getElementById(typeArray[1]).style.display = "block";
-			break;
-			case 5:
-				document.getElementById(typeArray[0]).style.display = "none";
-				document.getElementById(typeArray[3]).style.display = "block";
-			break;
-			case 6:
-				document.getElementById(typeArray[0]).style.display = "none";
-				document.getElementById(typeArray[3]).style.display = "block";
-			break;
-			case 7:
-				document.getElementById(typeArray[0]).style.display = "none";
-				document.getElementById(typeArray[3]).style.display = "block";
-			break;
-			default:
-			alert("其它");
-		};
-		}); 
-	</script>
 	
+<!-- 从excel中导入题目 -->
+	<script type="text/javascript">
+            /*
+            FileReader共有4种读取方法：
+            1.readAsArrayBuffer(file)：将文件读取为ArrayBuffer。
+            2.readAsBinaryString(file)：将文件读取为二进制字符串
+            3.readAsDataURL(file)：将文件读取为Data URL
+            4.readAsText(file, [encoding])：将文件读取为文本，encoding缺省值为'UTF-8'
+                         */
+            var wb;//读取完成的数据
+            var rABS = false; //是否将文件读取为二进制字符串
 
+            function importf(obj) {//导入
+                if(!obj.files) {
+                    return;
+                }
+                var f = obj.files[0];
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var data = e.target.result;
+                    if(rABS) {
+                        wb = XLSX.read(btoa(fixdata(data)), {//手动转化
+                            type: 'base64'
+                        });
+                    } else {
+                        wb = XLSX.read(data, {
+                            type: 'binary'
+                        });
+                    }
+                    //wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
+                    //wb.Sheets[Sheet名]获取第一个Sheet的数据
+                    //document.getElementById("demo").innerHTML= JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
+                    var str = JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
+                    obj = eval(str);
+                    for(var i = 0; i < obj.length; ++i){
+                    	obj[i].answerOption = obj[i].answer;
+                    	obj[i].answerJudge = obj[i].answer;
+                    	obj[i].type == "填空题"?obj[i].answerFill = obj[i].answer.split("#"):obj[i].answerFill = [];
+                    	obj[i].answerCloze = obj[i].answer;
+                  /*   	post方法不得行,各种问题...改为ajax就阔以了. */
+	                    $.ajax({  
+	                        type:'post',  
+	                        dataType : "json",
+	                        url: "<%=basePath%>question/add.action",
+	                        data:obj[i],  
+	                        success:function(data){  
+	                        	//alert("题目批量添加成功！");
+	                             //debugger;
+	                        }  
+	                    });    
+                    }
+                }; 
+                if(rABS) {
+                    reader.readAsArrayBuffer(f);
+                } else {
+                    reader.readAsBinaryString(f);
+                }
+            }
 
+            function fixdata(data) { //文件流转BinaryString
+                var o = "",
+                    l = 0,
+                    w = 10240;
+                for(; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
+                o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
+                return o;
+            }
+        </script>
+        
+
+        
+        
+        <script type="text/javascript">
+        	$("#navManulInput").click(function(e){
+        		$("#excelIcon").hide();
+        		$("#wordIcon").hide();
+        	});
+        	$("#navFileInput").click(function(e){
+        		$("#excelIcon").show();
+        		$("#wordIcon").show();
+        		$("#excelIcon").css("background-color", "#000");
+        	});
+        	$("#excelIcon").click(function(e){
+        		e.stopPropagation();
+        		$("#excelImport").show();
+        		$("#wordImport").hide();
+				$("#excelIcon").css("background-color", "#000");
+				$("#wordIcon").css("background-color", "#337AB7");
+        	});
+        	$("#wordIcon").click(function(e){
+        		e.stopPropagation();
+        		$("#excelImport").hide();
+        		$("#wordImport").show();
+        		$("#wordIcon").css("background-color", "#000");
+        		$("#excelIcon").css("background-color", "#337AB7");
+        	})
+        </script>
 </body>
 
 </html>

@@ -86,7 +86,6 @@ public class QuestionServiceImpl implements QuestionService {
 		
 	}
 
-//	手动添加试题
 	@Override
 	public void addQuestion(Long qid, String subject, String type, String optionA, String optionB, String optionC, String optionD,  String optionE, String optionF, String optionG, 
 			String answerOption, String answerJudge, String[] answerFill, String answerCloze,  
@@ -180,8 +179,9 @@ public class QuestionServiceImpl implements QuestionService {
 		if(StringUtils.isNotBlank(question.getType()))
 			questionDao.addQuestionList(question);
 	}
+
 	
-//	通过word模板添加试题
+	
 	@Override
 	public void addQuestionByword(String position){
 		File file = new File(position);
