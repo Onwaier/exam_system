@@ -228,7 +228,7 @@
 						<button class="btn btn-primary navbar-input-button" onclick="window.open('${pageContext.request.contextPath }/question/fileUpload.action', 'loadPicture')" type="button" style="display: none">添加图片</button>				
 						<button type="submit" class="btn btn-primary" style="display: none">录入题目</button>
 					</form> -->
-					<button id = "addQuestionItem" onclick="add()">添加</button>
+					<button id = "addQuestionItem" onclick="add()" style = "display:none">添加</button>
 					<button id = "updtrQuestions" onclick = "updateQuestions()">提交</button>
 				</div>
 				
@@ -368,6 +368,27 @@
 	
 	<!--添加与删除选项-->
 	<script type="text/javascript">
+		function addOption(obj){
+			var questionForm = $(obj).parent().parent();
+			var optionArray = new Array("A", "B", "C", "D", "E", "F", "G")
+		    var input_type = $(questionForm).find(".questionType").val()=="单选题" ? "radio" : "checkbox";
+		    var html =  '<div class="keyLeft">'+
+							'<input type=' + input_type +
+							' class="radioOrCheck" name="answerOption" value="C" />'+
+							'<textarea rows="2" cols="80" class = "radioEdit"  name="optionC"></textarea>'+
+							'<span class = "removeKey" onclick="removeKeys(this)"><i class="fa fa-trash" aria-hidden="true"></i></span>'+
+						'</div>';
+		    $(obj).before(html);
+		    var keyLefts = $(obj).parents(".keyRadio").find(".keyLeft");
+		    for(var i = 0; i < keyLefts.length; i++){
+		    		$(keyLefts[i]).find("input").attr("value", optionArray[i]);
+					$(keyLefts[i]).find("textarea").attr("name", "option" + optionArray[i]);
+			}
+		    if (keyLefts.length==7) {
+		        $(obj).css("display", "none");
+		        return false;
+		    }
+		}
 		$(".addKeyBtn").click(function(e){
 			var optionArray = new Array("A", "B", "C", "D", "E", "F", "G")
 		    var input_type = $("#questionType").val()=="单选题" ? "radio" : "checkbox";
@@ -393,9 +414,9 @@
 
 		function removeKeys(obj){
 			var optionArray = new Array("A", "B", "C", "D", "E", "F", "G");
-		    $(".addKeyBtn").css("display", "block");
+		    $(obj).parents(".keyRadio").find(".addKeyBtn").css("display", "block");
 		    $(obj).parents(".keyLeft").remove();
-		    var keyLefts = $(".keyLeft");
+		    var keyLefts = $(obj).parents(".keyLeft");
 		    for(var i = 0; i < keyLefts.length; i++){
 		    		$(keyLefts[i]).find("input").attr("value", optionArray[i]);
 					$(keyLefts[i]).find("textarea").attr("name", "option" + optionArray[i]);
@@ -405,29 +426,27 @@
 	
 	<!--添加与删除填空-->
 	<script type = "text/javascript">
-		$(".addKeyFillBtn").click(function(e){
-		    var html =  '<div class="keyFillContent" style="display: block;">'+
-                        '        <div class="input-group">'+
-                        '            <span class="keyFillNum input-group-addon">1</span>'+
-                        '            <input type="text" name="answerFill[]"                        class="bootstrap-tagsinput" id="answerFill[]" data-role="tagsinput" placeholder="请输入答案，按下回车添加同义词。">'+
-                        '		<span class = "removeKey" onclick="removeFill(this)">'+
-                        '            <i class="fa fa-trash" aria-hidden="true"></i>'+
-                        '		</span>'+
-                        '        </div>'+
-                        ' </div>';
-		    $(".addKeyFillBtn").before(html);
-		    var keyFills = $(".keyFill").find(".keyFillNum");
+		function addFill(obj){
+			var html =  '<div class="keyFillContent" style="display: block;">'+
+	                        '        <div class="input-group">'+
+	                        '            <span class="keyFillNum input-group-addon">1</span>'+
+	                        '            <input type="text" name="answerFill[]"                        class="bootstrap-tagsinput answerFill" data-role="tagsinput" placeholder="请输入答案，按下回车添加同义词。">'+
+	                        '		<span class = "removeKey" onclick="removeFill(this)">'+
+	                        '            <i class="fa fa-trash" aria-hidden="true"></i>'+
+	                        '		</span>'+
+	                        '        </div>'+
+	                    ' </div>';
+			$(obj).before(html);
+			var keyFills = $(obj).parents(".keyFill").find(".keyFillNum");
 			for(var i = 0; i < keyFills.length; i++){
 					$(keyFills[i]).text(i + 1);//DOM对象不能使用text方法
 			}
-			// if(keyFills.length >= 8){
-			// 	$(".addKeyFillBtn").css("display", "none");
-			// }
-		});
+		}
+		
 		function removeFill(obj){
 			$(obj).parents(".keyFillContent").remove();
 			$(".addKeyFillBtn").css("display", "block");
-			var keyFills = $(".keyFill").find(".keyFillNum");
+			var keyFills = $(obj).parents(".keyFill").find(".keyFillNum");
 			for(var i = 0; i < keyFills.length; i++){
 					$(keyFills[i]).text(i + 1);//DOM对象不能使用text方法
 			}
@@ -521,34 +540,32 @@
 	</script>
 <!-- 获取多选与单选选项个数 -->
 <script type = "text/javascript">
-		function getOptionNum(){
-			<c:forEach items="${page.rows}" var="row">
+		function getOptionNum(obj){
 			var optionNum = 0;
-			if('${row.optionA}' == ''){
+			if(obj.optionA == ''){
      			optionNum = 0;
      		}
-     		else if('${row.optionB}' == ''){
+     		else if(obj.optionB == ''){
      			optionNum = 1;
      		}
-     		else if('${row.optionC}' == ''){
+     		else if(obj.optionC == ''){
      			optionNum = 2;
      		}
-     		else if('${row.optionD}' == ''){
+     		else if(obj.optionD == ''){
      			optionNum = 3;
      		}
-     		else if('${row.optionE}' == ''){
+     		else if(obj.optionE == ''){
      			optionNum = 4;
      		}
-     		else if('${row.optionF}' == ''){
+     		else if(obj.optionF == ''){
      			optionNum = 5;
      		}
-     		else if('${row.optionG}' == ''){
+     		else if(obj.optionG == ''){
      			optionNum = 6;
      		}
      		else{
      			optionNum = 7;
      		}
-     		</c:forEach>
      		return optionNum;
 
 		}
@@ -583,7 +600,9 @@
 				switch(val){
 		     	case 1:$(".questionForm:eq(" + cnt + ") ." + typeArray[0]).show();
 		     		var optionAnswerIndex = alphaDict['${row.answer}'];
-		     		var optionNum = getOptionNum();
+		     		var str = '${row}';		     		
+		     		var objArr = eval("(" + str + ")");
+					var optionNum = getOptionNum(objArr);
 		     		var keyLefts = $(".questionForm:eq(" + cnt + ") .keyLeft");
 		     		$(keyLefts[0]).find("textarea").val('${row.optionA}');
 		     		$(keyLefts[1]).find("textarea").val('${row.optionB}');
@@ -637,7 +656,9 @@
 		     		$(keyLefts[1]).find("textarea").val('${row.optionB}');
 		     		$(keyLefts[2]).find("textarea").val('${row.optionC}');
 		     		$(keyLefts[3]).find("textarea").val('${row.optionD}');
-					var optionNum = getOptionNum();
+		     		var str = '${row}';		     		
+		     		var objArr = eval("(" + str + ")");
+					var optionNum = getOptionNum(objArr);
 
 		     		for(var i = 4; i < optionNum; ++i){
 		     			var html =  
@@ -824,7 +845,7 @@
 '                                    	<span class = "removeKey" onclick="removeKeys(this)"><i class="fa fa-trash" aria-hidden="true"></i></span>'+
 '                                    </div>'+
 '	                                <div class="addKeyBtn">'+
-'	                                    <button type="button" class="btn btn-l-gray addKey"><i class="plus-style icons8-plus"></i>添加一个选项</button>'+
+'	                                    <button type="button" class="btn btn-l-gray addKey" onclick = "addOption(this)"><i class="plus-style icons8-plus"></i>添加一个选项</button>'+
 '	                                </div>'+
 '	                            </div>'+
 '							</div>'+
@@ -844,7 +865,7 @@
 '	                               '+
 '	                           	</div>'+
 '	                            <div class="addKeyFillBtn">'+
-'	                                    <button type="button" class="btn btn-l-gray addKeyFill"><i class="plus-style icons8-plus" style="top: 0"></i>增加一个填空</button>'+
+'	                                    <button type="button" class="btn btn-l-gray addKeyFill" onclick = "addFill(this)"><i class="plus-style icons8-plus" style="top: 0"></i>增加一个填空</button>'+
 '	                            </div>'+
 '	                        </div>'+
 '	                          '+
