@@ -1,5 +1,7 @@
 package cn.itcast.core.bean;
 
+import net.sf.json.JSONObject;
+
 public class Question {
 	private Long qid;
 	private String subject;
@@ -180,4 +182,17 @@ public class Question {
 		this.qid = qid;
 	}
 
+	@Override
+	public String toString() {
+		JSONObject json = JSONObject.fromObject(this);//将java对象转换为json对象
+		String str = json.toString();//将json对象转换为字符串
+		return str;
+//		return "Question [qid=" + qid + ", subject=" + subject + ", courseName=" + courseName + ", chapter=" + chapter
+//				+ ", difficulty=" + difficulty + ", type=" + type + ", start=" + start + ", rows=" + rows + ", optionA="
+//				+ optionA + ", optionB=" + optionB + ", optionC=" + optionC + ", optionD=" + optionD + ", optionE="
+//				+ optionE + ", optionF=" + optionF + ", optionG=" + optionG + ", answer=" + answer + ", analysis="
+//				+ analysis + ", knowPoint=" + knowPoint + ", pictureUrl=" + pictureUrl + "]";
+	}
+
+	
 }
