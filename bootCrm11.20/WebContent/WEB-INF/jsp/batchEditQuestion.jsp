@@ -516,7 +516,6 @@
 					}
 					break;
 			}
-			alert("添加成功");
 			return true;
 		}
 	</script>
@@ -581,7 +580,6 @@
 			    $(".questionForm:eq(" + cnt + ") .subject").val('${row.subject}');
 			    $(".questionForm:eq(" + cnt + ") .analysis").val('${row.analysis}');
 			    var val = typeDict['${row.type}'];
-				alert(val);
 				switch(val){
 		     	case 1:$(".questionForm:eq(" + cnt + ") ." + typeArray[0]).show();
 		     		var optionAnswerIndex = alphaDict['${row.answer}'];
@@ -737,9 +735,8 @@
 					$(".questionForm:eq(" + cnt + ") .clozeOfQuestion").find("textarea").val('${row.answer}');
 					break;
 				default:
-				alert("其它");
+					alert("其它");
 			};
-			
 			++cnt;
 			</c:forEach>
 
@@ -914,8 +911,21 @@
 		function updateQuestions(){
 			questionForms = $(".questionForm");
 			for(var i = 0; i < questionForms.length; ++i){
-				$(questionForms[i]).submit();
-			}
+				$.ajax({
+		            //几个参数需要注意一下
+		                type: "POST",//方法类型
+		                dataType: "text",//预期服务器返回的数据类型
+		                url:  "${pageContext.request.contextPath }/question/update.action",//url
+		                data: $(questionForms[i]).serialize(),
+		                success: function (result) {
+		                	alert("SUCCESS");
+		                },
+		                error : function() {
+		                    alert("异常！");
+		                }
+		            });
+				}
+			window.location.href = "${pageContext.request.contextPath }/question/list.action";			
 		}
 	</script>
 </body>
