@@ -196,7 +196,7 @@
 	                                    <button type="button" class="btn btn-l-gray addKey"><i class="plus-style icons8-plus"></i>添加一个选项</button>
 	                                </div>
 	                            </div>
-						</div>
+							</div>
 						
 							<div class="keyFill keyPanel" id = "fillOfQuestion" style="display: none;">
 								<div class="title">
@@ -207,15 +207,15 @@
 	                            </div>
 	                            <div class="keyFillContent" style="display: block;">
 	                                <div class="input-group">
-	                                    <span class="input-group-addon">1</span>
-	                                    <input type="text" name="answerFill[]" class="bootstrap-tagsinput" id="answerFill[]" data-role="tagsinput" placeholder="请输入答案，按下回车添加同义词。" style="display: block;">
+	                                    <span class="input-group-addon keyFillNum">1</span>
+	                                    <input type="text" name="answerFill[]" class="bootstrap-tagsinput" id="answerFill[]" data-role="tagsinput" placeholder="请输入答案，按下回车添加同义词。">
 	                                </div>
 	                               
 	                           	</div>
 	                            <div class="addKeyFillBtn">
 	                                    <button type="button" class="btn btn-l-gray addKeyFill"><i class="plus-style icons8-plus" style="top: 0"></i>增加一个填空</button>
 	                            </div>
-	                          </div>
+	                        </div>
 	                          
 	                        <div class="keyJudge keyPanel" id = "judgeOfQuestion" style="display: none;">
 	                                <div class="title">
