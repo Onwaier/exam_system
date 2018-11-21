@@ -61,9 +61,18 @@ textarea{
      overflow:auto;
      word-break:break-all;
 }
-
+.input-group{
+	width:100%;
+}
+.keyFillContent{
+	margin-bottom:5px;
+}
+.form-inline .input-group .form-control, .form-inline .input-group .input-group-addon, .form-inline .input-group .input-group-btn {
+    width: 40px;
+    height:40px;
+}
 .removeKey{
-    width:40px;
+    /*width:40px;
     height:40px;
     /*background: #A9B3BF;*/
     display: inline-block;
@@ -71,9 +80,8 @@ textarea{
     font-size: 30px;
     text-align: center;
     line-height: 30px;
-    color: #000;
+    color: #000;*/
 }
-
 
 .bootstrap-tagsinput {
     background-color: #fff;
@@ -86,10 +94,9 @@ textarea{
     max-width: 100%;
     line-height: 22px;
     cursor: text;
-    height: auto;
+    height: 40px;
     width: 100%;
 }
-
  
 .tab-content .question-content{
 	background-color:#F3F3F5;
