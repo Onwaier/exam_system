@@ -69,6 +69,7 @@ public class QuestionServiceImpl implements QuestionService {
 	@Autowired
 	private BaseDictDao baseDictDao;
 
+	IdWorker worker2 = new IdWorker(1);
    
 	
 	public Page<Question> findQuestionList(Integer page, Integer rows, Long qid,
@@ -202,7 +203,7 @@ public class QuestionServiceImpl implements QuestionService {
 		
 		Question question = new Question();
 		
-		IdWorker worker2 = new IdWorker(1);
+
 		question.setQid(worker2.nextId());
 		
 		if(StringUtils.isNotBlank(subject)){
@@ -284,9 +285,13 @@ public class QuestionServiceImpl implements QuestionService {
 		System.out.println("\niml " + question.getQid() + "   subject: " + question.getSubject() + "   type: " + question.getType() + "   difficulty: " + question.getDifficulty() + "   analysis: " + question.getAnalysis() +  "   optionA: " + question.getOptionA() + "   optionE: " + question.getOptionE() + "   answer: " + question.getAnswer()+ "   pictureUrl: " + question.getPictureUrl() + "\n");
 
 //		if(!question.getType().equals(null)) 
+		/*if(StringUtils.isNotBlank(question.getType()))
+			questionDao.addQuestionList(question);*/
 		//要对各个值进行判断是否为空
-		if(StringUtils.isNotBlank(question.getType()))
-			questionDao.addQuestionList(question);
+		if(StringUtils.isNotBlank(question.getType())){
+			judgeQuestionSimilar(question); //进行试题查重判断，不存在重复题目侧插入试题
+		}
+
 	}
 	
 //	通过word模板添加试题
