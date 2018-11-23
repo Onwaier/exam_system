@@ -585,22 +585,51 @@
                     //document.getElementById("demo").innerHTML= JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
                     var str = JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
                     obj = eval(str);
+                    $(".loading").show();
                     for(var i = 0; i < obj.length; ++i){
                     	obj[i].answerOption = obj[i].answer;
                     	obj[i].answerJudge = obj[i].answer;
                     	obj[i].type == "填空题"?obj[i].answerFill = obj[i].answer.split("#"):obj[i].answerFill = [];
                     	obj[i].answerCloze = obj[i].answer;
                   /*   	post方法不得行,各种问题...改为ajax就阔以了. */
-	                    $.ajax({  
+                  
+                  		setTimeout((function (i) {
+				            return function () {
+				                $.ajax({
+				                    type:'post',  
+					                dataType : "text",
+					                async:false,
+					                url: "<%=basePath%>question/add.action",
+					                data:obj[i],  
+				                    success: function (response) {
+						                console.log(i);
+				                        if(i == obj.length - 1){
+				                       	 alert("录入完成");
+				                       	 $(".loading").hide();
+				                        }
+				                    },
+				                    failure: function (response) { 
+				                    }
+				                });
+				            }
+				        })(i), 10);
+
+	                    <%-- $.ajax({  
 	                        type:'post',  
-	                        dataType : "json",
+	                        dataType : "text",
+	                        async:false,
 	                        url: "<%=basePath%>question/add.action",
 	                        data:obj[i],  
 	                        success:function(data){  
 	                        	//alert("题目批量添加成功！");
 	                             //debugger;
+	                             console.log(i);
+	                             if(i == obj.length - 1){
+	                            	 alert("录入完成");
+	                            	 $(".loading").hide();
+	                             }
 	                        }  
-	                    });    
+	                    });   --%>  
                     }
                 }; 
                 if(rABS) {
