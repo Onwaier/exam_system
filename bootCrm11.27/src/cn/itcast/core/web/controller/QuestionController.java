@@ -109,7 +109,7 @@ public class QuestionController {
 		
 		questionService.addQuestion(qid, subject, type, optionA, optionB, optionC, optionD, optionE, optionF, optionG, 
 				answerOption,  answerJudge, answerFills, answerCloze, courseName,  analysis,  chapter,  knowPoint,  difficulty, pictureUrl);
-		pictureUrl = null; //这里是否会有内存泄漏呢
+		pictureUrl = null; //这里应该不会有内存泄漏
 		
 		return "addQuestion";
 	}
@@ -352,9 +352,10 @@ public class QuestionController {
 		@RequestMapping(value = "/question/update", method={RequestMethod.POST})
 		public String questionUpdate(String qid, String subject, String type, String optionA, String optionB, String optionC, String optionD,  String optionE, String optionF, String optionG, 
 				String answerOption, String answerJudge, @RequestParam(value = "answerFill[]", required = false, defaultValue = "") String[] answerFills, String answerCloze, 
-				String courseName, String analysis, String chapter, String knowPoint, String difficulty, String pictureUrl) {
+				String courseName, String analysis, String chapter, String knowPoint, String difficulty) {
 			questionService.updateQuestion(qid, subject, type, optionA, optionB, optionC, optionD, optionE, optionF, optionG, 
 					answerOption,  answerJudge, answerFills, answerCloze, courseName,  analysis,  chapter,  knowPoint,  difficulty, pictureUrl);
+			pictureUrl = null; //这里应该不会有内存泄漏
 			return "redirect:/question/list.action";
 		}
 		

@@ -185,13 +185,15 @@ public class QuestionServiceImpl implements QuestionService {
 			if(type.equals("问答题") || type.equals("简述题") || type.equals("名词解释")) question.setAnswer(answerCloze);
 			if(type.equals("填空题")) {
 				String temp = "";
-				for(int i = 0; i < answerFill.length; ++i)
-					temp = temp + answerFill[i] + ',';
-				
+				for(int i = 0; i < answerFill.length-1; ++i)
+					temp = temp + answerFill[i] + '#';
+				temp = temp + answerFill[answerFill.length-1];
 				question.setAnswer(temp);
 			}
 			if(StringUtils.isNotBlank(question.getType())){
-				questionDao.updateQuestion(question);
+				if(judgeQuestionSimilar(question)){ //进行试题查重判断，不存在重复题目侧插入试题
+					questionDao.updateQuestion(question);
+				}
 			}
 	}
 
@@ -275,9 +277,9 @@ public class QuestionServiceImpl implements QuestionService {
 		if(type.equals("问答题") || type.equals("简述题") || type.equals("名词解释")) question.setAnswer(answerCloze);
 		if(type.equals("填空题")) {
 			String temp = "";
-			for(int i = 0; i < answerFill.length; ++i)
-				temp = temp + answerFill[i] + ',';
-			
+			for(int i = 0; i < answerFill.length-1; ++i)
+				temp = temp + answerFill[i] + '#';
+			temp = temp + answerFill[answerFill.length-1];
 			question.setAnswer(temp);
 		}
 		
@@ -289,7 +291,9 @@ public class QuestionServiceImpl implements QuestionService {
 			questionDao.addQuestionList(question);*/
 		//要对各个值进行判断是否为空
 		if(StringUtils.isNotBlank(question.getType())){
-			judgeQuestionSimilar(question); //进行试题查重判断，不存在重复题目侧插入试题
+			if(judgeQuestionSimilar(question)){ //进行试题查重判断，不存在重复题目侧插入试题
+				questionDao.addQuestionList(question);
+			}
 		}
 
 	}
@@ -444,7 +448,9 @@ public class QuestionServiceImpl implements QuestionService {
 					while((paragraph[i].equals("\n") || paragraph[i].equals("")) && (i < len))
 						++i;
 					dispQuestion(question);
-					judgeQuestionSimilar(question); //进行试题查重判断，不存在重复题目侧插入试题
+					if(judgeQuestionSimilar(question)){ //进行试题查重判断，不存在重复题目侧插入试题
+						questionDao.addQuestionList(question);
+					}
 					++numQuestion; //记录当前题目为第几题
 					continue;
 					
@@ -499,7 +505,7 @@ public class QuestionServiceImpl implements QuestionService {
 	  }
 	  
 //	  判断数据库是否存在与带插入题目相似的题目
-	  public void judgeQuestionSimilar(Question question){
+	  public boolean judgeQuestionSimilar(Question question){
 		  	Question temp = new Question();
 		  	temp.setType(question.getType());
 		  	
@@ -530,7 +536,7 @@ public class QuestionServiceImpl implements QuestionService {
 			
 			if(i == questionSameType.size()){
 				dispQuestion(question);
-				questionDao.addQuestionList(question);
+				return true;
 			}
 			else{
 				System.out.println("\n" + "存在相似题目：\n");
@@ -540,7 +546,7 @@ public class QuestionServiceImpl implements QuestionService {
 				System.out.println("\n相似题目：\n"  + "courseName: " + ((Question) questionSimilar.get(0)).getQid() + "\ntype: " + ((Question) questionSimilar.get(0)).getType() + "\nsubject: " + ((Question) questionSimilar.get(0)).getSubject() +  
 		    			 "\noptionA: " + ((Question) questionSimilar.get(0)).getOptionA() + "\noptionB: " + ((Question) questionSimilar.get(0)).getOptionB() + "\noptionC: " + ((Question) questionSimilar.get(0)).getOptionC() + "\noptionD: " + ((Question) questionSimilar.get(0)).getOptionD() + "\noptionE: " + ((Question) questionSimilar.get(0)).getOptionE() + "\noptionF: " + ((Question) questionSimilar.get(0)).getOptionF() + "\noptionG: " + ((Question) questionSimilar.get(0)).getOptionG() + 
 		    			 "\nanswer: " + ((Question) questionSimilar.get(0)).getAnswer() + "\nanalysis: " + ((Question) questionSimilar.get(0)).getAnalysis() +    "\npictureUrl: " + ((Question) questionSimilar.get(0)).getPictureUrl() + "\n");
-		    
+				return false;
 			}
 			
 	  }
