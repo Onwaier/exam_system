@@ -1,0 +1,73 @@
+/*左右padding为0*/
+#page-wrapper {
+    padding: 0; 
+
+}
+/*tab下有一条线*/
+.tab-area .nav-tabs {
+    border-bottom: 1px solid #188DFF;
+}
+
+/*当前选中的下外边距为0*/
+.tab-area .nav-tabs li.active {
+    margin-bottom: 0;
+}
+/*tabs中a的字体颜色 tabs中字居中 无border*/
+.nav-tabs li a {
+    border: none;
+    font-size: 16px;
+    text-align: center;
+    padding: 10px 0;
+    color: #9B9B9B;
+}
+/*当前选中的字体颜色*/
+.nav-tabs li.active a {
+    color: #188DFF;
+    border: none;
+}
+/*三个tabs平分*/
+.tab-area .nav-tabs li {
+    width: 33.33%;
+}
+
+.line {
+    height: 20px;
+    width: 100%;
+    background-color: #EEF3F8;
+}
+#createTest1{
+	background: #EEF3FB;
+	border: 1px solid #D8D8D8;
+    border-radius: 4px;
+    width:50%;
+    margin:30px auto;
+    margin-bottom: 0px;
+}
+#subForm{
+	margin:30px;
+}
+.intro{
+	color: #A9B3BF;
+	margin-bottom: 30px;
+}
+.infoRow{
+	margin-left:10px;
+	margin-bottom: 10px;
+}
+
+input[name="paperName"],input[name = "courseName"]{
+	border: 1px solid #D8D8D8;
+    border-radius: 4px;
+    width: 35%;
+    padding: 3px 10px;
+}
+.paperType input[type=radio]:checked + label {
+    background: #A9B3BF;
+    border: 1px solid #878F98;
+    color: #fff;
+}
+
+.btnNextStep{
+	margin-left:10px;
+}
+

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.itcast.core.dao.PaperDao">
+
+   <sql id="selectPaperListWhere">
+ 		<where>
+	      <if test="id != null" >
+	        type = #{type}
+	      </if>
+    	</where>
+	</sql>
+	
+	
+	
+	
+	<select id="selectPaperList" parameterType="paper" resultType="paper">
+		SELECT 
+			id,
+			title,
+			joinTime,
+			questionSet,
+			userId,
+			scoreAve,
+			typeNum,
+			typeScore,
+			courseName
+		FROM
+			paper, course
+		WHERE paper.courseId = course.courseId	 
+    		
+    	<include refid="selectPaperListWhere"/>
+		<if test="start !=null and rows != null">
+			limit #{start},#{rows}
+		</if>
+	</select>
+	
+	<select id="selectPaperListCount" parameterType="paper" resultType="int">
+		select count(*)
+		from paper
+	</select>
+	
+</mapper>
