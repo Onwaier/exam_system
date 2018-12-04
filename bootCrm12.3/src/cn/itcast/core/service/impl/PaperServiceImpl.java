@@ -1,45 +1,17 @@
 package cn.itcast.core.service.impl;
 
-import java.io.File;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hwpf.extractor.WordExtractor;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFPictureData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import cn.itcast.common.utils.CosineSimilarAlgorithm;
+
 import cn.itcast.common.utils.IdWorker;
 import cn.itcast.common.utils.Page;
-import cn.itcast.common.utils.XWPFUtils;
 import cn.itcast.core.bean.Paper;
 import cn.itcast.core.dao.PaperDao;
 import cn.itcast.core.service.PaperService;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import org.apache.poi.hwpf.extractor.WordExtractor;
-import org.apache.poi.xwpf.usermodel.XWPFPicture;
 
 /**
  * 试题管理
@@ -87,6 +59,20 @@ public class PaperServiceImpl implements PaperService {
 		return result;
 	}
 
+	//获取 chapter列表
+	@Override
+	public ArrayList<String> findChapterList(Integer courseId) {
+		
+		ArrayList<String>chapterList = paperDao.selectChapterList(courseId);
+		return chapterList;
+	}
+
+//	获取知识点列表
+	@Override
+	public ArrayList<String> findKnowpointList(Integer courseId, String chapter) {
+		ArrayList<String>knowpointList = paperDao.selectKnowpointList(courseId, chapter);
+		return knowpointList;
+	}
 
 
 }

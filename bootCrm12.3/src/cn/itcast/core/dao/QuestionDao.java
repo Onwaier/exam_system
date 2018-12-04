@@ -1,6 +1,8 @@
 package cn.itcast.core.dao;
 
+
 import java.util.List;
+
 import cn.itcast.core.bean.Question;
 
 
@@ -17,4 +19,5 @@ public interface QuestionDao {
 	void updateCustomer(Question question);
 	void deleteCustomer(Long id);*/
 	
+
 }

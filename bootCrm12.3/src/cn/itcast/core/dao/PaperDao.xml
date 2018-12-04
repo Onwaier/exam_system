@@ -39,4 +39,17 @@
 		from paper
 	</select>
 	
+	<!-- 通过科目id查询章节 -->
+	<select  id="selectChapterList" resultType="java.lang.String">
+		select distinct chapter
+		from knowledgepoint
+		where courseId = #{courseId}
+	</select>
+	
+	<!-- 通过科目id和章节查询知识点 -->
+	<select  id="selectKnowpointList" resultType="java.lang.String">
+		select distinct knowPoint
+		from knowledgepoint
+		where courseId = #{param1} and chapter = #{param2}
+	</select>
 </mapper>
