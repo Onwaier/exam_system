@@ -145,11 +145,22 @@
 	                		<div id="knowpointTree"></div>
                 		</div>
 	                	<div class="paperContent col-sm-6">
-	                		<div class="knowPoint">
-	                			aafadfadfadfafd
-	                		</div>
 	                		<div class = "paper">
-	                			
+	                			<h3><input class="edit-paper-name form-control" type="text" name="edit_paper_name" value="141413" placeholder="点击输入试卷名称"></h3>
+                                <p class="emptyTip">当前试卷还是空空如也，点击下方添加新题型！</p>
+                                <div class="group_main"></div>
+                                <div class="questionTypeManage">
+                                	<select	class="form-control" id="questionType" name="type">
+										<option value="0" num = "0">--请选择--</option>
+										<option value="单选题" num = "1">单选题</option>
+										<option value="多选题" num = "2">多选题</option>
+										<option value="判断题" num = "3">判断题</option>
+										<option value="填空题" num = "4">填空题</option>
+										<option value="问答题" num = "5">问答题</option>
+										<option value="简述题" num = "6">简述题</option>
+										<option value="名词解释" num = "7">名词解释</option>	
+									</select>
+                                </div>
 	                		</div>
 	                	</div>
 	                	<div class="paperInfo col-sm-3">
@@ -182,6 +193,7 @@
 	<!-- Bootstrap Core JavaScript -->
 	<script src="<%=basePath%>/js/bootstrap.min.js"></script>
 
+	
 	<!-- Metis Menu Plugin JavaScript -->
 	<script src="<%=basePath%>/js/metisMenu.min.js"></script>
 
@@ -195,8 +207,82 @@
 <!-- 	bootstrap-treeview JS -->
 	<script src="<%=basePath%>/js/bootstrap-treeview.js"></script>
 	
-	
-<!-- 	页面加载时从后台获取数据 -->
+
+<!-- 章节知识点展开/收缩 -->
+	<script type="text/javascript">
+		var nodeCheckedSilent = false;
+		function nodeChecked (event, node){
+		    if(nodeCheckedSilent){
+		        return;
+		    }
+		    nodeCheckedSilent = true;
+		    checkAllParent(node);
+		    checkAllSon(node);
+		    nodeCheckedSilent = false;
+		}
+		 
+		var nodeUncheckedSilent = false;
+		function nodeUnchecked  (event, node){
+		    if(nodeUncheckedSilent)
+		        return;
+		    nodeUncheckedSilent = true;
+		    uncheckAllParent(node);
+		    uncheckAllSon(node);
+		    nodeUncheckedSilent = false;
+		}
+		 
+		//选中全部父节点
+		function checkAllParent(node){
+		    $('#knowpointTree').treeview('checkNode',node.nodeId,{silent:true});
+		    var parentNode = $('#knowpointTree').treeview('getParent',node.nodeId);
+		    if(!("nodeId" in parentNode)){
+		        return;
+		    }else{
+		        checkAllParent(parentNode);
+		    }
+		}
+		//取消全部父节点
+		function uncheckAllParent(node){
+		    $('#knowpointTree').treeview('uncheckNode',node.nodeId,{silent:true});
+		    var siblings = $('#knowpointTree').treeview('getSiblings', node.nodeId);
+		    var parentNode = $('#knowpointTree').treeview('getParent',node.nodeId);
+		    if(!("nodeId" in parentNode)) {
+		        return;
+		    }
+		    var isAllUnchecked = true;  //是否全部没选中
+		    for(var i in siblings){
+		        if(siblings[i].state.checked){
+		            isAllUnchecked=false;
+		            break;
+		        }
+		    }
+		    if(isAllUnchecked){
+		        uncheckAllParent(parentNode);
+		    }
+		 
+		}
+		 
+		//级联选中所有子节点
+		function checkAllSon(node){
+		    $('#knowpointTree').treeview('checkNode',node.nodeId,{silent:true});
+		    if(node.nodes!=null&&node.nodes.length>0){
+		        for(var i in node.nodes){
+		            checkAllSon(node.nodes[i]);
+		        }
+		    }
+		}
+		//级联取消所有子节点
+		function uncheckAllSon(node){
+		    $('#knowpointTree').treeview('uncheckNode',node.nodeId,{silent:true});
+		    if(node.nodes!=null&&node.nodes.length>0){
+		        for(var i in node.nodes){
+		            uncheckAllSon(node.nodes[i]);
+		        }
+		    }
+		}
+	</script>
+		
+<!-- 	页面加载时从后台获取章节知识点列表数据 -->
 	<script type="text/javascript">
 	
 	$(document).ready(function(){
@@ -227,92 +313,168 @@
 		 
 	});
 	</script>
-		
+
+<!-- 添加试题 -->
 	<script type="text/javascript">
-	var nodeCheckedSilent = false;
-	function nodeChecked (event, node){
-	    if(nodeCheckedSilent){
-	        return;
-	    }
-	    nodeCheckedSilent = true;
-	    checkAllParent(node);
-	    checkAllSon(node);
-	    nodeCheckedSilent = false;
-	}
-	 
-	var nodeUncheckedSilent = false;
-	function nodeUnchecked  (event, node){
-	    if(nodeUncheckedSilent)
-	        return;
-	    nodeUncheckedSilent = true;
-	    uncheckAllParent(node);
-	    uncheckAllSon(node);
-	    nodeUncheckedSilent = false;
-	}
-	 
-	//选中全部父节点
-	function checkAllParent(node){
-	    $('#knowpointTree').treeview('checkNode',node.nodeId,{silent:true});
-	    var parentNode = $('#knowpointTree').treeview('getParent',node.nodeId);
-	    if(!("nodeId" in parentNode)){
-	        return;
-	    }else{
-	        checkAllParent(parentNode);
-	    }
-	}
-	//取消全部父节点
-	function uncheckAllParent(node){
-	    $('#knowpointTree').treeview('uncheckNode',node.nodeId,{silent:true});
-	    var siblings = $('#knowpointTree').treeview('getSiblings', node.nodeId);
-	    var parentNode = $('#knowpointTree').treeview('getParent',node.nodeId);
-	    if(!("nodeId" in parentNode)) {
-	        return;
-	    }
-	    var isAllUnchecked = true;  //是否全部没选中
-	    for(var i in siblings){
-	        if(siblings[i].state.checked){
-	            isAllUnchecked=false;
-	            break;
-	        }
-	    }
-	    if(isAllUnchecked){
-	        uncheckAllParent(parentNode);
-	    }
-	 
-	}
-	 
-	//级联选中所有子节点
-	function checkAllSon(node){
-	    $('#knowpointTree').treeview('checkNode',node.nodeId,{silent:true});
-	    if(node.nodes!=null&&node.nodes.length>0){
-	        for(var i in node.nodes){
-	            checkAllSon(node.nodes[i]);
-	        }
-	    }
-	}
-	//级联取消所有子节点
-	function uncheckAllSon(node){
-	    $('#knowpointTree').treeview('uncheckNode',node.nodeId,{silent:true});
-	    if(node.nodes!=null&&node.nodes.length>0){
-	        for(var i in node.nodes){
-	            uncheckAllSon(node.nodes[i]);
-	        }
-	    }
-	}
-
+		function addQuestion(obj){
+			var html = '<div class="question-content" style = "display: block">'+
+			'		<input id="questionId" type="hidden"  name = "qid" value="">'+
+			'		<div class="descPanel descOfQuestion">'+
+			'            <div class = "content"> '+
+			'            	题干'+
+			'            </div>       '+
+			'        </div>'+
+			'        <div class="keyRadio keyPanel radioOfQuestion" style="display: block;">'+
+			'            <div>'+
+			'                <div class="keyLeft">'+
+			'                    <input type="radio" class="radioOrCheck" name="answerOption" value="A"/>'+
+			'                    <span class="content">选项A</span>'+
+			'                </div>'+
+			'                <div class="keyLeft">'+
+			'                	<input type="radio" class="radioOrCheck" name="answerOption" value="B" />'+
+			'                    <span class="content">选项B</span>'+
+			'                </div>'+
+			'                <div class="keyLeft">'+
+			'                	<input type="radio" class="radioOrCheck" name="answerOption" value="C" />'+
+			'                	<span class="content">选项C</span>'+
+			'                </div>'+
+			'                <div class="keyLeft">'+
+			'                	<input type="radio" class="radioOrCheck" name="answerOption" value="D" />'+
+			'                	<span class="content">选项D</span>'+
+			'                </div>'+
+			'            </div>'+
+			'		</div>'+
+			'	'+
+			'		<div class="keyFill keyPanel fillOfQuestion" style="display: block;">'+
+			'            <div class="keyFillContent content" style="display: block;">'+
+			'				填空题答案'+
+			'           	</div>'+
+			'        </div>'+
+			'          '+
+			'        <div class="keyJudge keyPanel judgeOfQuestion" style="display: block;">'+
+			'            <input type="radio" class="hidden judgeYes"  name="answerJudge" value="正确" checked>'+
+			'            <label for="judgeYes" class="btn btn-border-gray content">正确</label>'+
+			'            <input type="radio" class="hidden judgeNo"  name="answerJudge" value="错误">'+
+			'            <label for="judgeNo" class="btn btn-border-gray content">错误</label> '+
+			'        </div>'+
+			'            '+
+			'        <div class="keyCloze keyPanel clozeOfQuestion" style="display: block;">'+
+			'            <div class = "content">'+
+			'                问答题答案'+
+			'            </div>'+
+			'        </div>'+
+			'          '+
+			'        <div class="analysisPanel analysisOfQuestion" style="display: block;">'+
+			'            <div class = "content">'+
+			'            	解析'+
+			'            </div>'+
+			'        </div>                '+
+			'</div>';
+			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+			var typeArray = new Array("radioOfQuestion", "fillOfQuestion", "judgeOfQuestion", "clozeOfQuestion");
+			var groupSimple = $(obj).parents(".group_simple");
+			var typeNum = parseInt(groupSimple.attr("num"));
+			var groupQuestionShow =$(groupSimple).find(".group_questionShow");
+			groupQuestionShow.append(html);//添加题目
+			
+			var index;
+			for(index in typeArray){
+				$(groupQuestionShow).find("." + typeArray[index]).hide();
+			}
+			
+			/* 根据题目类型显示 不同字段 */
+			switch(typeNum){
+			case 1:$(groupQuestionShow).find("." + typeArray[0]).show();
+			/* var radioOrChecks = $(groupQuestionShow).find(".radioOrCheck");
+			var i;
+			for(i in radioOrChecks)
+				$(radioOrChecks[i]).attr("type","radio"); */
+			break;
+			case 2:$(groupQuestionShow).find("." + typeArray[0]).show();
+			/* var radioOrChecks = $(groupQuestionShow).find(".radioOrCheck");
+			var i;
+			for(i in radioOrChecks)
+				$(radioOrChecks[i]).attr("type","checkbox"); */
+			break;
+			case 3:$(groupQuestionShow).find("." + typeArray[2]).show();
+			break;
+			case 4:$(groupQuestionShow).find("." + typeArray[1]).show();
+			break;
+			case 5:$(groupQuestionShow).find("." + typeArray[3]).show();
+			break;
+			case 6:$(groupQuestionShow).find("." + typeArray[3]).show();
+			break;
+			case 7:$(groupQuestionShow).find("." + typeArray[3]).show();
+			break;
+			default:
+			alert("其它");
+			break;
+		}
+		};
 	</script>
+	
+<!-- 添加试题类型 -->		
+	<script type = "text/javascript">
+		$("#questionType").change(function(e){
+			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+			var resNum = typeDict[$(this).val()];
+			var html = 
+				'<div class="group_simple" num="' + resNum + '">'+
+			'            <div class="questions-group group_title">'+
+			'                <h4>'+
+			'                    <input type="text" class="" name="test_tittle" value="' + $(this).val() + '">'+
+			'                </h4>'+
+			'            '+
+			'	            <div class="extract-box-tit">'+
+			'	                <span class="questionTypeText">' + $(this).val() + '</span>'+
+			'	                <div class="extract-box-btnDiv">'+
+			'                        <a class="btn btn-blue-border2 selQuestionLink" href="javascript:void(0)" onclick = "addQuestion(this)">'+
+			'                        	<span>选择试题</span>'+
+			'                        </a>'+
+			'	                </div>'+
+			'	            </div>'+
+			'        	</div>'+
+			'            <div class="group_questionShow">'+
+			'            </div>    '+
+			'</div>';
+			if($(".group_main").html() == ""){
+				$(".emptyTip").hide();
+				$(".group_main").append(html);
+			}
+			else{
+				var groupSimples = $(".group_simple");
+				var i = 0, tmpNum = 0;
+				console.log(resNum);
+				var isExist = false;
+				for(; i < groupSimples.length; ++i){
+					tmpNum = parseInt($(groupSimples[i]).attr("num"));
+					console.log(tmpNum);
+					if(tmpNum == resNum){
+						isExist = true;
+						break;
+					}
+					else if(tmpNum > resNum){
+						break;
+					}
+				}
+				if(isExist){
+					alert("该题型已经存在,请在对应的位置添加题目");
+				}
+				else{
+					if(i < groupSimples.length){
+						$(".emptyTip").hide();
+						$(groupSimples[i]).before(html);
+					}
+					else{
+						$(".emptyTip").hide();
+						$(groupSimples[i - 1]).after(html);
+					}
+				}
+			}
+		});
+	</script>
+	
 
-
-	
-	
-	
-		
-
-
-	
-
-	
-	
 </body>
 
 </html>
