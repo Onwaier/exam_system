@@ -264,7 +264,7 @@
 					<div class="pagination-nick"></div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" onclick="" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 					<button type="button" class="btn btn-primary" onclick="choose()">保存修改</button>
 				</div>
 			</div>
@@ -779,33 +779,221 @@
 			
 		}
 		
+		
+		//从表格中选择试题
 		function choose(){
 			var selectedQuestion = ""
 			
-			//addQuestion()
 			alert(Data[0].rows.length)
 			var questionItems = $(".questionItem");
 			var cnt = 0;
-			var idArray = [];
+			var questionArray = [];
 			for(var i = 0; i < questionItems.length; ++i){
 				if($(questionItems[i]).prop("checked") == true){
-					idArray.push(Data[0].rows[parseInt($(questionItems[i]).val())]);
+					questionArray.push(Data[0].rows[parseInt($(questionItems[i]).val())]);
 				}
 			}
-			console.log(idArray);
-			
+			console.log(questionArray);
+			return questionArray;
 		}
 		
 		 $(function () { $('#questionChooseDialog').on('hide.bs.modal', function () {
-		      choose();
+		      questions = choose();
+		      for(var i = 0; i < questions.length; ++i){
+		    	  addQuestionInPage(questions[i]);
+		      }
 		   })
 		 });
 
 	</script>
 	
+<!-- 在页面中添加试题 -->
+	<script type = "text/javascript">
+		function addQuestionInPage(question){
+			var type = question.type;
+			console.log(type);
+			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+			var resNum = typeDict[type], idx;
+			var html = 
+				'<div class="group_simple" num="' + resNum + '">'+
+			'            <div class="questions-group group_title">'+
+			'                <h4>'+
+			'                    <input type="text" class="" name="test_tittle" value="' + type + '">'+
+			'                </h4>'+
+			'            '+
+			'	            <div class="extract-box-tit">'+
+			'	                <span class="questionTypeText">' + type + '</span>'+
+			'	                <div class="extract-box-btnDiv">'+
+			'                        <a class="btn btn-blue-border2 selQuestionLink" href="javascript:void(0)" onclick = "addQuestion(this)">'+
+			'                        	<span>选择试题</span>'+
+			'                        </a>'+
+			'	                </div>'+
+			'	            </div>'+
+			'        	</div>'+
+			'            <div class="group_questionShow">'+
+			'            </div>    '+
+			'</div>';
+			if($(".group_main").html() == ""){
+				$(".emptyTip").hide();
+				$(".group_main").append(html);
+				idx = 0;
+			}
+			else{
+				var groupSimples = $(".group_simple");
+				var i = 0, tmpNum = 0;
+				var isExist = false;
+				for(; i < groupSimples.length; ++i){
+					tmpNum = parseInt($(groupSimples[i]).attr("num"));
+					if(tmpNum == resNum){
+						isExist = true;
+						break;
+					}
+					else if(tmpNum > resNum){
+						break;
+					}
+				}
+				if(isExist){
+					idx = 0;
+				}
+				else{
+					if(i < groupSimples.length){
+						$(".emptyTip").hide();
+						$(groupSimples[i]).before(html);
+						idx = i;
+					}
+					else{
+						$(".emptyTip").hide();
+						$(groupSimples[i - 1]).after(html);
+						idx = i;
+					}
+				}
+			}
+			var questionHtml = '<div class="question-content" style = "display: block">'+
+			'		<input id="questionId" type="hidden"  name = "qid" value="">'+
+			'		<div class="descPanel descOfQuestion">'+
+			'            <div class = "content"> '+
+			'            	'+ question.subject+
+			'            </div>       '+
+			'        </div>'+
+			'        <div class="keyRadio keyPanel radioOfQuestion" style="display: block;">'+
+			'            <div class = "optionContent content">'+
+			'                <div class="keyLeft">'+
+			'                    <span class="optionDes">A.&nbsp&nbsp</span>'+
+			'                    <span class="content">' + question.optionA + '</span>'+
+			'                </div>'+
+			'                <div class="keyLeft">'+
+			'                	<span class="optionDes">B.&nbsp&nbsp</span>'+
+			'                    <span class="content">' + question.optionB + '</span>'+
+			'                </div>'+
+			'                <div class="keyLeft">'+
+			'                	<span class="optionDes">C.&nbsp&nbsp</span>'+
+			'                	<span class="content">' + question.optionC + '</span>'+
+			'                </div>'+
+			'                <div class="keyLeft">'+
+			'                	<span class="optionDes">D.&nbsp&nbsp</span>'+
+			'                	<span class="content">' + question.optionD + '</span>'+
+			'                </div>'+
+			'            </div>'+
+			'            <div class = "content">'+
+			'			 	<span class = "answerDes">答案:&nbsp&nbsp</span>'+
+			'                <span>'+ question.answer + '</span>'+
+			'            </div>'+
+			'		</div>'+
+			'	'+
+			'		<div class="keyFill keyPanel fillOfQuestion" style="display: block;">'+
+			'            <div class="keyFillContent content" style="display: block;">'+
+			'			 	<span class = "answerDes">答案:&nbsp&nbsp</span>'+
+			'				<span class = "content">'+ question.answer + '</span>'+
+			'           	</div>'+
+			'        </div>'+
+			'          '+
+			'        <div class="keyJudge keyPanel judgeOfQuestion" style="display: block;">'+
+			'            <input type="radio" class="hidden judgeYes"  name="answerJudge" value="正确" checked>'+
+			'            <label for="judgeYes" class="btn btn-border-gray content">正确</label>'+
+			'            <input type="radio" class="hidden judgeNo"  name="answerJudge" value="错误">'+
+			'            <label for="judgeNo" class="btn btn-border-gray content">错误</label> '+
+			'        </div>'+
+			'            '+
+			'        <div class="keyCloze keyPanel clozeOfQuestion" style="display: block;">'+
+			'            <div class = "content">'+
+			'			 	<span class = "answerDes">答案:&nbsp&nbsp</span>'+
+			'                <span>'+ question.answer + '</span>'+
+			'            </div>'+
+			'        </div>'+
+			'          '+
+			'        <div class="analysisPanel analysisOfQuestion" style="display: block;">'+
+			'            <div class = "content">'+
+			'			 	<span class = "analysisDes">解析:&nbsp&nbsp</span>'+
+			'            	<span>'+ question.analysis + '</span>'+
+			'            </div>'+
+			'        </div>                '+
+			'        <div class="chapterPanel chapterOfQuestion" style="display: block;">'+
+			'            <div class = "content">'+
+			'			 	<span class = "chapterDes">章节:&nbsp&nbsp</span>'+
+			'            	<span>'+ question.chapter + '</span>'+
+			'            </div>'+
+			'        </div>                '+
+			'        <div class="knowpointPanel knowpointOfQuestion" style="display: block;">'+
+			'            <div class = "content">'+
+			'			 	<span class = "knowpointDes">知识点:&nbsp&nbsp</span>'+
+			'            	<span>'+ question.knowPoint + '</span>'+
+			'            </div>'+
+			'        </div>                '+
+			'		 <a class="m-example-remove" onclick = "remove(this)"><i class="glyphicon glyphicon-trash"></i>删除</a>'+
+			'		 <a class="m-example-up" aria-hidden="true" title="上移" questionid="" onclick="moveUp(this)"><i class="glyphicon glyphicon-menu-up"></i>上移</a>'+
+			'		 <a class="m-example-down" aria-hidden="true" title="下移" questionid="" onclick="moveDown(this)"><i class="glyphicon glyphicon-menu-down"></i>下移</a>'+
+			'</div>';
+			console.log("idx:" + idx);
+			var groupQuestionShow = $(".group_simple:eq(" + idx + ") .group_questionShow");
+			var typeArray = new Array("radioOfQuestion", "fillOfQuestion", "judgeOfQuestion", "clozeOfQuestion");
+			var alphaDict = {"A":0, "B":1, "C":2, "D":3, "E":4, "F":5, "G":6}
+			$(groupQuestionShow).append(questionHtml);
+			console.log("resNum:" + resNum);
+			/* 根据题目类型显示 不同字段 */
+			var index;
+			for(index in typeArray){
+				$(groupQuestionShow).find("." + typeArray[index]).hide();
+			}
+			switch(resNum){
+			case 1:$(groupQuestionShow).find("." + typeArray[0]).show();
+				var options = $(groupQuestionShow).find("." + typeArray[0] + ":last").find(".keyLeft");
+				$(options[alphaDict[question.answer]]).addClass("correctAnswer");
+			break;
+			case 2:$(groupQuestionShow).find("." + typeArray[0]).show();
+			break;
+			case 3:$(groupQuestionShow).find("." + typeArray[2]).show();
+			break;
+			case 4:$(groupQuestionShow).find("." + typeArray[1]).show();
+			break;
+			case 5:$(groupQuestionShow).find("." + typeArray[3]).show();
+			break;
+			case 6:$(groupQuestionShow).find("." + typeArray[3]).show();
+			break;
+			case 7:$(groupQuestionShow).find("." + typeArray[3]).show();
+			break;
+			default:
+			alert("其它");
+			break;
+		}
+		}
+	</script>
 
-
-
+<!-- 删除、上移、下移题目 -->
+	<script type = "text/javascript">
+		function remove(obj){
+			$(obj).parents(".question-content").remove();
+		}
+		function moveUp(obj){
+			var nowElement = $(obj).parents(".question-content");
+			nowElement.prev().before(nowElement);
+			//nowElement.remove();
+		}
+		function moveDown(obj){
+			var nowElement = $(obj).parents(".question-content");
+			nowElement.next().after(nowElement);
+			//nowElement.remove();
+		}
+	</script>
 		
 	
 

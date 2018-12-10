@@ -56,7 +56,7 @@
 <!-- 	查询题目列表 -->
 	<select id="selectQuestionList" parameterType="question" resultType="question">
 		SELECT 
-			qid, subject, type, courseName, difficulty
+			*
 		FROM
 			question
 			 

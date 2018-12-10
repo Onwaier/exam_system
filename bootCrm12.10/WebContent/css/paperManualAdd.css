@@ -1,3 +1,5 @@
+@CHARSET "UTF-8";
+
 /*左右padding为0*/
 #page-wrapper {
     padding: 0; 
@@ -87,7 +89,6 @@ input[name="paperName"],input[name = "courseName"]{
     text-align: center;
 }
 input[type=checkbox]:checked + label{
-
     background: #A9B3BF;
     border: 1px solid #878F98;
     color: #fff;
@@ -121,18 +122,18 @@ input[type=checkbox]:checked + label{
     margin-bottom: 21px;
     padding: 12px 0 12px 22px;
     position: relative;
-    min-height: 100px;
+    min-height: 150px;
     font-size: 12px;
     color: #666666;
     text-align: left;
 }
 .radioOfQuestion .content, .fillOfQuestion .content, .judgeOfQuestion .content, .clozeOfQuestion .content, 
-.analysisOfQuestion .content{
+.analysisOfQuestion .content, .chapterOfQuestion .content, .knowpointOfQuestion .content{
     text-align: left;
     font-size: 12px;
     color: #666666;
     margin-bottom: 8px;
-    max-width: 50%;
+    max-width: 80%;
     word-wrap: break-word;
     word-break: normal;
     text-align:left;
@@ -142,14 +143,22 @@ input[type=checkbox]:checked + label{
 	font-size: 14px;
     color: #333333;
     margin-bottom: 8px;
-    max-width: 50%;
+    max-width: 80%;
     word-wrap: break-word;
     word-break: normal;
     text-align:left;
 	font-weight: bold;
 }
-.descOfQuestion, .radioOfQuestion, .fillOfQuestion, .judgeOfQuestion, .clozeOfQuestion, .analysisOfQuestion{
+.keyLeft{
+	margin-bottom:5px;
+}
+.descOfQuestion, .radioOfQuestion, .fillOfQuestion, .judgeOfQuestion, .clozeOfQuestion, .analysisOfQuestion, 
+.chapterOfQuestion, .knowpointOfQuestion{
 	margin-bottom:10px;
+}
+
+.radioOfQuestion .correctAnswer, .radioOfQuestion .correctAnswer .content{
+	color: #1A8CFE;
 }
 
 .keyJudge input[type=radio]:checked + label {
@@ -157,19 +166,32 @@ input[type=checkbox]:checked + label{
     border: 1px solid #878F98;
     color: #fff;
 }
-i{
-	font-size: 15px;
-    width: 15px;
-    height: 15px;
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 10px;
-    position: absolute;
-    left: 0;
-    top: 2px;
-}
 .group_main .group_simple {
     margin-bottom: 41px;
+}
+
+.m-example-remove {
+    top: 17px;
+}
+.m-example-up {
+    top: 65px;
+}
+.m-example-down {
+    top: 112px;
+}
+.question-content a {
+    position: absolute;
+    right: 13px;
+    font-size: 12px;
+    color: #B7B7B7;
+    border: 1px solid #E0E2E3;
+    border-radius: 4px;
+    padding: 8px 16px;
+    background: #fff;
+    cursor: pointer;
+}
+a {
+    text-decoration: none;
 }
 .title{
     text-align: center
@@ -190,3 +212,11 @@ i{
 }
 /*
 创建试卷第二步 章节选题end*/
+/* 创建试卷第二步 试卷选题beg */
+
+#createTest3 .row{
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+/* 创建试卷第二步 试卷选题end */
