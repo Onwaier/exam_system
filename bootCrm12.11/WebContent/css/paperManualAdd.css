@@ -1,0 +1,274 @@
+@CHARSET "UTF-8";
+
+/*左右padding为0*/
+#page-wrapper {
+    padding: 0; 
+
+}
+/*tab下有一条线*/
+.tab-area .nav-tabs {
+    border-bottom: 1px solid #188DFF;
+}
+
+/*当前选中的下外边距为0*/
+.nav-tabs li.active {
+    margin-bottom: 0;
+}
+/*tabs中a的字体颜色 tabs中字居中 无border*/
+.nav-tabs li a {
+    border: none;
+    font-size: 16px;
+    text-align: center;
+    padding: 10px 0;
+    color: #9B9B9B;
+}
+/*当前选中的字体颜色*/
+.nav-tabs li.active a {
+    color: #188DFF;
+    border: none;
+}
+/*三个tabs平分*/
+.tab-area .nav-tabs li {
+    width: 33.33%;
+}
+
+.line {
+    height: 20px;
+    width: 100%;
+    background-color: #EEF3F8;
+}
+/*创建试卷第一步beg*/
+#createTest1{
+	background: #EEF3FB;
+	border: 1px solid #D8D8D8;
+    border-radius: 4px;
+    width:50%;
+    margin:30px auto;
+    margin-bottom: 0px;
+}
+#subForm{
+	margin:30px;
+}
+.intro{
+	color: #A9B3BF;
+	margin-bottom: 30px;
+}
+.infoRow{
+	margin-left:10px;
+	margin-bottom: 10px;
+}
+
+input[name="paperName"],input[name = "courseName"]{
+	border: 1px solid #D8D8D8;
+    border-radius: 4px;
+    width: 35%;
+    padding: 3px 10px;
+}
+.paperType input[type=radio]:checked + label {
+    background: #A9B3BF;
+    border: 1px solid #878F98;
+    color: #fff;
+}
+
+.btnNextStep{
+	margin-left:10px;
+}
+
+/*创建试卷第一步end*/
+
+/*创建试卷第二步 章节选题beg*/
+#createTest2{
+
+    height: 100%;
+}
+#createTest2 .row{
+    margin-left: 0px;
+    margin-right: 0px;
+}
+.chapterList{    
+    text-align: center;
+}
+input[type=checkbox]:checked + label{
+    background: #A9B3BF;
+    border: 1px solid #878F98;
+    color: #fff;
+}
+.list-group-item label{
+    width:100%;
+    height: 100%;
+}
+
+#knowpointTree{
+	height:400px;
+	overflow-y :scroll;
+}
+.treeview .list-group-item.node-checked {
+    color: red;
+}
+.treeview .list-group-item.node-selected {
+    color: red;
+}
+
+.paperContent{
+    
+}
+
+.group_main{
+	margin-left:20px;
+}
+.question-content {
+    background: #F6F7FA;
+    border-radius: 4px;
+    margin-bottom: 21px;
+    padding: 12px 0 12px 22px;
+    position: relative;
+    min-height: 150px;
+    font-size: 12px;
+    color: #666666;
+    text-align: left;
+}
+.radioOfQuestion .content, .fillOfQuestion .content, .judgeOfQuestion .content, .clozeOfQuestion .content, 
+.analysisOfQuestion .content, .chapterOfQuestion .content, .knowpointOfQuestion .content{
+    text-align: left;
+    font-size: 12px;
+    color: #666666;
+    margin-bottom: 8px;
+    max-width: 80%;
+    word-wrap: break-word;
+    word-break: normal;
+    text-align:left;
+}
+
+.descOfQuestion .content{
+	font-size: 14px;
+    color: #333333;
+    margin-bottom: 8px;
+    max-width: 80%;
+    word-wrap: break-word;
+    word-break: normal;
+    text-align:left;
+	font-weight: bold;
+}
+.keyLeft{
+	margin-bottom:5px;
+}
+.descOfQuestion, .radioOfQuestion, .fillOfQuestion, .judgeOfQuestion, .clozeOfQuestion, .analysisOfQuestion, 
+.chapterOfQuestion, .knowpointOfQuestion{
+	margin-bottom:10px;
+}
+
+.radioOfQuestion .correctAnswer, .radioOfQuestion .correctAnswer .content{
+	color: #1A8CFE;
+}
+
+.keyJudge input[type=radio]:checked + label {
+    background: #A9B3BF;
+    border: 1px solid #878F98;
+    color: #fff;
+}
+.group_main .group_simple {
+    margin-bottom: 41px;
+}
+
+.m-example-remove {
+    top: 17px;
+}
+.m-example-up {
+    top: 65px;
+}
+.m-example-down {
+    top: 112px;
+}
+.question-content a {
+    position: absolute;
+    right: 13px;
+    font-size: 12px;
+    color: #B7B7B7;
+    border: 1px solid #E0E2E3;
+    border-radius: 4px;
+    padding: 8px 16px;
+    background: #fff;
+    cursor: pointer;
+}
+a {
+    text-decoration: none;
+}
+.title{
+    text-align: center
+}
+
+.paperContent h3 {
+    border-bottom: 1px solid #DEDEDE;
+    padding-bottom: 10px;
+    margin: 0;
+    color: #333333;
+}
+.paperContent h3 input {
+    text-align: center;
+    width: 100%;
+    font-size: 18px;
+    color: #333;
+    border: none;
+}
+
+.paperInfo .total{
+	width: 100%;
+    border: 1px solid #DEDEDE;
+    border-radius: 4px;
+    padding: 0;
+    margin-bottom:9px;
+}
+
+.total p {
+    margin: 15px 14px;
+}
+.paperInfo .right_group_simple {
+    font-size: 14px;
+    color: #333333;
+    margin-bottom: 9px;
+    width: 100%;
+    border: 1px solid #DEDEDE;
+    border-radius: 4px;
+    float: left;
+    padding: 0;
+}
+
+.paperInfo .right_group_simple h3 {
+    display: inline-block;
+    max-width: 100px;
+    word-wrap: break-word;
+    font-size: 20px;
+    margin: 0px 14px;
+}
+.paperInfo .right_group_simple .right_p {
+    margin-left: 14px;
+}
+.paperInfo .test_icon_a {
+    width: 100%;
+}
+.paperInfo .right_group_simple a {
+    color: #aaa;
+    display: inline-block;
+    float: left;
+    width: 33.33%;
+    padding: 7px 0;
+    border-left: 1px solid #F5F5F5;
+    border-top: 1px solid #F5F5F5;
+    background: #FCFCFC;
+    text-align: center;
+}
+.item-active {
+    border: 1px solid #1A8CFE!important;
+    box-shadow: 0 0 10px 0 rgba(47,124,219,0.30);
+    border-radius: 4px;
+}
+/*
+创建试卷第二步 章节选题end*/
+/* 创建试卷第二步 试卷选题beg */
+
+#createTest3 .row{
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+/* 创建试卷第二步 试卷选题end */
