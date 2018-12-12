@@ -21,8 +21,8 @@
 
 <title>添加试题</title>
 
-<!-- 图片样式 -->
-<link href="<%=basePath%>css/pictureStyle.css" rel="stylesheet">
+<!-- <!-- 图片样式 --> -->
+<%-- <link href="<%=basePath%>css/pictureStyle.css" rel="stylesheet"> --%>
 
 <!-- Bootstrap Core CSS -->
 <link href="<%=basePath%>css/bootstrap.min.css" rel="stylesheet">
@@ -384,9 +384,9 @@
 	<!-- 操作xlsx的js -->
 	<script src="<%=basePath%>js/xlsx.full.min.js"></script>
 	
-<!-- 	添加图片 -->
-    <script src="<%=basePath%>/pictureCss/jquery-1.9.1.min.js"></script>
-    <script src="<%=basePath%>/pictureCss/layer.js" type="text/javascript"></script>
+<!-- <!-- 	添加图片 --> -->
+<%--     <script src="<%=basePath%>/pictureCss/jquery-1.9.1.min.js"></script> --%>
+<%--     <script src="<%=basePath%>/pictureCss/layer.js" type="text/javascript"></script> --%>
    
     
    

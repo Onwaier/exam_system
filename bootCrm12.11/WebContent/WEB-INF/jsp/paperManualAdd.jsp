@@ -40,19 +40,7 @@
 <link href="<%=basePath%>/css/sb-admin-2.css" rel="stylesheet">
 <link href="<%=basePath%>/css/paperManualAdd.css" rel="stylesheet">
 
-<style>
-    button{
-        padding:5px;
-        margin:5px;
-    }
-    .active-nick{
-        color:red;
-    }
-    input{
-        width:50px;
-        text-align:center;
-    }
-</style>
+
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -160,7 +148,7 @@
                 		</div>
 	                	<div class="paperContent col-sm-6">
 	                		<div class = "paper">
-	                			<h3><input class="edit-paper-name form-control" type="text" name="edit_paper_name" value="141413" placeholder="点击输入试卷名称"></h3>
+	                			<h3><input class="edit-paper-name form-control" type="text" name="edit_paper_name" value='${paperName}' placeholder="点击输入试卷名称"></h3>
                                 <p class="emptyTip">当前试卷还是空空如也，点击下方添加新题型！</p>
                                 <div class="group_main"></div>
                                 <div class="questionTypeManage">
@@ -179,10 +167,16 @@
 	                	</div>
 	                	
 	                	<div class="paperInfo col-sm-3">
+	                		<div class="preview">
+	                			<button type="button" class="btn btn-primary" id="previewBtn" onclick = "previewPaper()"><i class="fa fa-eye fa-fw"></i>预览</button>
+	                		</div>
 	                		<div class="total">
 	                			<p>总题数：<span class="test_total">0</span>题</p>
 	                		</div>
 	                		<div class="right_group_main"></div>
+	                		<div class="btnNextStep">
+                            	<button  type="button" class="btn btn-primary">下一步</button>
+                        	</div>
 	                	</div>
                 	</div>
                 </div>
@@ -1019,6 +1013,39 @@
 			var nowElement = $(obj).parents(".right_group_simple");
 			nowElement.next().after(nowElement);
 			//nowElement.remove();
+		}
+	</script>
+	
+	<script type="text/javascript">
+		function previewPaper(){
+			var qids = getQidsAndQnums();
+			var str = "<%=basePath%>paper/preview.action?qids[]=" + qids[0];
+			for(var i = 1; i < qids.length; ++i){
+				var tmp = "&qids[]=" + qids[i];
+				str += tmp;
+			}
+			console.log(str);
+			window.location.href = str;
+		}
+	</script>
+	<script type="text/javascript">
+		function getQidsAndQnums(){
+			var questions = $(".question-content");
+			var qids = [], qid = 0, typeNums = {}, typeNum = 0, type = "";
+			var rGroupSimples = $(".right_group_simple");
+			for(var i = 0; i < questions.length; ++i){
+				qid = parseInt($(questions[i]).find(".questionId").val());
+				qids.push(qid);
+			}
+			for(var i = 0; i < rGroupSimples.length; ++i){
+				typeNum = parseInt($(rGroupSimples[i]).find(".test_num").html());
+				type = $(rGroupSimples[i]).find(".test_tittle").html();
+				console.log(typeNum);
+				typeNums.type = typeNum;
+			}
+			console.log("qids:" + qids);
+			return qids;
+			console.log("typeNums:" + typeNums);
 		}
 	</script>
 

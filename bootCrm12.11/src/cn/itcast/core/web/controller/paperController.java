@@ -197,4 +197,18 @@ public class paperController {
 //                e.printStackTrace();
 //        }    
 //    }
+	/*预览试卷*/
+	@RequestMapping(value = "/paper/preview")
+	public String previewPaper(@RequestParam(defaultValue="1")Integer page, @RequestParam(defaultValue="10")Integer rows, 
+			@RequestParam(value = "qids[]", required = false, defaultValue = "")Long[] qids, Model model) {
+		System.out.println("/question/batchEdit");  
+		
+		System.out.println(" qids: " + Arrays.toString(qids) + "\n");
+		Page<Question> questions = questionService.findQuestionListByIds(page, rows, qids);
+		JSONArray json = JSONArray.fromObject(questions);//将java对象转换为json对象
+		String str = json.toString();//将json对象转换为字符串
+		System.out.println(str);
+		model.addAttribute("page", str);
+		return "previewPaper";
+	}
 }

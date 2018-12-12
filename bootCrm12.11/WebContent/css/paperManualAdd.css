@@ -211,6 +211,10 @@ a {
     border: none;
 }
 
+.paperInfo .preview, .paperInfo .btnNextStep{
+	text-align:center;
+	margin-bottom:9px;
+}
 .paperInfo .total{
 	width: 100%;
     border: 1px solid #DEDEDE;
