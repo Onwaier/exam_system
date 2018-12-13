@@ -88,4 +88,8 @@
 		ORDER BY courseName ASC
 	</select>
 	
+	<!-- 删除试卷 -->
+	<delete id="deletePaper" parameterType="long">
+		delete from paper where id=#{id}
+	</delete>
 </mapper>

@@ -155,8 +155,8 @@
 										<td>${row.joinTime}</td>
 										<td>${row.userId}</td>
 										<td>
-											<a href="#" data-toggle="modal" data-target="#questionEditDialog" onclick="editCustomer(${row.id})"><i class="fa fa-eye fa-fw"></i></a> 
-											<a href="#" onclick="deleteQuestion(${row.id})"><i class="fa fa-trash" aria-hidden="true"></i></a>
+											<a onclick="preview('${row.questionSet}')"><i class="fa fa-eye fa-fw"></i></a> 
+											<a onclick="deletePaper(${row.id})"><i class="fa fa-trash" aria-hidden="true"></i></a>
 										</td>
 									</tr>
 								</c:forEach>
@@ -349,13 +349,43 @@
 				}
 				alert(str);
 				window.location.href = str;
+				window.open(str);//新窗口打开预览界面
 			}
 		})
 	</script>
 	
-
+	<!-- 预览试卷 -->
+	<script type="text/javascript">
+	function preview(questionSet){
+		console.log(questionSet);
+		strQids = questionSet.split("#");
+		qids = [];
+		for(var i = 0; i < strQids.length; ++i){
+			qids.push(parseInt(strQids[i]));
+		}
+		var str = "<%=basePath%>paper/preview.action?qids[]=" + qids[0];
+		for(var i = 1; i < qids.length; ++i){
+			var tmp = "&qids[]=" + qids[i];
+			str += tmp;
+		}
+		console.log(str);
+		//window.location.href = str;//原页面
+		window.open(str);//新窗口打开预览界面
+	}
 	
+	</script>
 	
+	<!-- 删除试卷 -->
+	<script type="text/javascript">
+	function deletePaper(id){
+		if(confirm('确实要删除该试卷吗?')) {
+			$.post("<%=basePath%>/paper/delete.action",{"id":id},function(data){
+				alert("试卷删除成功！");
+				window.location.reload();
+			});
+		}
+	}
+	</script>
 </body>
 
 </html>

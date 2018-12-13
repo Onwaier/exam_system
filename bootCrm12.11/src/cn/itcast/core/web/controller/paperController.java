@@ -202,7 +202,7 @@ public class paperController {
 	public String previewPaper(@RequestParam(defaultValue="1")Integer page, @RequestParam(defaultValue="10")Integer rows, 
 			@RequestParam(value = "qids[]", required = false, defaultValue = "")Long[] qids, Model model) {
 		System.out.println("/question/batchEdit");  
-		
+	
 		System.out.println(" qids: " + Arrays.toString(qids) + "\n");
 		Page<Question> questions = questionService.findQuestionListByIds(page, rows, qids);
 		JSONArray json = JSONArray.fromObject(questions);//将java对象转换为json对象
@@ -210,5 +210,13 @@ public class paperController {
 		System.out.println(str);
 		model.addAttribute("page", str);
 		return "previewPaper";
+	}
+	
+//	删除试卷
+	@RequestMapping("/paper/delete")
+	@ResponseBody
+	public String paperDelete(Long id) {
+		paperService.deletePaper(id);
+		return "OK";
 	}
 }

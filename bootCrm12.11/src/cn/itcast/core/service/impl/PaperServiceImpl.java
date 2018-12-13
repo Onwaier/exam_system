@@ -192,4 +192,10 @@ public class PaperServiceImpl implements PaperService {
 		return courseNames;
 	}
 
+	@Override
+	public void deletePaper(Long id) {
+		
+		paperDao.deletePaper(id);
+	}
+
 }

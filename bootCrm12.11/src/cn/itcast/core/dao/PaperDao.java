@@ -18,4 +18,5 @@ public interface PaperDao {
 	List<Question> selectQuestionList(Question question);
 	Integer selectQuestionListCount(Question question);
 	List<Course> selectCourseList(Course course);
+	void deletePaper(Long id);
 }

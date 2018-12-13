@@ -1025,7 +1025,8 @@
 				str += tmp;
 			}
 			console.log(str);
-			window.location.href = str;
+			//window.location.href = str;
+			window.open(str);//新窗口打开预览界面
 		}
 	</script>
 	<script type="text/javascript">

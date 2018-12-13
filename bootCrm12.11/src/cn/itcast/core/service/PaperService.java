@@ -30,4 +30,7 @@ public interface PaperService {
 	
 	//查询所有科目
 	public List<Course> findCourseList();
+
+	//删除试卷
+	public void deletePaper(Long id);
 }
