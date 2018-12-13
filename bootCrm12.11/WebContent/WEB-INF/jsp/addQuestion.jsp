@@ -21,7 +21,7 @@
 
 <title>添加试题</title>
 
-<!-- <!-- 图片样式 --> -->
+ <!-- 图片样式 -->
 <%-- <link href="<%=basePath%>css/pictureStyle.css" rel="stylesheet"> --%>
 
 <!-- Bootstrap Core CSS -->
@@ -36,7 +36,7 @@
 
 
 <!-- Custom Fonts -->
-<link href="<%=basePath%>cssz/font-awesome.min.css" rel="stylesheet"
+<link href="<%=basePath%>css/font-awesome.min.css" rel="stylesheet"
 	type="text/css">
 <link href="<%=basePath%>css/boot-crm.css" rel="stylesheet"
 	type="text/css">
@@ -63,46 +63,47 @@
 		<!-- Navigation -->
 		<nav class="navbar navbar-default navbar-static-top" role="navigation"
 			style="margin-bottom: 0">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse"
-				data-target=".navbar-collapse">
-				<span class="sr-only">Toggle navigation</span> </span> <span class="icon-bar"></span> <span
-					class="icon-bar"></span>
-			</button>
-			<a class="navbar-brand" href="${pageContext.request.contextPath }/question/list.action">e卷题库抽题组卷系统v1.0</a>
-		</div>
-		<!-- /.navbar-header -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span> </span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="${pageContext.request.contextPath }/question/list.action">e卷题库抽题组卷系统v1.0</a>
+			</div>
+			<!-- /.navbar-header -->
 		
-		<div>	
-	        <form class="navbar-form navbar-right navbar-search-form" role="form">
-	        	<div class="input-group">
-					<span class="input-group-btn">
-						</button>
-						<button class="btn btn-primary navbar-input-button" onclick="window.location.href='${pageContext.request.contextPath }/question/showFile.action'" type="button">
-							下载模板
-						</button>
-						<button class="btn btn-primary navbar-input-button" onclick="window.location.href='${pageContext.request.contextPath }/question/wordInput.action'" type="button">
-							word题目导入数据库
-						</button>
-					</span>
-				</div><!-- /input-group -->	            
-	        </form> 
-    	</div>
-		 
+			<div>	
+		        <form class="navbar-form navbar-right navbar-search-form" role="form">
+		        	<div class="input-group">
+						<span class="input-group-btn">
+							</button>
+							<button class="btn btn-primary navbar-input-button" onclick="window.location.href='${pageContext.request.contextPath }/question/showFile.action'" type="button">
+								下载模板
+							</button>
+							<button class="btn btn-primary navbar-input-button" onclick="window.location.href='${pageContext.request.contextPath }/question/wordInput.action'" type="button">
+								word题目导入数据库
+							</button>
+						</span>
+					</div><!-- /input-group -->	            
+		        </form> 
+	    	</div>
+			 
 		<!-- /.navbar-top-links -->
 
-		<div class="navbar-default sidebar" role="navigation" id = "question-sidebar">
-			<div class="sidebar-nav navbar-collapse">
-				<ul class="nav" id="side-menu">
-					<li><a href="${pageContext.request.contextPath }/question/list.action" class="active"><i
-							class="fa fa-edit fa-fw"></i> 题库管理</a></li>
-					<li><a href="${pageContext.request.contextPath }/paper/list.action"><i
-							class="fa fa-dashboard fa-fw"></i> 试卷管理</a></li>
-				</ul>
+			<div class="navbar-default sidebar" role="navigation" id = "question-sidebar">
+				<div class="sidebar-nav navbar-collapse">
+					<ul class="nav" id="side-menu">
+						<li><a href="${pageContext.request.contextPath }/question/list.action" class="active"><i
+								class="fa fa-edit fa-fw"></i> 题库管理</a></li>
+						<li><a href="${pageContext.request.contextPath }/paper/list.action"><i
+								class="fa fa-dashboard fa-fw"></i> 试卷管理</a></li>
+					</ul>
+				</div>
+				<!-- /.sidebar-collapse -->
 			</div>
-			<!-- /.sidebar-collapse -->
-		</div>
-		<!-- /.navbar-static-side --> </nav>
+			<!-- /.navbar-static-side --> 
+		</nav>
 
 		<div id="page-wrapper">
 			
@@ -323,7 +324,7 @@
 				            <img src='<%=basePath%>images/loading.gif' class="loading" style="position:absolute;top: 30%;left: 40%;width:250px;display:none;border-radius: 30px;box-shadow: 2px 2px 5px #ccc;"/>
 				            <div class="btn-row" style="text-align: center;">
 				                <a class="btn btn-primary download" href="https://cdn.oss.kaoshixing.com/exam_teamplate_test.xls" style="margin-right: 205px;">下载模版</a>
-				                <!-- <input id="file_upload" name="file_upload" type="file" multiple="true"/> -->
+				                
 				                <form id="uploadForm" class="upload-form">
 				                    <div class="btn btn-primary upload">上传excel<input type="file" onchange="importf(this)" name="uploadFile" id="excelUpload"/></div>
 				                    <div class="tip">excel表格大小限制为1MB以下</div>
@@ -339,7 +340,7 @@
 					             <button class="btn btn-primary download" style="margin-right: 205px;" onclick="window.location.href='${pageContext.request.contextPath }/question/showFile.action'" type="button">
 									下载模板
 								 </button>
-				                <!-- <input id="file_upload" name="file_upload" type="file" multiple="true"/> -->
+				          
 				                <form id="uploadForm" class="upload-form">
 				                    <button class="btn btn-primary upload" onclick="window.location.href='${pageContext.request.contextPath }/question/wordInput.action'" type="button">上传word</button>
 				                    <div class="tip">word大小限制为1MB以下</div>
@@ -384,7 +385,7 @@
 	<!-- 操作xlsx的js -->
 	<script src="<%=basePath%>js/xlsx.full.min.js"></script>
 	
-<!-- <!-- 	添加图片 --> -->
+ <!-- 	添加图片 --> 
 <%--     <script src="<%=basePath%>/pictureCss/jquery-1.9.1.min.js"></script> --%>
 <%--     <script src="<%=basePath%>/pictureCss/layer.js" type="text/javascript"></script> --%>
    
