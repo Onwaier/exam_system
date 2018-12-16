@@ -643,8 +643,8 @@
 					var radioOrChecks = document.getElementsByClassName("radioOrCheck");
 					var radios = $(".questionForm:eq(" + cnt + ") .radioOrCheck");
 		     		
-					for(var i = 0; i < radioOrChecks.length; ++i){
-						radioOrChecks[i].type = "radio";
+					for(var i = 0; i < radios.length; ++i){
+						$(radios[i]).attr("type", "radio");
 					}
 
 					$(radios[optionAnswerIndex]).prop("checked", true);
@@ -695,8 +695,8 @@
 					var checks = $(".questionForm:eq(" + cnt + ") .radioOrCheck");
 
 					var i;
-					for(i in radioOrChecks){
-						radioOrChecks[i].type = "checkbox";
+					for(i in checks){
+						$(checks[i]).attr("type", "checkbox");
 					}
 					for(var i = 0; i < answer.length; ++i){
 						$(checks[alphaDict[answer[i]]]).prop("checked", true);
