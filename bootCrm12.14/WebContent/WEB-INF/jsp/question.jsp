@@ -167,7 +167,7 @@
 										<td>${row.subject}</td>
 										<td>${row.difficulty}</td>
 										<td>
-											<a href="#" data-toggle="modal" data-target="#questionEditDialog" onclick="window.location.href='${pageContext.request.contextPath }/question/edit.action?qid=${row.qid}'"><i class="fa fa-edit fa-fw"></i></a> 
+											<a href="#" onclick="window.location.href='${pageContext.request.contextPath }/question/edit.action?qid=${row.qid}'"><i class="fa fa-edit fa-fw"></i></a> 
  											<a href="#" onclick="deleteQuestion(${row.qid})"><i class="fa fa-trash" aria-hidden="true"></i></a>
 										</td>
 									</tr>
@@ -365,7 +365,7 @@
 		})
 	</script>
 	
-<!-- 全选全不选 -->
+<!-- 全选全不选 以及级联-->
 	<script type = "text/javascript">
 		$(".questionItemTotal").click(function(e){
 			var questionItems = $(".questionItem");
@@ -378,6 +378,22 @@
 				for(var i = 0; i < questionItems.length; ++i){
 					$(questionItems[i]).prop("checked", false);
 				}
+			}
+		});
+		$(".questionItem").click(function(e){
+			var questionItems = $(".questionItem");
+			var flag = true;
+			for(var i = 0; i < questionItems.length; ++i){
+				if($(questionItems[i]).prop("checked") == false){
+					flag = false;
+					break;
+				}
+			}
+			if(flag){
+				$(".questionItemTotal").prop("checked", true);
+			}
+			else{
+				$(".questionItemTotal").prop("checked", false);
 			}
 		});
 	</script>
