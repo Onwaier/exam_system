@@ -174,7 +174,7 @@
 	                                    <span class="intro">这里填写题目描述</span>
 	                                </div>
 	                                <div class = "editor">
-	                                <textarea rows="2" cols="80" type="text"  id="subject" value="${subject }" name="subject"></textarea>
+	                                <textarea rows="2" cols="80" type="text"  id="subject" value="" name="subject"></textarea>
 	                                </div>
 	                                
 	                        </div>
@@ -186,7 +186,7 @@
 	                            </div>
 	                            <div>
 		                            	<div class="keyLeft">
-	                                        <input type="radio" class="radioOrCheck" name="answerOption" value="A" onclick="getValue()" />
+	                                        <input type="radio" class="radioOrCheck" name="answerOption" value="A" />
 	                                        <textarea rows="2" cols="80" class = "radioEdit" id="edit_optionA"  name="optionA"></textarea>
 		                                </div>
 	                                   <div class="keyLeft">
@@ -256,7 +256,7 @@
 	                                    <span class="intro">这里填写该问题对应的答案解释</span>
 	                                </div>
 	                                <div>
-	                                	<textarea rows="2" cols="80"   id="analysis" value="${analysis}" name="analysis"></textarea>
+	                                	<textarea rows="2" cols="80"   id="analysis"  name="analysis"></textarea>
 	                                </div>
 	                          </div>                         
 						</div>
@@ -351,7 +351,6 @@
 				            </div>
 				            
 				        </div>
-				        <div id="demo"></div>
 				   
 				</div>
 	
@@ -607,7 +606,7 @@
 				case 5:
 				case 6:
 				case 7:
-					var answer = $("#questionAnswer").val();
+					var answer = $("#answerCloze").val();
 					if(answer == null || answer == ""){
 						alert("答案不能为空！");
 						return false;
@@ -652,54 +651,82 @@
                     //wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
                     //wb.Sheets[Sheet名]获取第一个Sheet的数据
                     //document.getElementById("demo").innerHTML= JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
+                    var sheetNames = ["混合题", "单选题", "多选题", "判断题", "填空题", "问答题", "简述题", "名词解释"];
                     var str = JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
+                    var successCnt = 0, sheetArray = [];
                     obj = eval(str);
                     $(".loading").show();
-                    for(var i = 0; i < obj.length; ++i){
-                    	obj[i].answerOption = obj[i].answer;
-                    	obj[i].answerJudge = obj[i].answer;
-                    	obj[i].type == "填空题"?obj[i].answerFill = obj[i].answer.split("#"):obj[i].answerFill = [];
-                    	obj[i].answerCloze = obj[i].answer;
-                  /*   	post方法不得行,各种问题...改为ajax就阔以了. */
-                  
-                  		setTimeout((function (i) {
-				            return function () {
-				                $.ajax({
-				                    type:'post',  
-					                dataType : "text",
-					                async:false,
-					                url: "<%=basePath%>question/add.action",
-					                data:obj[i],  
-				                    success: function (response) {
-						                console.log(i);
-				                        if(i == obj.length - 1){
-				                       	 alert("录入完成");
-				                       	 $(".loading").hide();
-				                      }
-				                    },
-				                    failure: function (response) { 
-				                    }
-				                });
-				            }
-				        })(i), 10);
-
-	                    <%-- $.ajax({  
-	                        type:'post',  
-	                        dataType : "text",
-	                        async:false,
-	                        url: "<%=basePath%>question/add.action",
-	                        data:obj[i],  
-	                        success:function(data){  
-	                        	//alert("题目批量添加成功！");
-	                             //debugger;
-	                             console.log(i);
-	                             if(i == obj.length - 1){
-	                            	 alert("录入完成");
-	                            	 $(".loading").hide();
-	                             }
-	                        }  
-	                    });   --%>  
+                    for(var i = 0; i < wb.SheetNames.length; ++i){
+                    	console.log(wb.SheetNames[i]);
+                    	sheetArray = wb.SheetNames[i].split("-");
+                    	console.log(sheetArray);
+                    	var flag = false;
+                    	for(var j = 0; j < sheetNames.length; ++j){
+                    		if(sheetArray[0] == sheetNames[j]){
+                    			flag = true;
+                    			break;
+                    		}
+                    	}
+                    	if(flag){
+                    		var str = JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[i]]));
+                            obj = eval(str);
+                            for(var j = 1; j < obj.length; ++j){
+                            	if(sheetArray[0] != "混合题"){
+                        			obj[j].type = wb.SheetNames[i];
+                        		}
+                            	if(obj[j].subject == null || obj[j].answer == null || obj[j].type == null){
+                            		alert("模板不规范,请检查后重试");
+                            		break;
+                            	}
+                            	if(sheetArray.length == 2){
+                            		obj[j].courseName = sheetArray[1];
+                            	}
+                            	/* 对答案进行处理 */
+                            	obj[j].answerOption = obj[j].answer;
+                            	obj[j].answerJudge = obj[j].answer;
+                            	obj[j].type == "填空题"?obj[j].answerFill = obj[j].answer.split("#"):obj[j].answerFill = [];
+                            	obj[j].answerCloze = obj[j].answer;
+                            	/* 对难度进行处理 */
+                            	if(obj[j].difficulty == "难"){
+                          			obj[j].difficulty = "困难";
+                          		}
+                          		else if(obj[j].difficulty == "中"){
+                          			obj[j].difficulty = "中等";
+                          		}
+                          		else{
+                          			obj[j].difficulty = "简单";
+                          		}
+                            	setTimeout((function (j) {
+                    				            return function () {
+                    				                $.ajax({
+                    				                    type:'post',  
+										                dataType : "text",
+										                async:false,
+										                url: "<%=basePath%>question/excelAdd.action",
+										                data:obj[j],  
+									                    success: function (response) {
+									                    	if(response == "success"){
+									                    		++successCnt;
+									                    	}
+									                    	console.log(response);
+											                console.log(j);
+									                        if(j == obj.length - 1){
+									                        var mes = successCnt + "道题录入成功";
+									                       	 alert(mes);
+									                       	 $(".loading").hide();
+									                      }
+									                    },
+									                    failure: function (response) { 
+									                    }
+				                    
+                    				                });
+                    				            }
+                    				        })(j), 10);
+                			}
+                    		
+                    	}
                     }
+                   
                 }; 
                 if(rABS) {
                     reader.readAsArrayBuffer(f);
