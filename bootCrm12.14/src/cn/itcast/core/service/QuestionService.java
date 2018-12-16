@@ -19,7 +19,7 @@ public interface QuestionService {
 	public void deleteQuestion(Long id);
 	
 	//添加问题
-	public void addQuestion(Long qid, String subject, String type, String optionA, String optionB, String optionC, String optionD,  String optionE, String optionF, String optionG, 
+	public Boolean addQuestion(Long qid, String subject, String type, String optionA, String optionB, String optionC, String optionD,  String optionE, String optionF, String optionG, 
 			String answerOption, String answerJudge, String[] answerFill, String answerCloze, 
 			String courseName, String analysis, String chapter, String knowPoint, String difficulty, String pictureUrl);
 	

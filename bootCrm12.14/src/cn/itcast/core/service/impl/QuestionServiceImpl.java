@@ -121,6 +121,7 @@ public class QuestionServiceImpl implements QuestionService {
 			String courseName, String analysis, String chapter, String knowPoint, String difficulty, String pictureUrl){
 			Question question = new Question();
 			System.out.println("qid:" + qid);
+			
 			question.setQid(Long.parseLong(qid));
 			if(StringUtils.isNotBlank(subject)){
 				question.setSubject(subject);
@@ -190,16 +191,17 @@ public class QuestionServiceImpl implements QuestionService {
 				temp = temp + answerFill[answerFill.length-1];
 				question.setAnswer(temp);
 			}
+			//在修改题目后插入前无需进行查重判断，因为对题目的修改一般都是局部，与原题相似度较高。
+			//避免刷新时进行题目更新
 			if(StringUtils.isNotBlank(question.getType())){
-				if(judgeQuestionSimilar(question)){ //进行试题查重判断，不存在重复题目侧插入试题
-					questionDao.updateQuestion(question);
-				}
+				questionDao.updateQuestion(question);
+				System.out.println("题目更新成功!");
 			}
 	}
 
 //	手动添加试题
 	@Override
-	public void addQuestion(Long qid, String subject, String type, String optionA, String optionB, String optionC, String optionD,  String optionE, String optionF, String optionG, 
+	public Boolean addQuestion(Long qid, String subject, String type, String optionA, String optionB, String optionC, String optionD,  String optionE, String optionF, String optionG, 
 			String answerOption, String answerJudge, String[] answerFill, String answerCloze,  
 			String courseName, String analysis, String chapter, String knowPoint, String difficulty, String pictureUrl){
 		
@@ -291,7 +293,14 @@ public class QuestionServiceImpl implements QuestionService {
 		if(StringUtils.isNotBlank(question.getType())){
 			if(judgeQuestionSimilar(question)){ //进行试题查重判断，不存在重复题目侧插入试题
 				questionDao.addQuestionList(question);
+				return true;
 			}
+			else{
+				return false;
+			}
+		}
+		else{
+			return false;
 		}
 
 	}
