@@ -259,7 +259,6 @@
 				            </div>
 				            
 				        </div>
-				        <div id="demo"></div>
 				   
 				</div>
 	
@@ -664,6 +663,7 @@
 				}
 				break;
 			case 3:
+				var answer = '${row.answer}';//为answer赋初值
 				var judge = $(".keyJudge").find("input");
 				if(answer == "正确"){
 					$(judge[0]).prop("checked", true);
