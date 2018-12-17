@@ -574,7 +574,7 @@
 <!-- 	根据后台的传值选择需要编辑题目的题型与难度 -->
 	<script type="text/javascript">
 		$(document).ready(function(){ 
-			var cnt = 0;
+			var cnt = 0, judgeNum = 0;
 			<c:forEach items="${page.rows}" var="row">
 				//添加题目
 				add();
@@ -703,7 +703,14 @@
 					}
 					break;
 				case 3:
+					var answer = '${row.answer}';
 					var judge = $(".questionForm:eq(" + cnt + ") .keyJudge").find("input");
+					var labels = $(".questionForm:eq(" + cnt + ") .keyJudge").find("label");
+					$(judge[0]).attr("id", "judgeYes" + judgeNum);
+					$(labels[0]).attr("for", "judgeYes" + judgeNum);
+					$(judge[1]).attr("id", "judgeNo" + judgeNum);
+					$(labels[1]).attr("for", "judgeNo" + judgeNum);
+					++judgeNum;
 					if(answer == "正确"){
 						$(judge[0]).prop("checked", true);
 					}
