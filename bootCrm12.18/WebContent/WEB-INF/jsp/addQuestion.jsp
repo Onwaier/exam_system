@@ -73,21 +73,7 @@
 			</div>
 			<!-- /.navbar-header -->
 		
-			<div>	
-		        <form class="navbar-form navbar-right navbar-search-form" role="form">
-		        	<div class="input-group">
-						<span class="input-group-btn">
-							</button>
-							<button class="btn btn-primary navbar-input-button" onclick="window.location.href='${pageContext.request.contextPath }/question/showFile.action'" type="button">
-								下载模板
-							</button>
-							<button class="btn btn-primary navbar-input-button" onclick="window.location.href='${pageContext.request.contextPath }/question/wordInput.action'" type="button">
-								word题目导入数据库
-							</button>
-						</span>
-					</div><!-- /input-group -->	            
-		        </form> 
-	    	</div>
+			
 			 
 		<!-- /.navbar-top-links -->
 
@@ -186,7 +172,7 @@
 	                            </div>
 	                            <div>
 		                            	<div class="keyLeft">
-	                                        <input type="radio" class="radioOrCheck" name="answerOption" value="A" />
+	                                         <input type="radio" class="radioOrCheck" name="answerOption" value="A" />
 	                                        <textarea rows="2" cols="80" class = "radioEdit" id="edit_optionA"  name="optionA"></textarea>
 		                                </div>
 	                                   <div class="keyLeft">
@@ -256,7 +242,7 @@
 	                                    <span class="intro">这里填写该问题对应的答案解释</span>
 	                                </div>
 	                                <div>
-	                                	<textarea rows="2" cols="80"   id="analysis"  name="analysis"></textarea>
+	                                	<textarea rows="2" cols="80"   id="analysis" value="" name="analysis"></textarea>
 	                                </div>
 	                          </div>                         
 						</div>
@@ -295,7 +281,7 @@
 						</div>
 				
 				
-						<button class="btn btn-primary navbar-input-button" onclick="window.open('${pageContext.request.contextPath }/question/fileUpload.action', 'loadPicture')" type="button">添加图片</button>				
+<%-- 						<button class="btn btn-primary navbar-input-button" onclick="window.open('${pageContext.request.contextPath }/question/fileUpload.action', 'loadPicture')" type="button">添加图片</button>				 --%>
 						<button type="submit" class="btn btn-primary">录入题目</button>
 	
 	
@@ -305,10 +291,10 @@
 						    	
 						        
 						    </ul>
-						    <div class='preview_footer'>
-						        <input type="button" value='添加' id="carouselplus" class="preview_btn" >&nbsp;
-						        <input type="button" value='保存' id="carouselsubmit" class="preview_btn" >
-						    </div>
+<!-- 						    <div class='preview_footer'> -->
+<!-- 						        <input type="button" value='添加' id="carouselplus" class="preview_btn" >&nbsp; -->
+<!-- 						        <input type="button" value='保存' id="carouselsubmit" class="preview_btn" > -->
+<!-- 						    </div> -->
 						</form>
 						
 	
@@ -351,6 +337,7 @@
 				            </div>
 				            
 				        </div>
+				        <div id="demo"></div>
 				   
 				</div>
 	
@@ -653,7 +640,6 @@
                     //document.getElementById("demo").innerHTML= JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
                     var sheetNames = ["混合题", "单选题", "多选题", "判断题", "填空题", "问答题", "简述题", "名词解释"];
                     var str = JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
-                    var successCnt = 0, sheetArray = [];
                     obj = eval(str);
                     $(".loading").show();
                     for(var i = 0; i < wb.SheetNames.length; ++i){
@@ -697,9 +683,9 @@
                           			obj[j].difficulty = "简单";
                           		}
                             	setTimeout((function (j) {
-                    				            return function () {
-                    				                $.ajax({
-                    				                    type:'post',  
+                    				            return function () {
+                    				                $.ajax({
+                    				                    type:'post',  
 										                dataType : "text",
 										                async:false,
 										                url: "<%=basePath%>question/excelAdd.action",
@@ -719,9 +705,9 @@
 									                    failure: function (response) { 
 									                    }
 				                    
-                    				                });
-                    				            }
-                    				        })(j), 10);
+                    				                });
+                    				            }
+                    				        })(j), 10);
                 			}
                     		
                     	}

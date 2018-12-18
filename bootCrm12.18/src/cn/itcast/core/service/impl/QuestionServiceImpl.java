@@ -68,9 +68,10 @@ public class QuestionServiceImpl implements QuestionService {
 	private QuestionDao questionDao;
 	@Autowired
 	private BaseDictDao baseDictDao;
-
+	
 	IdWorker worker2 = new IdWorker(1);
-   
+	int numQuestion = 0;
+	int similarQuestion = 0;
 	
 	public Page<Question> findQuestionList(Integer page, Integer rows, Long qid,
 			String subject,  String type) {
@@ -121,7 +122,6 @@ public class QuestionServiceImpl implements QuestionService {
 			String courseName, String analysis, String chapter, String knowPoint, String difficulty, String pictureUrl){
 			Question question = new Question();
 			System.out.println("qid:" + qid);
-			
 			question.setQid(Long.parseLong(qid));
 			if(StringUtils.isNotBlank(subject)){
 				question.setSubject(subject);
@@ -192,7 +192,7 @@ public class QuestionServiceImpl implements QuestionService {
 				question.setAnswer(temp);
 			}
 			//在修改题目后插入前无需进行查重判断，因为对题目的修改一般都是局部，与原题相似度较高。
-			//避免刷新时进行题目更新
+ 			//避免刷新时进行题目更新
 			if(StringUtils.isNotBlank(question.getType())){
 				questionDao.updateQuestion(question);
 				System.out.println("题目更新成功!");
@@ -201,7 +201,7 @@ public class QuestionServiceImpl implements QuestionService {
 
 //	手动添加试题
 	@Override
-	public Boolean addQuestion(Long qid, String subject, String type, String optionA, String optionB, String optionC, String optionD,  String optionE, String optionF, String optionG, 
+	public Boolean  addQuestion(Long qid, String subject, String type, String optionA, String optionB, String optionC, String optionD,  String optionE, String optionF, String optionG, 
 			String answerOption, String answerJudge, String[] answerFill, String answerCloze,  
 			String courseName, String analysis, String chapter, String knowPoint, String difficulty, String pictureUrl){
 		
@@ -296,11 +296,11 @@ public class QuestionServiceImpl implements QuestionService {
 				return true;
 			}
 			else{
-				return false;
-			}
-		}
-		else{
-			return false;
+ 				return false;
+ 			}
+ 		}
+ 		else{
+ 			return false;
 		}
 
 	}
@@ -310,6 +310,7 @@ public class QuestionServiceImpl implements QuestionService {
 	public void addQuestionByword(String position)  throws IOException{
 		List<String> pictureLastParagraphText = new ArrayList(); //保存各个图片的上文
 		List<String> pictureUrl = new ArrayList(); //保存各个图片的存储位置
+		List<String> errorQuestion = new ArrayList(); //保存有问题题目的上一道题目
 		String path =  position; //模板的位置
 		
 		
@@ -328,13 +329,14 @@ public class QuestionServiceImpl implements QuestionService {
                     String lastParagraphText = paragraphList.get(i-1).getParagraphText();
                     System.out.println(pictureId +"\t|" + imageName + "\t|" + lastParagraphText);
                     pictureLastParagraphText.add(lastParagraphText); //存储每张图片的上文
+                    pictureUrl.add("d:\\"+ "a" + imageName); //存储每张图片的位置
                 }
             }
         }
         
         //-----考虑把找到图片上文与存储图片合并-------------处理其余冗余---------------------------------------------------------------------//
         
-//        处理word（docx）中的文字与图片
+//      处理word（docx）中的文字与图片
 		File file = new File(path);     
 		FileInputStream fis = new FileInputStream(file);
 		XWPFDocument document = new XWPFDocument(fis);
@@ -349,7 +351,7 @@ public class QuestionServiceImpl implements QuestionService {
 					+file.separator+pic.getFileName());
 			byte[] bytev = pic.getData();
 			FileOutputStream fos = new FileOutputStream("d:\\"+ "a" + pic.getFileName()); 
-			pictureUrl.add("d:\\"+ "a" + pic.getFileName()); //存储每张图片的位置
+//			pictureUrl.add("d:\\"+ "a" + pic.getFileName()); //存储每张图片的位置，如果存在多张同样的图片侧不行
 			fos.write(bytev);
 			length++;
 		}
@@ -358,162 +360,225 @@ public class QuestionServiceImpl implements QuestionService {
 		
 		
 		//对word中题目进行录入
-		int numQuestion = 0;
+//		int numQuestion = 0;
 		
 		String text = xwpfWordExtractor.getText();
 		String[]  paragraph =text.split("\n");
-		
-		
-//		test(paragraph);
-		
 		int i = 0, len = paragraph.length;
+		while(paragraph[i].equals("\n"))
+			 ++i;
 		String courseName = paragraph[i++];
-		
-		while(paragraph[i++].equals("\n"));
+		String knowPoint = "";
+		String chapter = "";
+		while(paragraph[i].equals("\n"))
+			++i;
 		Question question = new Question();
-		
+		boolean flag = false;
 		while(i < len)
 		{
+			
 			try{
+				clearQuestion(question);
+				question.setCourseName(courseName);
+		
+				if(paragraph[i].substring(1, 3).equals("章节")){
+					chapter = paragraph[i++].substring(4);
+					while((paragraph[i].equals("\n") || paragraph[i].equals("")) && (i < len)) 
+						++i;
+					continue;
+				}
+				else if(paragraph[i].substring(1, 4).equals("知识点")){
+					knowPoint = paragraph[i++].substring(5);
+					while((paragraph[i].equals("\n") || paragraph[i].equals("")) && (i < len)) 
+						++i;
+					continue;
+				}
 	//			对单选题与多选题进行录入
-				if(paragraph[i].equals("单选题") || paragraph[i].equals("多选题")){
+				else if(paragraph[i].substring(4).equals("单选题") || paragraph[i].substring(4).equals("多选题")){
 					IdWorker worker2 = new IdWorker(1);
 					question.setQid(worker2.nextId());
-					question.setCourseName(courseName);
-					question.setType(paragraph[i++]);
-					int numOption = Integer.parseInt(paragraph[i++]);
-					question.setSubject(paragraph[i++]);
+					question.setChapter(chapter);
+					question.setKnowPoint(knowPoint);
+					question.setType(paragraph[i++].substring(4));
+					int numOption = Integer.parseInt(paragraph[i++].substring(6));
+					question.setSubject(paragraph[i++].substring(4));
 					for(int j = 0; j < numOption; ++j){
 						switch(j){
 				        case 0:
-				            question.setOptionA(paragraph[i++]);
+				            question.setOptionA(paragraph[i++].substring(3));
 				            break;
 				        case 1:
-				        	question.setOptionB(paragraph[i++]);
+				        	question.setOptionB(paragraph[i++].substring(3));
 				        	break;
 				        case 2:
-				        	question.setOptionC(paragraph[i++]);
+				        	question.setOptionC(paragraph[i++].substring(3));
 				        	break;
 				        case 3:
-				        	question.setOptionD(paragraph[i++]);
+				        	question.setOptionD(paragraph[i++].substring(3));
 				        	break;
 				        case 4:
-				        	question.setOptionE(paragraph[i++]);
+				        	question.setOptionE(paragraph[i++].substring(3));
 				        	break;
 				        case 5:
-				        	question.setOptionF(paragraph[i++]);
+				        	question.setOptionF(paragraph[i++].substring(3));
 				        	break;
 				        case 6:
-				        	question.setOptionG(paragraph[i++]);
+				        	question.setOptionG(paragraph[i++].substring(3));
 				        	break;
 				        }
 					}
 					
-					question.setAnswer(paragraph[i++]);
-					question.setAnalysis(paragraph[i++]);
+					question.setAnswer(paragraph[i++].substring(4));
+					question.setAnalysis(paragraph[i++].substring(4));
+					if(!judgeBoundary(i, len, question)) {judgeAddQuestion(question); dispQuestion(question); break;}
 					question.setPictureUrl(paragraph[i]);
 					
 	//				解决一道题可能有多张图片的问题
-					judegWithPicture(question, paragraph[i], pictureLastParagraphText, pictureUrl);
-					int k = i+2;
-					if(!judgeBoundary(k, len, question)) break; 
-					while(paragraph[i].equals(paragraph[k])){
-						i = k; k = k+2;
-						if(!judgeBoundary(k, len, question)) return; 
-					};
-					
-					++i;
-					if(!judgeBoundary(i, len, question)) break; 
+					int numPicture = judegWithPicture(question, paragraph[i], pictureLastParagraphText, pictureUrl);
+					//跳过图片标识
+					String pictureMark = paragraph[i++];
+					int num = 0;
+					while(num < numPicture){
+						if(paragraph[i].equals(pictureMark)) {
+							++num;
+						}
+						++i;
+						if(!judgeBoundary(i, len, question)) break;
+					}
+
+					if(!judgeBoundary(i, len, question)) {judgeAddQuestion(question); dispQuestion(question); break;}
 					while((paragraph[i].equals("\n") || paragraph[i].equals("")) && (i < len)) ++i;
 					dispQuestion(question);
-					if(judgeQuestionSimilar(question)){ //进行试题查重判断，不存在重复题目侧插入试题
-						questionDao.addQuestionList(question);
-					}
-					++numQuestion; //记录当前题目为第几题
-					continue;
+					judgeAddQuestion(question);
 					
-				}else if(paragraph[i].equals("判断题") || paragraph[i].equals("填空题") || paragraph[i].equals("问答题")){ //对判断题，填空题，问答题进行录入
+					continue;
+					//有多少种题型
+				}else if(paragraph[i].substring(4).equals("计算题") || paragraph[i].substring(4).equals("名词解释") || paragraph[i].substring(4).equals("问答题") || paragraph[i].substring(4).equals("填空题") || paragraph[i].substring(4).equals("简答题")){ //对判断题，填空题，问答题进行录入
 					IdWorker worker2 = new IdWorker(1);
 					question.setQid(worker2.nextId());
-					question.setCourseName(courseName);
-					question.setType(paragraph[i++]);
-					question.setSubject(paragraph[i++]);
-					question.setAnswer(paragraph[i++]);
-					question.setAnalysis(paragraph[i++]);
+					question.setChapter(chapter);
+					question.setKnowPoint(knowPoint);
+					question.setType(paragraph[i++].substring(4));
+					question.setSubject(paragraph[i++].substring(4));
+					question.setAnswer(paragraph[i++].substring(4));
+					question.setAnalysis(paragraph[i++].substring(4));
+					if(!judgeBoundary(i, len, question)) {judgeAddQuestion(question); dispQuestion(question); break;}
 					question.setPictureUrl(paragraph[i]);
 					
-	//				解决一道题可能有多张图片的问题
-					judegWithPicture(question, paragraph[i], pictureLastParagraphText, pictureUrl);
-					int k = i+2;
-					if(!judgeBoundary(k, len, question)) break; 
-					while(paragraph[i].equals(paragraph[k])){
-						i = k; k = k+2;
-						if(!judgeBoundary(k, len, question)) return; 
-					};
+					//解决一道题可能有多张图片的问题
+					int numPicture = judegWithPicture(question, paragraph[i], pictureLastParagraphText, pictureUrl);
+					//跳过图片标识
+					String pictureMark = paragraph[i++];
+					int num = 0;
+					while(num < numPicture){
+						if(paragraph[i].equals(pictureMark)) {
+							++num;
+						}
+						++i;
+						if(!judgeBoundary(i, len, question)) break;
+					}
 					
-					
-					++i;
-					if(!judgeBoundary(i, len, question)) break; 
+ 					if(!judgeBoundary(i, len, question)) {judgeAddQuestion(question); dispQuestion(question); break;} 
 					while((paragraph[i].equals("\n") || paragraph[i].equals("")) && (i < len))
 						++i;
 					dispQuestion(question);
-					if(judgeQuestionSimilar(question)){ //进行试题查重判断，不存在重复题目侧插入试题
-						questionDao.addQuestionList(question);
-					}
-					++numQuestion; //记录当前题目为第几题
+					judgeAddQuestion(question);
+					
 					continue;
 					
 				}else{
-//					System.out.println(numQuestion + "identify error！！！");
+					errorQuestion.add(paragraph[i-2] + "  " + paragraph[i-1]);//记下有问题的题目
+					//跳过有问题题目，期间防止已经到达文档尾
+					while(!paragraph[i].substring(1, 3).equals("章节") || !paragraph[i].substring(1, 4).equals("知识点") || !paragraph[i].substring(4).equals("单选题") || !paragraph[i].substring(4).equals("多选题") || !paragraph[i].substring(4).equals("计算题") || !paragraph[i].substring(4).equals("名词解释") || !paragraph[i].substring(4).equals("问答题") || !paragraph[i].substring(4).equals("填空题") || !paragraph[i].substring(4).equals("简答题")){
+						++i;
+						if(!judgeBoundary(i, len, question)) break;
+					}
+					System.out.println(question.getSubject() + "\t" + numQuestion + "identify error！！！");		
+					--i;		
 				}
 				
-				while((paragraph[i].equals("\n") || paragraph[i].equals("")) && (i < len)) ++i;
+				while((paragraph[i].equals("\n") || paragraph[i].equals("")) && (i < len)) 
+					++i;
 				
-			}catch (IndexOutOfBoundsException  e1){            
-				System.out.println(numQuestion + "空指针异常");
+			}
+			catch (IndexOutOfBoundsException  e1){            
+				errorQuestion.add(paragraph[i-2] + "  " + paragraph[i-1]);//记下有问题的题目
+				System.out.println("错误位置：   " + paragraph[i-2] + "  " + paragraph[i-1] + "\t" + "题数：" + numQuestion + "空指针异常");
+				++i;
+				continue;
 			}catch (Exception e){  //所有异常的父类          
-				System.out.println(numQuestion + "未知异常");
+				errorQuestion.add(paragraph[i-2] + "  " + paragraph[i-1]);//记下有问题的题目
+				System.out.println("错误位置：   " + paragraph[i-2] + "  " + paragraph[i-1] + "\t" + "题数：" + numQuestion + "空指针异常" + "未知异常");
+				++i;
+				continue;
 			}
 			
 		}
 		
+		System.out.println("成功录入的题目:  " + numQuestion + "\n相似题目：" + similarQuestion + "\n有问题的行数：  " + errorQuestion.size());
+		numQuestion = 0;
+		similarQuestion = 0;
     }
-	
+//	判断是否插入题目
+	public void judgeAddQuestion(Question question){
+		if(judgeQuestionSimilar(question)){ //进行试题查重判断，不存在重复题目侧插入试题
+			++numQuestion; //记录当前题目为第几题
+			questionDao.addQuestionList(question);
+		}
+	}
 //	输出题目
 	  static void dispQuestion(Question question){
-    	 System.out.println("\n"  + "courseName: " + question.getCourseName() + "\ntype: " + question.getType() + "\nsubject: " + question.getSubject() +  
+    	 System.out.println("\n"  + "courseName: " + question.getCourseName() + "\nchapter: " + question.getChapter()+ "\nknowPoint: " + question.getKnowPoint() + "\ntype: " + question.getType() + "\nsubject: " + question.getSubject() +  
     			 "\noptionA: " + question.getOptionA() + "\noptionB: " + question.getOptionB() + "\noptionC: " + question.getOptionC() + "\noptionD: " + question.getOptionD() + "\noptionE: " + question.getOptionE() + "\noptionF: " + question.getOptionF() + "\noptionG: " + question.getOptionG() + 
     			 "\nanswer: " + question.getAnswer() + "\nanalysis: " + question.getAnalysis() +    "\npictureUrl: " + question.getPictureUrl() + "\n");
     }
 	  
 //	  将图片位置赋值给对应题目
-	  public void  judegWithPicture(Question question, String pictureMark, List<String> pictureLastParagraphText, List<String> pictureUrl){
+	  static int  judegWithPicture(Question question, String pictureMark, List<String> pictureLastParagraphText, List<String> pictureUrl){
 		  int len = pictureLastParagraphText.size();
 		  String[] pictureText = pictureLastParagraphText.toArray(new String[pictureLastParagraphText.size()]);  
 		  String[] Url = pictureUrl.toArray(new String[pictureUrl.size()]);  
 		  String tempUrl = "";
+		  int numPicture = 0;
 		  
+		  boolean flag = false;
+		  int book = 0;
+		  if(StringUtils.isNotBlank(pictureMark)){
+			  book = pictureMark.charAt(pictureMark.length()-3) - '0';
+			  flag = true;
+		  }
 		  for(int i = 0; i < len; ++i){
 			  if(pictureMark.equals( pictureText[i] )){
+				  if(book == (i+1) && flag){
+					  tempUrl = tempUrl + Url[i] + "&";
+					  continue;
+				  }
 				  tempUrl = tempUrl + Url[i] + "#";
+				  ++numPicture;
 			  }
 		  }
 		  
 		  question.setPictureUrl(tempUrl);
+		  return numPicture;
 	  }
 	  
 //	  判断是否到达word最后一行，避免数组越界
-	  public boolean judgeBoundary(int k, int len, Question question){
+	  static boolean judgeBoundary(int k, int len, Question question){
 			if(k >= len){
-				dispQuestion(question);
-				if(judgeQuestionSimilar(question)){ //进行试题查重判断，不存在重复题目侧插入试题
-					questionDao.addQuestionList(question);
-				}
 				return false;
 			}
 			
 			return true;
 	  }
+
+//	  每题录完之后的清空
+	 static void clearQuestion(Question question){
+		question.setCourseName(null);question.setChapter(null);question.setKnowPoint(null);
+		question.setType(null);question.setSubject(null);question.setOptionA(null);
+		question.setOptionB(null);question.setOptionC(null);question.setOptionD(null);
+		question.setOptionE(null);question.setOptionF(null);question.setOptionG(null);
+		question.setAnswer(null);question.setAnalysis(null);question.setPictureUrl(null);
+	 }
 	  
 //	  判断数据库是否存在与带插入题目相似的题目
 	  public boolean judgeQuestionSimilar(Question question){
@@ -550,6 +615,7 @@ public class QuestionServiceImpl implements QuestionService {
 				return true;
 			}
 			else{
+				++similarQuestion;
 				System.out.println("\n" + "存在相似题目：\n");
 				System.out.println("\n带插入题目：\n"  + "courseName: " + question.getCourseName() + "\ntype: " + question.getType() + "\nsubject: " + question.getSubject() +  
 		    			 "\noptionA: " + question.getOptionA() + "\noptionB: " + question.getOptionB() + "\noptionC: " + question.getOptionC() + "\noptionD: " + question.getOptionD() + "\noptionE: " + question.getOptionE() + "\noptionF: " + question.getOptionF() + "\noptionG: " + question.getOptionG() + 

@@ -26,7 +26,7 @@
    <form action="${pageContext.request.contextPath }/question/wordInput.action" method="post"
     method="post" enctype="multipart/form-data" onsubmit="return check()">
 <!-- 	上传人：<input id="name" type="text" name="name" /><br/><br/> -->
-	请选择文件(文件名请勿出现中文字符)：<input id="file" type="file" name="uploadfile" 
+	请选择文件：<input id="file" type="file" name="uploadfile" 
              multiple="multiple" /><br/><br/>
 		     <input type="submit" value="上传" />
 	</form>

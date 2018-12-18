@@ -171,7 +171,6 @@ public class QuestionController {
 		return "addQuestion";
 	}
 	
-	
 	@RequestMapping(value = "/question/add",method={RequestMethod.GET})
 	public String questionAdd() {
 		
@@ -180,27 +179,28 @@ public class QuestionController {
 	}
 	
 	//通过excel录入题目
-	@RequestMapping(value = "/question/excelAdd",method={RequestMethod.POST})
-	@ResponseBody
-	public String questionAddByExcel(Long qid, String subject, String type, String optionA, String optionB, String optionC, String optionD,  String optionE, String optionF, String optionG, 
-			String answerOption, String answerJudge, @RequestParam(value = "answerFill[]", required = false, defaultValue = "") String[] answerFills, String answerCloze, 
-			String courseName, String analysis, String chapter, String knowPoint, String difficulty, HttpServletRequest request) {
-		
-		System.out.println("\n/question/excelAdd " + "  answerOption: " + answerOption + "   answerJudge: " + answerJudge + "   answerCloze: " + answerCloze);
+ 	@RequestMapping(value = "/question/excelAdd",method={RequestMethod.POST})
+ 	@ResponseBody
+ 	public String questionAddByExcel(Long qid, String subject, String type, String optionA, String optionB, String optionC, String optionD,  String optionE, String optionF, String optionG, 
+ 			String answerOption, String answerJudge, @RequestParam(value = "answerFill[]", required = false, defaultValue = "") String[] answerFills, String answerCloze, 
+ 			String courseName, String analysis, String chapter, String knowPoint, String difficulty, HttpServletRequest request) {
+ 
+  		System.out.println("\n/question/excelAdd " + "  answerOption: " + answerOption + "   answerJudge: " + answerJudge + "   answerCloze: " + answerCloze);
+ 
+  
+  		System.out.println("/question/excelAdd  qid: " + qid + "  optionA: " + optionE + "  optionE: " + optionE + "   type: " + type + "   difficulty: " + difficulty + "  position: " + pictureUrl + "\n");
+ 
+  		if(questionService.addQuestion(qid, subject, type, optionA, optionB, optionC, optionD, optionE, optionF, optionG, 
+ 				answerOption,  answerJudge, answerFills, answerCloze, courseName,  analysis,  chapter,  knowPoint,  difficulty, pictureUrl) == true){
+ 			pictureUrl = null; //这里应该不会有内存泄漏
+ 			flag = true;
+ 			return "success";
+ 		}
+ 		else{
+ 			return "fail";
+ 		}
+ 	}
 	
-		
-		System.out.println("/question/excelAdd  qid: " + qid + "  optionA: " + optionE + "  optionE: " + optionE + "   type: " + type + "   difficulty: " + difficulty + "  position: " + pictureUrl + "\n");
-		
-		if(questionService.addQuestion(qid, subject, type, optionA, optionB, optionC, optionD, optionE, optionF, optionG, 
-				answerOption,  answerJudge, answerFills, answerCloze, courseName,  analysis,  chapter,  knowPoint,  difficulty, pictureUrl) == true){
-			pictureUrl = null; //这里应该不会有内存泄漏
-			flag = true;
-			return "success";
-		}
-		else{
-			return "fail";
-		}
-	}
 	//上传图片
 	@RequestMapping(value = "/question/fileUpload",method={RequestMethod.POST})
 	/*必须使用注释 @RequestParam("uploadfile")List<MultipartFile> uploadfile
