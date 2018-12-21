@@ -1,0 +1,78 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/task
+   		http://www.springframework.org/schema/task/spring-task-4.0.xsd
+		http://code.alibabatech.com/schema/dubbo        
+		http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+		
+		<!-- 加载属性文件 -->
+		<context:property-placeholder location="classpath:resource.properties"/>
+		<!-- 配置扫描 器 -->
+		<context:component-scan base-package="cn.itcast.core.web.controller"/>
+		
+		<!-- 开启aop，对类代理 -->
+	<aop:config proxy-target-class="true"></aop:config>
+	<!-- 开启shiro注解支持 -->
+	<bean
+		class="
+org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+		
+		
+		<!-- 配置处理器映射器  适配器 -->
+		<mvc:annotation-driven/>
+		
+		<!-- 配置视图解释器 jsp -->
+		<bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+			<property name="prefix" value="/WEB-INF/jsp/"/>
+			<property name="suffix" value=".jsp"/>
+		</bean>
+		
+<!-- 		配置MultipartResolver 用于文件上传-->
+		<bean id="multipartResolver"  
+	        class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
+	        <!-- 上传文件大小上限，单位为字节（10MB） -->
+	        <property name="maxUploadSize">  
+	            <value>10485760</value>  
+	        </property>  
+	        <!-- 请求的编码格式，必须和jSP的pageEncoding属性一致，以便正确读取表单的内容，默认为ISO-8859-1 -->
+	        <property name="defaultEncoding">
+	            <value>UTF-8</value>
+	        </property>
+   		 </bean>
+   		 
+          <!-- 拦截器 -->
+<!-- 	<mvc:interceptors> -->
+<!-- 		 多个拦截器,顺序执行  -->
+<!-- 		 用户身份校验的拦截器  -->
+<!-- 		<mvc:interceptor> -->
+<!-- 			<mvc:mapping path="/**" /> -->
+<!-- 			<bean class="cn.itcast.core.web.controller.interceptor.LoginInterceptor"></bean> -->
+<!-- 		</mvc:interceptor> -->
+		
+<!-- 		 用户授权的拦截器  -->
+<!-- 		<mvc:interceptor> -->
+<!-- 			<mvc:mapping path="/**" /> -->
+<!-- 			<bean class="cn.itcast.core.web.controller.interceptor.PermissionInterceptor"></bean> -->
+<!-- 		</mvc:interceptor> -->
+		
+<!-- 	</mvc:interceptors> -->
+   		 
+
+</beans>
