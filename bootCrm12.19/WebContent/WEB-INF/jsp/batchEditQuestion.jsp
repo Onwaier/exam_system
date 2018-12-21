@@ -592,22 +592,24 @@
 			    var alphaDict = {"A":0, "B":1, "C":2, "D":3, "E":4, "F":5, "G":6};
 			    var optionArray = new Array("A", "B", "C", "D", "E", "F", "G");
 			    //题干内容缩略
-			    $(".questionForm:eq(" + cnt + ") .quesBrief").html('${row.subject}');
+			    console.log(`${row.subject}`);
+			    $(".questionForm:eq(" + cnt + ") .quesBrief").html(`${row.subject}`);
 			    // 题干
-			    $(".questionForm:eq(" + cnt + ") .subject").val('${row.subject}');
-			    $(".questionForm:eq(" + cnt + ") .analysis").val('${row.analysis}');
-			    var val = typeDict['${row.type}'];
+			    $(".questionForm:eq(" + cnt + ") .subject").val(`${row.subject}`);
+			    $(".questionForm:eq(" + cnt + ") .analysis").val(`${row.analysis}`);
+			    var val = typeDict[`${row.type}`];
 				switch(val){
 		     	case 1:$(".questionForm:eq(" + cnt + ") ." + typeArray[0]).show();
-		     		var optionAnswerIndex = alphaDict['${row.answer}'];
-		     		var str = '${row}';		     		
+		     		var optionAnswerIndex = alphaDict[`${row.answer}`];
+		     		var str = '${row}';
+	     			console.log(str);
 		     		var objArr = eval("(" + str + ")");
 					var optionNum = getOptionNum(objArr);
 		     		var keyLefts = $(".questionForm:eq(" + cnt + ") .keyLeft");
-		     		$(keyLefts[0]).find("textarea").val('${row.optionA}');
-		     		$(keyLefts[1]).find("textarea").val('${row.optionB}');
-		     		$(keyLefts[2]).find("textarea").val('${row.optionC}');
-		     		$(keyLefts[3]).find("textarea").val('${row.optionD}');
+		     		$(keyLefts[0]).find("textarea").val(`${row.optionA}`);
+		     		$(keyLefts[1]).find("textarea").val(`${row.optionB}`);
+		     		$(keyLefts[2]).find("textarea").val(`${row.optionC}`);
+		     		$(keyLefts[3]).find("textarea").val(`${row.optionD}`);
 		     		for(var i = 4; i < optionNum; ++i){
 		     			var html =  
 		     			'<div class="keyLeft">'+
@@ -618,15 +620,15 @@
 					    $(".questionForm:eq(" + cnt + ") .addKeyBtn").before(html);
 					    if(i == 4){
 					    	var keyLefts = $(".questionForm:eq(" + cnt + ") .keyLeft");
-					    	$(keyLefts[4]).find("textarea").val('${row.optionE}');
+					    	$(keyLefts[4]).find("textarea").val(`${row.optionE}`);
 					    }
 					    else if(i == 5){
 					    	var keyLefts = $(".questionForm:eq(" + cnt + ") .keyLeft");
-					    	$(keyLefts[5]).find("textarea").val('${row.optionF}');
+					    	$(keyLefts[5]).find("textarea").val(`${row.optionF}`);
 					    }
 					    else if(i == 6){
 					    	var keyLefts = $(".questionForm:eq(" + cnt + ") .keyLeft");
-					    	$(keyLefts[6]).find("textarea").val('${row.optionG}');
+					    	$(keyLefts[6]).find("textarea").val(`${row.optionG}`);
 					    }
 			    	}
 
@@ -637,7 +639,6 @@
 					}
 				    if (keyLefts.length==7) {
 				        $(".addKeyBtn").css("display", "none");
-				        return false;
 				    }
 
 					var radioOrChecks = document.getElementsByClassName("radioOrCheck");
@@ -650,12 +651,12 @@
 					$(radios[optionAnswerIndex]).prop("checked", true);
 					break;
 				case 2:$(".questionForm:eq(" + cnt + ") ." + typeArray[0]).show();
-					var answer = '${row.answer}'.split(",");
+					var answer = `${row.answer}`.split(",");
 					var keyLefts = $(".questionForm:eq(" + cnt + ") .keyLeft");
-		     		$(keyLefts[0]).find("textarea").val('${row.optionA}');
-		     		$(keyLefts[1]).find("textarea").val('${row.optionB}');
-		     		$(keyLefts[2]).find("textarea").val('${row.optionC}');
-		     		$(keyLefts[3]).find("textarea").val('${row.optionD}');
+		     		$(keyLefts[0]).find("textarea").val(`${row.optionA}`);
+		     		$(keyLefts[1]).find("textarea").val(`${row.optionB}`);
+		     		$(keyLefts[2]).find("textarea").val(`${row.optionC}`);
+		     		$(keyLefts[3]).find("textarea").val(`${row.optionD}`);
 		     		var str = '${row}';		     		
 		     		var objArr = eval("(" + str + ")");
 					var optionNum = getOptionNum(objArr);
@@ -670,15 +671,15 @@
 					    $(".questionForm:eq(" + cnt + ") .addKeyBtn").before(html);
 					    if(i == 4){
 					    	var keyLefts = $(".questionForm:eq(" + cnt + ") .keyLeft");
-					    	$(keyLefts[4]).find("textarea").val('${row.optionE}');
+					    	$(keyLefts[4]).find("textarea").val(`${row.optionE}`);
 					    }
 					    else if(i == 5){
 					    	var keyLefts = $(".questionForm:eq(" + cnt + ") .keyLeft");
-					    	$(keyLefts[5]).find("textarea").val('${row.optionF}');
+					    	$(keyLefts[5]).find("textarea").val(`${row.optionF}`);
 					    }
 					    else if(i == 6){
 					    	var keyLefts = $(".questionForm:eq(" + cnt + ") .keyLeft");
-					    	$(keyLefts[6]).find("textarea").val('${row.optionG}');
+					    	$(keyLefts[6]).find("textarea").val(`${row.optionG}`);
 					    }
 					}
 					var keyLefts = $(".questionForm:eq(" + cnt + ") .keyLeft");
@@ -688,7 +689,6 @@
 					}
 				    if (keyLefts.length==7) {
 				        $(".questionForm:eq(" + cnt + ") .addKeyBtn").css("display", "none");
-				        return false;
 				    }
 
 					var radioOrChecks = document.getElementsByClassName("radioOrCheck");
@@ -703,7 +703,7 @@
 					}
 					break;
 				case 3:
-					var answer = '${row.answer}';
+					var answer = `${row.answer}`;
 					var judge = $(".questionForm:eq(" + cnt + ") .keyJudge").find("input");
 					var labels = $(".questionForm:eq(" + cnt + ") .keyJudge").find("label");
 					$(judge[0]).attr("id", "judgeYes" + judgeNum);
@@ -721,7 +721,7 @@
 					$("." + typeArray[2]).show();
 					break;
 				case 4:
-					var answer = '${row.answer}'.split("#");
+					var answer = `${row.answer}`.split("#");
 					alert(answer);
 					var fill = $(".questionForm:eq(" + cnt + ") .keyFillContent");
 					$(fill).find("input").val(answer[0]);
@@ -750,17 +750,17 @@
 				case 5:
 					$(".questionForm:eq(" + cnt + ") ." + typeArray[0]).hide();
 					$(".questionForm:eq(" + cnt + ") ." + typeArray[3]).show();
-					$(".questionForm:eq(" + cnt + ") .clozeOfQuestion").find("textarea").val('${row.answer}');
+					$(".questionForm:eq(" + cnt + ") .clozeOfQuestion").find("textarea").val(`${row.answer}`);
 					break;
 				case 6:
 					$(".questionForm:eq(" + cnt + ") ." + typeArray[0]).hide();
 					$(".questionForm:eq(" + cnt + ") ." + typeArray[3]).show();
-					$(".questionForm:eq(" + cnt + ") .clozeOfQuestion").find("textarea").val('${row.answer}');
+					$(".questionForm:eq(" + cnt + ") .clozeOfQuestion").find("textarea").val(`${row.answer}`);
 					break;
 				case 7:
 					$(".questionForm:eq(" + cnt + ") ." + typeArray[0]).hide();
 					$(".questionForm:eq(" + cnt + ") ." + typeArray[3]).show();
-					$(".questionForm:eq(" + cnt + ") .clozeOfQuestion").find("textarea").val('${row.answer}');
+					$(".questionForm:eq(" + cnt + ") .clozeOfQuestion").find("textarea").val(`${row.answer}`);
 					break;
 				default:
 					alert("其它");

@@ -187,6 +187,11 @@ public class Question {
 	public String toString() {
 		JSONObject json = JSONObject.fromObject(this);//将java对象转换为json对象
 		String str = json.toString();//将json对象转换为字符串
+		System.out.println("改前:" + str);
+		str = str.replace("\"", "\\\"");//对json字符串中的双引号转义
+		str = str.replace("\'","\\\'");//对json字符串中的单引号转义
+		str = str.replace("\\n", "\\\\n");//对json字符串的\n转义
+		System.out.println("改后：" + str);
 		return str;
 //		return "Question [qid=" + qid + ", subject=" + subject + ", courseName=" + courseName + ", chapter=" + chapter
 //				+ ", difficulty=" + difficulty + ", type=" + type + ", start=" + start + ", rows=" + rows + ", optionA="
