@@ -121,12 +121,6 @@
 							</select>
 						</div>
 
-<!--                         <div class="infoRow courseName"> -->
-<!--                             <span class="intro title">科目：&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span> -->
-<!--                             <input type="text" name="courseName" placeholder="请输入科目名称" value="" /> -->
-<!--                             <span class="f-style4">*</span> -->
-<!--                         </div> -->
-
                         <div class="infoRow paperType">
                             <span class="intro title">组卷方式：</span>
                             <input type="radio" class="hidden"  name="paperType" id="paperByChapter" value="章节出题" checked="true">
@@ -140,7 +134,6 @@
                                 
                         <input type="text" class="hidden" name="add_style"> 
                         <div class="btnNextStep">
-<%--                             <button onclick="window.location.href='${pageContext.request.contextPath }/paper/manualadd.action'"  type="button" class="btn btn-primary">下一步</button> --%>
                         	<button type="submit" class="btn btn-primary">下一步</button>
                         </div>
                     </form>

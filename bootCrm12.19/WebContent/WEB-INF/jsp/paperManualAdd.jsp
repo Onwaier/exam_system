@@ -255,7 +255,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" id = "shutQuestionChooseDialog" class="btn btn-primary" onclick="choose()">保存修改</button>
+					<button type="button" id = "shutQuestionChooseDialog" class="btn btn-primary">保存修改</button>
 				</div>
 			</div>
 		</div>
@@ -521,11 +521,11 @@
 			if($(".paper").find(".group_main").html() == ""){
 				$(".paper").find(".emptyTip").hide();
 				$(".paper").find(".group_main").append(mainHtml);
-				$(".paper").find(".right_group_main").append(rightHtml);
+				$(".right_group_main").append(rightHtml);
 			}
 			else{
 				var groupSimples = $(".paper").find(".group_simple");
-				var rightGroupSimples = $(".paper").find(".right_group_simple");
+				var rightGroupSimples = $(".right_group_simple");
 				var i = 0, tmpNum = 0;
 				console.log(resNum);
 				var isExist = false;
@@ -827,6 +827,7 @@
 				alert(data);
 				quesData = data;
 				console.log(data);
+				$("#paperQuestionList").find(".group_main").html("");
 				for(var i = 0; i < data.length; ++i){
 					for(var j = 0; j < data[i].rows.length; ++j){
 						console.log(data[i].rows[j]);
@@ -841,8 +842,6 @@
 	//从表格中选择试题
 	function chooseFromPaper(){
 		var selectedQuestion = ""
-		
-		alert(quesData[0].rows.length)
 		var questionItems = $("#paperQuestionList").find(".questionItem");
 		var cnt = 0;
 		var questionArray = [];
@@ -850,22 +849,22 @@
 			if($(questionItems[i]).prop("checked") == true){
 				var arr = $(questionItems[i]).val().split("#");
 				var intArr = [];
-				for(var i = 0; i < arr.length; ++i){
-					intArr.push(parseInt(arr[i]));
+				for(var j = 0; j < arr.length; ++j){
+					intArr.push(parseInt(arr[j]));
 				}
 				questionArray.push(quesData[intArr[0]].rows[intArr[1]]);
 			}
 		}
-		console.log(questionArray);
+		console.log("questionArray:" + questionArray);
 		return questionArray;
 	}
 	
 	 $(function () { $('#selectQuestionFromPaper').on('hide.bs.modal', function () {
-		 alert('selectQuestionFromPaper')
 	      questions = chooseFromPaper();
 	      for(var i = 0; i < questions.length; ++i){
 	    	  addQuestionInPage(questions[i]);
 	      }
+	      $(this).removeData("modal");
 	   })
 	 });
 	
@@ -875,17 +874,11 @@
 	<script type="text/javascript">
 		var Data;
 		function addQuestion(obj) {
-// 			alert(obj);
 			var type = $(obj).parents(".group_simple").find(".questionTypeText").html();
 			var checkNodeTemp = checkNodes();
-			alert(checkNodeTemp);
 			var checkNode= JSON.stringify(checkNodeTemp);
-			alert(type)
-			alert(checkNode);
-			console.log(checkNode)
 			$.ajax({
 				type:"post",
-<%-- 				url:"<%=basePath%>paper/showQuestion.action?courseId=" + ${courseId} + "&type=" + type + "&checkNodes=" + checkNode, --%>
 				url:"<%=basePath%>paper/showQuestion.action",
 				data: {"courseId":${courseId}, "type": type, "checkNodes":checkNode},
 				dataType: "json",
@@ -961,9 +954,7 @@
 
 							var start = pager.pageCount*pager.currentPage
 			                var end = pager.data.length - pager.pageCount*(pager.currentPage+1) > -1 ?
-			                        pager.pageCount*(pager.currentPage+1) : pager.data.length
-// 			                alert(start)
-// 			                alert(end)  
+			                        pager.pageCount*(pager.currentPage+1) : pager.data.length  
 			                var s = '' 
 			                var Html = '										<thead>'+
 			                '											<tr>'+
@@ -1124,8 +1115,6 @@
 		//从表格中选择试题
 		function choose(){
 			var selectedQuestion = ""
-			
-			alert(Data[0].rows.length)
 			var questionItems = $(".questionItem");
 			var cnt = 0;
 			var questionArray = [];
@@ -1139,10 +1128,12 @@
 		}
 		
 		 $(function () { $('#questionChooseDialog').on('hide.bs.modal', function () {
+			 
 		      questions = choose();
 		      for(var i = 0; i < questions.length; ++i){
 		    	  addQuestionInPage(questions[i]);
 		      }
+		      $(this).removeData("modal");
 		   })
 		 });
 
@@ -1190,12 +1181,12 @@
 			if($(".paper").find(".group_main").html() == ""){
 				$(".paper").find(".emptyTip").hide();
 				$(".paper").find(".group_main").append(mainHtml);
-				$(".paper").find(".right_group_main").append(rightHtml);
+				$(".right_group_main").append(rightHtml);
 				idx = 0;
 			}
 			else{
 				var groupSimples = $(".paper").find(".group_simple");
-				var rightGroupSimples = $(".paper").find(".right_group_simple");
+				var rightGroupSimples = $(".right_group_simple");
 				var i = 0, tmpNum = 0;
 				var isExist = false;
 				for(; i < groupSimples.length; ++i){
@@ -1303,7 +1294,7 @@
 			'</div>';
 			console.log("idx:" + idx);
 			var groupQuestionShow = $(".paper").find(".group_simple:eq(" + idx + ") .group_questionShow"); 
-			var rightGroupSimples = $(".paper").find(".right_group_simple:eq(" + idx +")");
+			var rightGroupSimples = $(".right_group_simple:eq(" + idx +")");
 			var total = $(".test_total");
 			var typeArray = new Array("radioOfQuestion", "fillOfQuestion", "judgeOfQuestion", "clozeOfQuestion");
 			var alphaDict = {"A":0, "B":1, "C":2, "D":3, "E":4, "F":5, "G":6};
@@ -1343,7 +1334,7 @@
 		}
 	</script>
 	
-		<!-- 在页面中添加试题(从试卷中) -->
+<!-- 在页面中添加试题(从试卷中) -->
 	<script type = "text/javascript">
 		function addQuestionInPageFromPaper(question, pageIdx, quesIdx){
 			var type = question.type;
@@ -1509,6 +1500,9 @@
 					var quesNum = parseInt($(rightGroupSimples[i]).find(".test_num").html());
 					var totalQuesNum = parseInt($(".test_total").html());
 					$(rightGroupSimples[i]).find(".test_num").html(quesNum - 1);
+					if(quesNum == 1){
+						$(rightGroupSimples[i]).remove();
+					}
 					$(".test_total").html(totalQuesNum - 1);
 					break;
 				}
