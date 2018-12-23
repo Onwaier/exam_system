@@ -1,3 +1,4 @@
+
 package cn.itcast.core.service.impl;
 
 import java.io.File;
@@ -294,7 +295,7 @@ public class PaperServiceImpl implements PaperService {
 			
 //			return "/paper";
 			return paperString;
-			
+	
 		}
 	
 	
@@ -435,6 +436,7 @@ public class PaperServiceImpl implements PaperService {
         		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
         	}
         	if(fileEnd) break;
+
         	
         	//录入填空题
         	typeFlag = true;
@@ -452,6 +454,7 @@ public class PaperServiceImpl implements PaperService {
         		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
         	}
         	if(fileEnd) break;
+
         	
         	//录入填空题
         	typeFlag = true;
@@ -469,6 +472,7 @@ public class PaperServiceImpl implements PaperService {
         		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
         	}
         	if(fileEnd) break;
+
         	
         	//录入填空题
         	typeFlag = true;
@@ -502,6 +506,7 @@ public class PaperServiceImpl implements PaperService {
         		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
         	}
         	if(fileEnd) break;
+
         	
         }
     	

@@ -232,8 +232,8 @@
 							<option value="简单">简单</option>
 							<option value="中等">中等</option>
 							<option value="困难">困难</option>
-						</select>
-						   
+
+						</select>   
 						<button onclick= "showQuestionBydif()"  type="button" class="btn btn-primary">查询</button>
 						<div class="row">
 							<div class="col-lg-12">
@@ -1427,6 +1427,7 @@
 			 }
 			 return content;
 		 }
+
 
 	</script>
 	

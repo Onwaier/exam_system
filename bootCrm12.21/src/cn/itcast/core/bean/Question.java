@@ -15,6 +15,22 @@ public class Question {
 	private String optionA;
 	private String optionB;
 	private String optionC;
+	public String getSpendTime() {
+		return spendTime;
+	}
+
+	public void setSpendTime(String spendTime) {
+		this.spendTime = spendTime;
+	}
+
+	public String getScore() {
+		return score;
+	}
+
+	public void setScore(String score) {
+		this.score = score;
+	}
+
 	private String optionD;
 	private String optionE;
 	private String optionF;

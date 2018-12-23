@@ -94,7 +94,11 @@
 <!-- 会话管理器 -->
     <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
         <!-- session的失效时长，单位毫秒 -->
+<<<<<<< HEAD
         <property name="globalSessionTimeout" value="6000000"/>
+=======
+        <property name="globalSessionTimeout" value="60000000"/>
+>>>>>>> 2f07fb16832f2dfdd64c97bbdb6b4099923ccf4a
         <!-- 删除失效的session -->
         <property name="deleteInvalidSessions" value="true"/>
         

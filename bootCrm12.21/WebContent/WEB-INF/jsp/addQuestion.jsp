@@ -256,7 +256,7 @@
 							<input id = "subjectPic" type="file" class="file" placeholder="ICCID" accept="image/*" capture="camera" name="uploadfile" multiple="multiple">
 						</div>
 						
-						
+
 						<div class="lccid">
 							<p class="title">
 							<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
@@ -264,6 +264,24 @@
 							<img src="" / class="img">
 							<input type="file" class="file" placeholder="ICCID" accept="image/*" capture="camera" name="uploadfile" multiple="multiple">
 						</div>
+						
+<!-- 						<div class="lccid"> -->
+<!-- 							<p class="title"> -->
+<!-- 							<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> -->
+<!-- 									选项图片</p> -->
+<!-- 							<img src="" / class="img"> -->
+<!-- 							<input type="file" class="file" placeholder="ICCID" accept="image/*" capture="camera" name="uploadfile" multiple="multiple"> -->
+<!-- 						</div> -->
+						
+<!-- 						<div class="lccid"> -->
+<!-- 							<p class="title"> -->
+<!-- 							<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> -->
+<!-- 									解析图片</p> -->
+<!-- 							<img src="" / class="img"> -->
+<!-- 							<input type="file" class="file" placeholder="ICCID" accept="image/*" capture="camera" name="uploadfile" multiple="multiple"> -->
+<!-- 						</div> -->
+						
+
 				
 				
 <%-- 						<button class="btn btn-primary navbar-input-button" onclick="window.open('${pageContext.request.contextPath }/question/fileUpload.action', 'loadPicture')" type="button">添加图片</button>				 --%>
@@ -295,7 +313,7 @@
 				            <img src='<%=basePath%>images/loading_jump.gif' class="loading" style="position:absolute;top: 30%;left: 40%;width:250px;display:none;border-radius: 30px;box-shadow: 2px 2px 5px #ccc;"/>
 				            <div class="btn-row" style="text-align: center;">
 				                <a class="btn btn-primary download" href="https://github.com/breezelj/Template/raw/master/excel%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%B5%8B%E8%AF%95%E6%A1%88%E4%BE%8B%E5%8F%8A%E6%A8%A1%E6%9D%BF%E8%AF%B4%E6%98%8E.xlsx" style="margin-right: 205px;">下载模版</a>
- 				                
+
 				                <form id="uploadForm" class="upload-form">
 				                    <div class="btn btn-primary upload">上传excel<input type="file" onchange="importf(this)" name="uploadFile" id="excelUpload"/></div>
 				                    <div class="tip">excel表格大小限制为1MB以下</div>
@@ -312,7 +330,7 @@
 <!-- 									下载模板 -->
 <!-- 								 </button> -->
 							<a class="btn btn-primary download" href="https://github.com/breezelj/Template/raw/master/e%E5%8D%B7%E9%A2%98%E5%BA%93%E6%8A%BD%E9%A2%98%E7%BB%84%E5%8D%B7%E7%B3%BB%E7%BB%9Fword%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BFV1.0.docx" style="margin-right: 205px;">下载模版</a>
-	
+
 				                <form id="uploadForm" class="upload-form">
 				                    <button class="btn btn-primary upload" onclick="window.location.href='${pageContext.request.contextPath }/question/wordInput.action'" type="button">上传word</button>
 				                    <div class="tip">word大小限制为1MB以下</div>

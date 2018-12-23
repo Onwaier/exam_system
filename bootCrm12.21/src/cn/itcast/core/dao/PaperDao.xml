@@ -19,6 +19,7 @@
 	       <if test="knowPoint != null" >
 	        and knowPoint = #{knowPoint}
 	      </if> 
+
     	</where>
 	</sql>
 	

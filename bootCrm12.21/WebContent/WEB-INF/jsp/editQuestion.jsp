@@ -90,6 +90,7 @@
 				<div class="tab-pane fade in active" id="manualInput">
 					<c:forEach items="${page.rows}" var="row">
 						<form class="form-inline" action="${pageContext.request.contextPath }/question/update.action" method="post" enctype="multipart/form-data" onsubmit="return checkAddQuestion()">	
+
 							<div class="batch-type">
 										<span class="intro chapter">章节</span>
 										<select	class="form-control" name = "chapter">
@@ -216,8 +217,27 @@
 		                                	<textarea rows="2" cols="80"   id="analysis" value="${analysis}" name="analysis">${row.analysis}</textarea>
 		                                </div>
 		                        </div>
-	                                      
+	                             
+			                     <div class="lccid">
+									<p class="title">
+									<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+											题干图片</p>
+									<img src="<%=basePath%>images/questionImg/${subjectPic}" / class="img">
+<%-- 									<img src='"<%=basePath%>images/questionImg/"+"add.png"'  class="img"> --%>
+									<input id = "subjectPic" type="file" class="file" placeholder="ICCID" accept="image/*" capture="camera" name="uploadfile" multiple="multiple">
+									<input type="checkbox" class="radioOrCheck" name="deleteSubjectPic" value="deleteSubjectPic" />
+								</div>
+								
+								<div class="lccid">
+									<p class="title">
+									<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+											答案图片</p>
+									<img src="<%=basePath%>images/questionImg/${answerPic }" / class="img">
+									<input type="file" class="file" placeholder="ICCID" accept="image/*" capture="camera" name="uploadfile" multiple="multiple">
+									<input type="checkbox" class="radioOrCheck" name="deleteAnswerPic" value="deleteAnswerPic" />
+								</div>        
 					
+<<<<<<< HEAD
 							                            
 			                     <div class="lccid">
 									<p class="title">
@@ -239,6 +259,9 @@
 								</div>        
  					
 				
+=======
+<%-- 							<button class="btn btn-primary navbar-input-button" onclick="window.open('${pageContext.request.contextPath }/question/fileUpload.action', 'loadPicture')" type="button">添加图片</button>				 --%>
+>>>>>>> 2f07fb16832f2dfdd64c97bbdb6b4099923ccf4a
 							<button type="submit" class="btn btn-primary">录入题目</button>
 						</form>
 					</c:forEach> 
@@ -739,7 +762,11 @@
 		}); 
 	</script>
 	
+<<<<<<< HEAD
 		<!--         显示上传的图片 -->
+=======
+	<!--         显示上传的图片 -->
+>>>>>>> 2f07fb16832f2dfdd64c97bbdb6b4099923ccf4a
          <script type="text/javascript">
 			$(".lccid").on("change", "input[type=file]", function() {
 

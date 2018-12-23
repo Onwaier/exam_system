@@ -1,3 +1,4 @@
+
 package cn.itcast.core.web.controller;
 
 import java.io.File;
@@ -230,6 +231,7 @@ public class paperController {
 	@RequestMapping(value = "/paper/Generate")
 	public ResponseEntity<byte[]> generatePaper(HttpServletRequest request, @RequestParam(defaultValue="1")Integer page, @RequestParam(defaultValue="10")Integer rows, 
 			@RequestParam(value = "qids[]", required = false, defaultValue = "")Long[] qids, Long courseId, String paperName, String userId, String userName, Model model) throws Exception {
+
 		
 		System.out.println("/paper/Generate:" + " qids: " + Arrays.toString(qids) + "   courseId:" + courseId + "   paperName: " + paperName + "   userId: " + userId + "   userName: " + userName);
 		String paperPath = paperService.paperSave(qids, courseId, paperName, userId, userName);

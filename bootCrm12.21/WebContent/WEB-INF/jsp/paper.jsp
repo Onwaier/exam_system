@@ -163,6 +163,7 @@
 									<td>
 										<a onclick="preview('${row.questionSet}')"><i class="fa fa-eye fa-fw"></i></a> 
 										<a onclick="deletePaper('${row.userId}')"><i class="fa fa-trash" aria-hidden="true"></i></a>
+
 									</td>
 								</tr>
 							</c:forEach>
