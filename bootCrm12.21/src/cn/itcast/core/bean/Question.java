@@ -15,21 +15,7 @@ public class Question {
 	private String optionA;
 	private String optionB;
 	private String optionC;
-	public String getSpendTime() {
-		return spendTime;
-	}
-
-	public void setSpendTime(String spendTime) {
-		this.spendTime = spendTime;
-	}
-
-	public String getScore() {
-		return score;
-	}
-
-	public void setScore(String score) {
-		this.score = score;
-	}
+	
 
 	private String optionD;
 	private String optionE;
@@ -215,15 +201,23 @@ public class Question {
 	public void setQid(Long qid) {
 		this.qid = qid;
 	}
+	public Long getCourseId() {
+		return courseId;
+	}
 
+	public void setCourseId(Long courseId) {
+		this.courseId = courseId;
+	}
 	@Override
 	public String toString() {
 		JSONObject json = JSONObject.fromObject(this);//将java对象转换为json对象
 		String str = json.toString();//将json对象转换为字符串
 		System.out.println("改前:" + str);
+		
 		str = str.replace("\"", "\\\"");//对json字符串中的双引号转义
 		str = str.replace("\'","\\\'");//对json字符串中的单引号转义
 		str = str.replace("\\n", "\\\\n");//对json字符串的\n转义
+		str = str.replace("\\r", "\\\\r");//对json字符串的\r转义
 		System.out.println("改后：" + str);
 		return str;
 //		return "Question [qid=" + qid + ", subject=" + subject + ", courseName=" + courseName + ", chapter=" + chapter
@@ -233,13 +227,7 @@ public class Question {
 //				+ analysis + ", knowPoint=" + knowPoint + ", pictureUrl=" + pictureUrl + "]";
 	}
 
-	public Long getCourseId() {
-		return courseId;
-	}
-
-	public void setCourseId(Long courseId) {
-		this.courseId = courseId;
-	}
+	
 
 	
 }
