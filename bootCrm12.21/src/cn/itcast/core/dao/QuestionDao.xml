@@ -19,9 +19,9 @@
 	<insert id="addQuestionList" parameterType="question" 
         useGeneratedKeys="true" keyProperty="qid"> 
         insert into question(qid, subject, type, optionA, optionB, optionC, optionD, optionE, optionF, optionG, 
-				 answer,  courseName,  analysis,  chapter,  knowPoint,  difficulty, pictureUrl)  
+				 answer,  courseName,  analysis,  chapter,  knowPoint,  difficulty, pictureUrl, score, spendTime)  
              values(#{qid},#{subject},#{type},#{optionA},#{optionB},#{optionC},#{optionD},#{optionE},#{optionF},#{optionG},
-             		#{answer},#{courseName},#{analysis},#{chapter},#{knowPoint},#{difficulty}, #{pictureUrl})  
+             		#{answer},#{courseName},#{analysis},#{chapter},#{knowPoint},#{difficulty}, #{pictureUrl}, #{score}, #{spendTime})  
     </insert>
 	
 	

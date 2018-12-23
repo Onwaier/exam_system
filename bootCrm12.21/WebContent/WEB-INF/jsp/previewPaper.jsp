@@ -66,15 +66,7 @@
 		</nav>
 
 		<div id="page-wrapper">
-			<div class="group-main">
-				<div class="group_simple" num="1">
-					<div class="questions-title">单选题(共<span class = "quesNum">0</span>题)</div>
-					<div class="questions-group">
-						<div class="group_questionShow">
-				        </div>  
-					</div>  
-            	</div>
-			</div>
+			<div class="group_main"></div>
 		</div>
 		<!-- /#page-wrapper -->
 
@@ -131,6 +123,7 @@
 				'				        </div>  '+
 				'					</div>  '+
 				'            	</div>';
+			console.log($(".group_main").html());
 			if($(".group_main").html() == ""){
 				$(".group_main").append(mainHtml);
 				idx = 0;
@@ -145,23 +138,14 @@
 						isExist = true;
 						break;
 					}
-					else if(tmpNum > resNum){
-						break;
-					}
 				}
 				if(isExist){
 					idx = i;
 				}
 				else{
-					if(i < groupSimples.length){
-						$(groupSimples[i]).before(mainHtml);
-						idx = i;
-					}
-					else{
-						$(".emptyTip").hide();
-						$(groupSimples[i - 1]).after(mainHtml);
-						idx = i;
-					}
+					$(".emptyTip").hide();
+					$(groupSimples[i - 1]).after(mainHtml);
+					idx = i;
 				}
 			}
 			var questionHtml = '<div class="question-content" style="display: block">'+
@@ -179,7 +163,7 @@
 			'					<span class="optionDes">B.&nbsp;&nbsp;</span>                    '+
 			'					<span class="content">' + question.optionB +'</span>                '+
 			'				</div>                '+
-			'				<div class="keyLeft correctAnswer">                	'+
+			'				<div class="keyLeft">                	'+
 			'					<span class="optionDes">C.&nbsp;&nbsp;</span>                	'+
 			'					<span class="content">' + question.optionC +'</span>                '+
 			'				</div>                '+
@@ -188,7 +172,7 @@
 			'					<span class="content">' + question.optionD +'</span>                '+
 			'				</div>            '+
 			'			</div>            '+
-			'			<div class="content">			 	'+
+			'			<div class="content answer">			 	'+
 			'				<span class="answerDes">答案:&nbsp;&nbsp;</span>                '+
 			'				<span>' + question.answer +'</span>            '+
 			'			</div>		'+
@@ -200,10 +184,10 @@
 			'			</div>        '+
 			'		</div>                  '+
 			'		<div class="keyJudge keyPanel judgeOfQuestion" style="display: none;">            '+
-			'			<input name="answerJudge" class="hidden judgeYes" type="radio" checked="" value="正确">            '+
-			'			<label class="btn btn-border-gray content" for="judgeYes">正确</label>            '+
-			'			<input name="answerJudge" class="hidden judgeNo" type="radio" value="错误">            '+
-			'			<label class="btn btn-border-gray content" for="judgeNo">错误</label>         '+
+			'			<div class="content">			 	'+
+			'				<span class="answerDes">答案:&nbsp;&nbsp;</span>                '+
+			'				<span>' + question.answer+'</span>            '+
+			'			</div>        '+
 			'		</div>                    '+
 			'		<div class="keyCloze keyPanel clozeOfQuestion" style="display: none;">            '+
 			'			<div class="content">			 	'+
@@ -211,24 +195,25 @@
 			'				<span>' + question.answer+'</span>            '+
 			'			</div>        '+
 			'		</div>                  '+
-			'		<div class="analysisPanel analysisOfQuestion" style="display: block;">            '+
+			'		<div class="analysisPanel analysisOfQuestion" style="display: none;">            '+
 			'			<div class="content">			 	'+
 			'				<span class="analysisDes">解析:&nbsp;&nbsp;</span>            	'+
 			'				<span>' +question.analysis +'</span>            '+
 			'			</div>        '+
 			'		</div>                        '+
-			'		<div class="chapterPanel chapterOfQuestion" style="display: block;">            '+
+			'		<div class="chapterPanel chapterOfQuestion" style="display: none;">            '+
 			'			<div class="content">			 	'+
 			'				<span class="chapterDes">章节:&nbsp;&nbsp;</span>            	'+
 			'				<span>' + question.chapter +'</span>            '+
 			'			</div>        '+
 			'		</div>                        '+
-			'		<div class="knowpointPanel knowpointOfQuestion" style="display: block;">            '+
+			'		<div class="knowpointPanel knowpointOfQuestion" style="display: none;">            '+
 			'			<div class="content">			 	'+
 			'				<span class="knowpointDes">知识点:&nbsp;&nbsp;</span>            	'+
 			'				<span>' + question.knowPoint +'</span>            '+
 			'			</div>        '+
 			'		</div>                		 '+
+			'		<i class="fa fa-plus-square-o" aria-hidden="true" onclick = "showMore(this, \'' + question.type + '\')">点击查看更多</i>'+
 			'	</div>';
 			console.log("idx:" + idx);
 			var groupQuestionShow = $(".group_simple:eq(" + idx + ") .group_questionShow"); 
@@ -243,23 +228,27 @@
 			var index;
 			for(index in typeArray){
 				$(groupQuestionShow).find("." + typeArray[index]).hide();
+				
 			}
 			switch(resNum){
 			case 1:$(groupQuestionShow).find("." + typeArray[0]).show();
+			$(groupQuestionShow).find("." + typeArray[0]).find(".answer").hide();
 				var options = $(groupQuestionShow).find("." + typeArray[0] + ":last").find(".keyLeft");
 				$(options[alphaDict[question.answer]]).addClass("correctAnswer");
 			break;
 			case 2:$(groupQuestionShow).find("." + typeArray[0]).show();
 			break;
-			case 3:$(groupQuestionShow).find("." + typeArray[2]).show();
+			case 3:
+				$(groupQuestionShow).find("." + typeArray[2]).hide();
 			break;
-			case 4:$(groupQuestionShow).find("." + typeArray[1]).show();
+			case 4:
+				$(groupQuestionShow).find("." + typeArray[1]).hide();
 			break;
-			case 5:$(groupQuestionShow).find("." + typeArray[3]).show();
+			case 5:$(groupQuestionShow).find("." + typeArray[3]).hide();
 			break;
-			case 6:$(groupQuestionShow).find("." + typeArray[3]).show();
+			case 6:$(groupQuestionShow).find("." + typeArray[3]).hide();
 			break;
-			case 7:$(groupQuestionShow).find("." + typeArray[3]).show();
+			case 7:$(groupQuestionShow).find("." + typeArray[3]).hide();
 			break;
 			default:
 			alert("其它");
@@ -268,7 +257,77 @@
 		}
 	</script>
 
-	
+	//显示试题的更多内容
+	<script type="text/javascript">
+		function showMore(obj, type){
+			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+			var typeNum = typeDict[type];
+			var typeArray = new Array("radioOfQuestion", "fillOfQuestion", "judgeOfQuestion", "clozeOfQuestion");
+			if($(obj).attr("class") == "fa fa-minus-square-o"){
+				$(obj).parents(".question-content").find(".analysisOfQuestion").hide();
+				$(obj).parents(".question-content").find(".chapterOfQuestion").hide();
+				$(obj).parents(".question-content").find(".knowpointOfQuestion").hide();
+				switch(typeNum){
+				case 1:
+					$(obj).parents(".question-content").find(".answer").hide();
+					
+					break;
+				case 2:
+					$(obj).parents(".question-content").find(".answer").hide();
+					break;
+				case 3:
+					$(obj).parents(".question-content").find("." + typeArray[2]).hide();
+					break;
+				case 4:
+					$(obj).parents(".question-content").find("." + typeArray[1]).hide();
+					break;
+				case 5:
+					$(obj).parents(".question-content").find("." + typeArray[3]).hide();
+					break;
+				case 6:
+					$(obj).parents(".question-content").find("." + typeArray[3]).hide();
+					break;
+				case 7:
+					$(obj).parents(".question-content").find("." + typeArray[3]).hide();
+					break;
+				}
+				$(obj).attr("class",  "fa fa-plus-square-o");
+				$(obj).html("点击查看更多");
+			}
+			else if($(obj).attr("class") == "fa fa-plus-square-o"){
+				$(obj).parents(".question-content").find(".analysisOfQuestion").show();
+				$(obj).parents(".question-content").find(".chapterOfQuestion").show();
+				$(obj).parents(".question-content").find(".knowpointOfQuestion").show();
+				switch(typeNum){
+				case 1:
+					$(obj).parents(".question-content").find(".answer").show();
+					
+					break;
+				case 2:
+					$(obj).parents(".question-content").find(".answer").show();
+					break;
+				case 3:
+					$(obj).parents(".question-content").find("." + typeArray[2]).show();
+					break;
+				case 4:
+					$(obj).parents(".question-content").find("." + typeArray[1]).show();
+					break;
+				case 5:
+					$(obj).parents(".question-content").find("." + typeArray[3]).show();
+					break;
+				case 6:
+					$(obj).parents(".question-content").find("." + typeArray[3]).show();
+					break;
+				case 7:
+					$(obj).parents(".question-content").find("." + typeArray[3]).show();
+					break;
+				}
+				$(obj).attr("class",  "fa fa-minus-square-o");
+				$(obj).html("收起");
+			}
+			
+		}
+	</script>
 	
 </body>
 

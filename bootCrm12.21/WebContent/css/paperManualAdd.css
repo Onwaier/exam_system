@@ -27,9 +27,9 @@
     color: #188DFF;
     border: none;
 }
-/*三个tabs平分*/
+/*二个tabs平分*/
 .tab-area .nav-tabs li {
-    width: 33.33%;
+    width: 50%;
 }
 
 .line {
@@ -92,6 +92,18 @@ input[type=checkbox]:checked + label{
     background: #A9B3BF;
     border: 1px solid #878F98;
     color: #fff;
+}
+.questionTypeManage{
+	margin-top:10px;
+}
+select[name="type"]{
+	display:inline-block;
+	width:49%
+}
+.showPaper{
+	height:34px;
+	width:49%;
+	margin:0px;
 }
 .list-group-item label{
     width:100%;
@@ -210,10 +222,13 @@ a {
     color: #333;
     border: none;
 }
-
+.paperFunArea{
+	height:50px;
+}
 .paperInfo .preview, .paperInfo .btnNextStep{
 	text-align:center;
-	margin-bottom:9px;
+	margin-bottom:10px;
+	margin-top:10px;
 }
 .paperInfo .total{
 	width: 100%;

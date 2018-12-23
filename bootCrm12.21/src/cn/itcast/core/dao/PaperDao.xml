@@ -4,7 +4,7 @@
 
    <sql id="selectPaperListWhere">
  		<where>
-	      <if test="courseId != null" >
+		   <if test="courseId != null" >
 	        and courseId = #{courseId}
 	      </if>
 	      <if test="difficulty != null" >
@@ -15,10 +15,10 @@
 	      </if>
 	       <if test="chapter != null" >
 	        and chapter = #{chapter}
-	      </if>
+	      </if>	
 	       <if test="knowPoint != null" >
 	        and knowPoint = #{knowPoint}
-	      </if>
+	      </if> 
     	</where>
 	</sql>
 	
@@ -32,6 +32,7 @@
 			joinTime,
 			questionSet,
 			userId,
+			userName,
 			scoreAve,
 			typeNum,
 			typeScore,
@@ -40,7 +41,9 @@
 			paper, course
 		WHERE paper.courseId = course.courseId	 
     		
-<!--     	<include refid="selectPaperListWhere"/> -->
+    	<if test="courseId != null" >
+	        and paper.courseId = #{courseId}
+	     </if>
 		<if test="start !=null and rows != null">
 			limit #{start},#{rows}
 		</if>
@@ -90,7 +93,8 @@
 		SELECT *
 		FROM
 			question
-		<include refid="selectPaperListWhere"/>	 
+			
+      <include refid="selectPaperListWhere"/>
 	</select>
 	
 <!-- 	查询题目总数 -->
@@ -111,8 +115,8 @@
 <!-- 	保存试卷到数据库 -->
 	<insert id="savePaper" parameterType="paper" 
         useGeneratedKeys="true" keyProperty="id"> 
-        insert into paper(id, title, courseId, questionSet, joinTime)  
-             values(#{id},#{title},#{courseId},#{questionSet},#{joinTime})  
+        insert into paper(id, title, courseId, questionSet, joinTime, userId, userName)  
+             values(#{id},#{title},#{courseId},#{questionSet},#{joinTime}, #{userId}, #{userName})  
     </insert>
     
     <!-- 删除试卷 -->

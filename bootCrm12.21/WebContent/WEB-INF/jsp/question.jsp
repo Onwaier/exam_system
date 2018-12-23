@@ -72,7 +72,7 @@
 			<div class="sidebar-nav navbar-collapse">
 				<ul class="nav" id="side-menu">
 					<li><a href="${pageContext.request.contextPath }/question/list.action" class="active"><i
-							class="fa fa-edit fa-fw"></i> 题库管理</a></li>
+							class="fa fa-edit fa-fw"></i> 题目管理</a></li>
 					<!-- 有paper:query权限才修改链接 ，没有该权限不显示-->
 					<shiro:hasPermission name="paper:query">
 					<li><a href="${pageContext.request.contextPath }/paper/list.action"><i
@@ -107,9 +107,6 @@
 					</button>
 					</shiro:hasPermission>
 					
-					<button class="btn btn-default" type="button">
-							题库查重
-					</button>
 				</div>
 				<div class = "search pull-right">
 					<div class="input-group search">
@@ -120,7 +117,7 @@
 						</button>
 					</span>
 					</div><!-- /input-group -->
-					<p class="form-control-static" data-toggle="modal" data-target="#questionEditDialog" onclick="editCustomer(1)">
+					<p class="form-control-static" data-toggle="modal" data-target="#questionEditDialog" onclick="editCustomer(1)" style = "display:none">
 		        	高级搜索
 		        	<b class="caret"></b>
 		        	</p>

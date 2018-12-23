@@ -82,13 +82,22 @@ public class paperController {
 	@RequestMapping(value = "/paper/list")
 	//@RequiresPermissions("paper:query")//执行paper/list需要paper:query权限
 	public String list(@RequestParam(defaultValue="1")Integer page, @RequestParam(defaultValue="10")Integer rows, 
-			Long id, Model model) {
+			Long id, String courseName, Model model) {
 		
-		System.out.println("/paper/list");  
-
-		Page<Paper> papers = paperService.findPaperList(page, rows, id);
+		
+		Long courseId = null;
+		course = paperService.findCourseList();
+		for(int i = 0; i < course.size(); ++i){
+			if(course.get(i).getCourseName().equals(courseName)){
+				courseId = course.get(i).getCourseId();
+				break;
+			}
+		}
+		System.out.println("/paper/list courseId:" + courseId);
+		Page<Paper> papers = paperService.findPaperList(page, rows, id, courseId);
 		model.addAttribute("page", papers);
-
+		model.addAttribute("course", course);
+		model.addAttribute("courseName", courseName);
 
 		return "paper";
 	}
@@ -97,7 +106,6 @@ public class paperController {
 	@RequestMapping(value = "/paper/add")
 	public String paperAdd(Model model) {
 		
-		//客户来源
 		course = paperService.findCourseList();
 		System.out.println("/paper/add:  " + course.get(0).getCourseName());
 		model.addAttribute("course", course);
@@ -107,25 +115,26 @@ public class paperController {
 
 	//手动创建试卷
 	@RequestMapping(value = "/paper/manualadd")
-	public String paperManualAdd(Model model, String paperName, String courseName) {
+	public String paperManualAdd(Model model, String paperName, String courseName, String userId, String userName) {
 		
 		
 		for(int i = 0; i < course.size(); ++i){
 			if(course.get(i).getCourseName().equals(courseName)){
 				model.addAttribute("courseId", course.get(i).getCourseId());
-				System.out.println("/paper/manualadd:" + paperName + "\t" + courseName + '\t' + course.get(i).getCourseId());
+				System.out.println("/paper/manualadd:" + paperName + "\t" + courseName + '\t' + course.get(i).getCourseId() + '\t' +userId  + '\t' + userName);
 				break;
 			}
 		}
 		model.addAttribute("paperName", paperName);
-		
+		model.addAttribute("userId", userId);
+		model.addAttribute("userName", userName);
 		return "paperManualAdd";
 	}
 	
 	
 	// 获取章节和知识点列表方式二@ResponseBody必须）
-//	@responseBody注解的作用是将controller的方法返回的对象通过适当的转换器转换为指定的格式之后，
-//	写入到response对象的body区，通常用来返回JSON数据或者是XML
+//		@responseBody注解的作用是将controller的方法返回的对象通过适当的转换器转换为指定的格式之后，
+//		写入到response对象的body区，通常用来返回JSON数据或者是XML
 	@RequestMapping(value = "/paper/knowpointlist", method={RequestMethod.POST})
 	@ResponseBody
 	public String knowpointList(int courseId, Model model){
@@ -170,7 +179,7 @@ public class paperController {
 //	显示所有试卷
 	@RequestMapping(value = "/paper/showPaper", method={RequestMethod.POST})
 	@ResponseBody
-	public String showPaper(Model model, String courseName, String courseId){
+	public String showPaper(Model model, String courseName, Long courseId){
 		
 		
 	
@@ -220,10 +229,10 @@ public class paperController {
 	/*生成并保存试卷*/
 	@RequestMapping(value = "/paper/Generate")
 	public ResponseEntity<byte[]> generatePaper(HttpServletRequest request, @RequestParam(defaultValue="1")Integer page, @RequestParam(defaultValue="10")Integer rows, 
-			@RequestParam(value = "qids[]", required = false, defaultValue = "")Long[] qids, String courseId, String paperName, Model model) throws Exception {
+			@RequestParam(value = "qids[]", required = false, defaultValue = "")Long[] qids, Long courseId, String paperName, String userId, String userName, Model model) throws Exception {
 		
-		System.out.println("/paper/Generate:" + " qids: " + Arrays.toString(qids) + "   courseId:" + courseId + "   paperName: " + paperName);
-		String paperPath = paperService.paperSave(qids, courseId, paperName);
+		System.out.println("/paper/Generate:" + " qids: " + Arrays.toString(qids) + "   courseId:" + courseId + "   paperName: " + paperName + "   userId: " + userId + "   userName: " + userName);
+		String paperPath = paperService.paperSave(qids, courseId, paperName, userId, userName);
 		
 //		ServletContext servletContext = request.getServletContext();
 //	    String path=servletContext.getRealPath("/paper");

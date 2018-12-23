@@ -28,7 +28,7 @@ import cn.itcast.common.utils.XWPFUtils;
 import cn.itcast.core.bean.Customer;
 import cn.itcast.core.bean.Question;
 import cn.itcast.core.dao.BaseDictDao;
-
+import cn.itcast.core.dao.PaperDao;
 import cn.itcast.core.dao.QuestionDao;
 import cn.itcast.core.service.CustomerService;
 import cn.itcast.core.service.QuestionService;
@@ -68,7 +68,8 @@ public class QuestionServiceImpl implements QuestionService {
 	private QuestionDao questionDao;
 	@Autowired
 	private BaseDictDao baseDictDao;
-	
+	@Autowired
+	private PaperDao paperDao;
 	IdWorker worker2 = new IdWorker(1);
 	int numQuestion = 0;
 	int similarQuestion = 0;
@@ -203,7 +204,7 @@ public class QuestionServiceImpl implements QuestionService {
 	@Override
 	public Boolean  addQuestion(Long qid, String subject, String type, String optionA, String optionB, String optionC, String optionD,  String optionE, String optionF, String optionG, 
 			String answerOption, String answerJudge, String[] answerFill, String answerCloze,  
-			String courseName, String analysis, String chapter, String knowPoint, String difficulty, String pictureUrl){
+			String courseName, String analysis, String chapter, String knowPoint, String difficulty, String pictureUrl, String score, String spendTime){
 		
 		Question question = new Question();
 		
@@ -265,8 +266,19 @@ public class QuestionServiceImpl implements QuestionService {
 		
 		if(StringUtils.isNotBlank(pictureUrl)){
 			question.setPictureUrl(pictureUrl);
-	}
-		
+		}
+		if(StringUtils.isNotBlank(chapter)){
+			question.setChapter(chapter);
+		}
+		if(StringUtils.isNotBlank(knowPoint)){
+			question.setKnowPoint(knowPoint);
+		}
+		if(StringUtils.isNotBlank(score)){
+			question.setScore(score);
+		}
+		if(StringUtils.isNotBlank(spendTime)){
+			question.setSpendTime(spendTime);
+		}
 		System.out.print("\niml " +  "  answerOption: " + answerOption + "   answerJudge: " + answerJudge + "   answerCloze: " + answerCloze);
 		System.out.print("  answerFill: " + answerFill.length);
 		for(int i = 0; i < answerFill.length; ++i)
@@ -287,7 +299,7 @@ public class QuestionServiceImpl implements QuestionService {
 		
 
 		System.out.println("\niml " + question.getQid() + "   subject: " + question.getSubject() + "   type: " + question.getType() + "   difficulty: " + question.getDifficulty() + "   analysis: " + question.getAnalysis() +  "   optionA: " + question.getOptionA() + "   optionE: " + question.getOptionE() + "   answer: " + question.getAnswer()+ "   pictureUrl: " + question.getPictureUrl() + "\n");
-
+		System.out.println("quesiton:" + question.toString());
 
 		//要对各个值进行判断是否为空
 		if(StringUtils.isNotBlank(question.getType())){
@@ -430,6 +442,9 @@ public class QuestionServiceImpl implements QuestionService {
 					
 					question.setAnswer(paragraph[i++].substring(4));
 					question.setAnalysis(paragraph[i++].substring(4));
+					question.setScore(paragraph[i++].substring(4));
+					question.setDifficulty(paragraph[i++].substring(4));
+					question.setSpendTime(paragraph[i++].substring(6));
 					if(!judgeBoundary(i, len, question)) {judgeAddQuestion(question); dispQuestion(question); break;}
 					question.setPictureUrl(paragraph[i]);
 					
@@ -462,6 +477,9 @@ public class QuestionServiceImpl implements QuestionService {
 					question.setSubject(paragraph[i++].substring(4));
 					question.setAnswer(paragraph[i++].substring(4));
 					question.setAnalysis(paragraph[i++].substring(4));
+					question.setScore(paragraph[i++].substring(4));
+					question.setDifficulty(paragraph[i++].substring(4));
+					question.setSpendTime(paragraph[i++].substring(6));
 					if(!judgeBoundary(i, len, question)) {judgeAddQuestion(question); dispQuestion(question); break;}
 					question.setPictureUrl(paragraph[i]);
 					
@@ -628,9 +646,10 @@ public class QuestionServiceImpl implements QuestionService {
 			
 	  }
 	
+	  //根据多个id查询题目列表(自动排序)
 	@Override
 	public Page<Question> findQuestionListByIds(Integer page, Integer rows, Long[] qids) {
-		//查询题目列表
+		//根据多个id查询题目列表(自动排序)
 		List<Question> questions = questionDao.selectQuestionListByIds(qids);
 		//查询题目列表总记录数
 		Integer count = qids.length;
@@ -642,4 +661,25 @@ public class QuestionServiceImpl implements QuestionService {
 		result.setTotal(count);
 		return result;
 	}
+	
+	//根据多个id查询题目列表(按照原序)
+		@Override
+		public Page<Question> findQuestionListByIdsOriginOrder(Integer page, Integer rows, Long[] qids) {
+			//查询题目列表
+			List<Question> questions = new ArrayList();
+			for(int i = 0; i < qids.length; ++i){
+				Question question = paperDao.selectQuestionListById(qids[i]);
+				questions.add(question);
+			}
+			//List<Question> questions = questionDao.selectQuestionListByIds(qids);
+			//查询题目列表总记录数
+			Integer count = qids.length;
+			//创建Page返回对象
+			Page<Question> result = new Page<>();
+			result.setPage(page);
+			result.setRows(questions);
+			result.setSize(rows);
+			result.setTotal(count);
+			return result;
+		}
 }

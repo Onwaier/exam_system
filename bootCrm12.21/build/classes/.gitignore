@@ -1,1 +1,15 @@
+/SqlMapConfig.xml
+/anonymousURL.properties
+/applicationContext-dao.xml
+/applicationContext-service.xml
+/applicationContext-shiro.xml
+/applicationContext-trans.xml
 /cn/
+/commonURL.properties
+/jdbc.properties
+/resource.properties
+/shiro-ehcache.xml
+/springmvc.xml
+/xalan-2.7.1.jar
+/xercesImpl-2.11.0.jar
+/xmlgraphics-commons-1.3.jar

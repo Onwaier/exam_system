@@ -94,9 +94,15 @@
 <!-- 会话管理器 -->
     <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
         <!-- session的失效时长，单位毫秒 -->
-        <property name="globalSessionTimeout" value="600000"/>
+        <property name="globalSessionTimeout" value="6000000"/>
         <!-- 删除失效的session -->
         <property name="deleteInvalidSessions" value="true"/>
+        
+        
+
+  <!-- 这一句是关键-->
+        <property name="sessionIdCookie" ref="sessionIdCookie"/>
+        <property name="sessionIdCookieEnabled" value="true"/>
     </bean>
 
 <!-- 自定义的form过滤器 -->
@@ -108,6 +114,10 @@
 		<property name="passwordParam" value="password" />
  </bean>
 
-
+<!-- 指定本系统SESSIONID, 默认为: JSESSIONID 问题: 与SERVLET容器名冲突, 如JETTY, TOMCAT 等默认JSESSIONID,
+        当跳出SHIRO SERVLET时如ERROR-PAGE容器会为JSESSIONID重新分配值导致登录会话丢失! -->
+    <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg name="name" value="jeesite.session.id"/>
+    </bean>
 
 </beans>

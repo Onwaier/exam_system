@@ -25,9 +25,9 @@
     color: #188DFF;
     border: none;
 }
-/*三个tabs平分*/
+/*二个tabs平分*/
 .tab-area .nav-tabs li {
-    width: 33.33%;
+    width: 50%;
 }
 
 .line {
@@ -54,12 +54,16 @@
 	margin-left:10px;
 	margin-bottom: 10px;
 }
-
-input[name="paperName"],input[name = "courseName"]{
+input[name="username"], input[name="paperName"],input[name = "courseName"]{
 	border: 1px solid #D8D8D8;
     border-radius: 4px;
     width: 35%;
     padding: 3px 10px;
+}
+
+select[name="courseName"]{
+	display:inline-block;
+	width:35%;
 }
 .paperType input[type=radio]:checked + label {
     background: #A9B3BF;

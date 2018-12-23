@@ -72,8 +72,8 @@
 			<div class="sidebar-nav navbar-collapse">
 				<ul class="nav" id="side-menu">
 					<li><a href="${pageContext.request.contextPath }/question/list.action" class="active"><i
-							class="fa fa-edit fa-fw"></i> 题库管理</a></li>
-					<li><a href="${pageContext.request.contextPath }/customer/list.action"><i
+							class="fa fa-edit fa-fw"></i> 题目管理</a></li>
+					<li><a href="${pageContext.request.contextPath }/paper/list.action"><i
 							class="fa fa-dashboard fa-fw"></i> 试卷管理</a></li>
 				</ul>
 			</div>

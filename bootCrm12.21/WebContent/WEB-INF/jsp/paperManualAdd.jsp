@@ -76,7 +76,7 @@
 				<div class="sidebar-nav navbar-collapse">
 					<ul class="nav" id="side-menu">
 						<li><a href="${pageContext.request.contextPath }/question/list.action"><i
-								class="fa fa-edit fa-fw"></i> 题库管理</a></li>
+								class="fa fa-edit fa-fw"></i> 题目管理</a></li>
 						<li><a href="${pageContext.request.contextPath }/paper/list.action"  class="active"><i
 								class="fa fa-dashboard fa-fw"></i> 试卷管理</a></li>
 					</ul>
@@ -96,12 +96,7 @@
 	                </li>
 	                <li role="presentation" class="active step2">
 	                    <a href="#createTest2" aria-controls="create2" role="tab" data-toggle="tab">
-	                        第二步:添加试题
-	                    </a>
-	                </li>
-	                <li role="presentation" class="step3">
-	                    <a href="#createTest3" aria-controls="create3" role="tab" data-toggle="tab">
-	                        第三步:保存生成试卷
+	                        第二步:添加试题并生成试卷
 	                    </a>
 	                </li>
             	</ul>
@@ -150,10 +145,9 @@
 	                		<div class = "paper">
 	                			<h3><input class="edit-paper-name form-control" type="text" name="edit_paper_name" value='${paperName}' placeholder="点击输入试卷名称"></h3>
                                 <p class="emptyTip">当前试卷还是空空如也，点击下方添加新题型！</p>
-                                <div class="group_main"></div>
                                 <div class="questionTypeManage">
-                                	<select	class="form-control" id="questionType" name="type">
-										<option value="0" num = "0">--请选择--</option>
+                                	<select	class="form-control" id="questionType" name="type" title="设置章节选题的题型">
+										<option value="0" num = "0">--请选择试题类型（章节选题）--</option>
 										<option value="单选题" num = "1">单选题</option>
 										<option value="多选题" num = "2">多选题</option>
 										<option value="判断题" num = "3">判断题</option>
@@ -162,23 +156,28 @@
 										<option value="简述题" num = "6">简述题</option>
 										<option value="名词解释" num = "7">名词解释</option>	
 									</select>
+									<button href="#" class="btn btn-default showPaper" data-toggle="modal" data-target="#showPaperList" onclick="showPaper()">选择试卷（试卷选题）</button>
                                 </div>
+                                <div class="group_main"></div>
+                                
 	                		</div>
 	                	</div>
 	                	
 	                	<div class="paperInfo col-sm-3">
-	                		<div class="preview">
-	                			<button type="button" class="btn btn-primary" id="previewBtn" onclick = "previewPaper()"><i class="fa fa-eye fa-fw"></i>预览</button>
+	                		<div class = "paperFunArea">
+	                			<div class="preview pull-left">
+		                			<button type="button" class="btn btn-primary" id="previewBtn" onclick = "previewPaper()"><i class="fa fa-eye fa-fw"></i>预览试卷</button>
+		                		</div>
+		                		<div class="btnNextStep pull-right">
+	                            	<button  type="button" class="btn btn-primary" id="paperGenerateBtn" onclick = "paperGenerate()">生成试卷</button>
+	                        	</div>
 	                		</div>
-	                		<a href="#" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#showPaperList" onclick="showPaper()">试卷选题</a>
                 
 	                		<div class="total">
 	                			<p>总题数：<span class="test_total">0</span>题</p>
 	                		</div>
 	                		<div class="right_group_main"></div>
-	                		<div class="btnNextStep">
-                            	<button  type="button" class="btn btn-primary" id="paperGenerateBtn" onclick = "paperGenerate()">下一步</button>
-                        	</div>
+	                		
 	                	</div>
                 	</div>
                 </div>
@@ -228,13 +227,14 @@
 				<div class="modal-body">
 					<form class="form-horizontal" id="choose_question_form">
 						<span class="intro difficulty">难度</span>
-						<select	class="form-control" name="difficulty">
+						<select	class="form-control selDifficulty" name="difficulty">
 							<option value="0">--请选择--</option>
 							<option value="简单">简单</option>
 							<option value="中等">中等</option>
 							<option value="困难">困难</option>
-						</select>   
-						<button onclick= ""  type="button" class="btn btn-primary">查询</button>
+						</select>
+						   
+						<button onclick= "showQuestionBydif()"  type="button" class="btn btn-primary">查询</button>
 						<div class="row">
 							<div class="col-lg-12">
 								<div class="panel panel-default">
@@ -324,7 +324,7 @@
 				<div class="modal-body">
 					<form class="form-horizontal" id="choose_question_form">
 						<div id="paperQuestionList">
-							<div class="group-main">
+							<div class="group_main">
 								<div class="group_simple" num="1">
 									<div class="questions-title">
 										<input type = "checkbox" class = "questionTotal" value = "" name = "questionTotal"/>
@@ -649,7 +649,7 @@
 			                var s = '' 
 			                var Html = '										<thead>'+
 			                '											<tr>'+
-			                '												<th><input type = "checkbox" class = "paperItemTotal" value = "" name = "paperTotal"/></th>'+
+			                '												<th><input type = "checkbox" class = "paperItemTotal" value = "" name = "paperTotal" onclick = "checkTotalPapers()"/></th>'+
 			                '												<th>试卷标题</th>'+
 			                '												<th>科目</th>'+
 			                '												<th>出题时间</th>'+
@@ -660,8 +660,8 @@
 			                $("#paperTable").html(Html)
 			                for(var i = start; i < end; i++) {
 			                	var set = String(pager.data[i].questionSet);
-			                    s += "<tr><td>" + '<input type = "checkbox" class = "paperItem" value = "' + i +'" name = "paper"/>' + "</td><td>" + pager.data[i].title + "</td><td>" + pager.data[i].courseName + "</td><td>" +
-			                    pager.data[i].joinTime + "</td><td>" +  pager.data[i].userId + "</td>" +
+			                    s += "<tr><td>" + '<input type = "checkbox" class = "paperItem" value = "' + i +'" name = "paper" onclick = "checkOnePaper()"/>' + "</td><td>" + pager.data[i].title + "</td><td>" + pager.data[i].courseName + "</td><td>" +
+			                    pager.data[i].joinTime + "</td><td>" +  pager.data[i].userName + "</td>" +
 			                    '<td>'+
 			                    '	<a data-toggle="modal" data-target="#selectQuestionFromPaper" onclick="paperPreview(\'' + set + '\')"><i class="fa fa-eye fa-fw"></i></a> '+
 			                    '</td></tr>';
@@ -864,7 +864,7 @@
 	      for(var i = 0; i < questions.length; ++i){
 	    	  addQuestionInPage(questions[i]);
 	      }
-	      $(this).removeData("modal");
+	      $("#paperQuestionList").find(".group_main").html("");
 	   })
 	 });
 	
@@ -958,16 +958,21 @@
 			                var s = '' 
 			                var Html = '										<thead>'+
 			                '											<tr>'+
-			                '												<th><input type = "checkbox" class = "questionItemTotal" value = "" name = "questionTotal"/></th>'+
+			                '												<th><input type = "checkbox" class = "questionItemTotal" value = "" name = "questionTotal" onclick = "checkTotalQuestions()"/></th>'+
 			                '												<th>题型</th>'+
 			                '												<th>科目</th>'+
-			                '												<th>题干</th>'+
+			                '												<th title= "鼠标移至题干处，可查看具体内容">题干</th>'+
 			                '												<th>难度</th>'+
 			                '											</tr>'+
 			                '										</thead>';
 			                $("#quesTable").html(Html)
 			                for(var i = start; i < end; i++) {
-			                    s += "<tr><td>" + '<input type = "checkbox" class = "questionItem" value = "' + i +'" name = "question"/>' + "</td><td>" + pager.data[i].type + "</td><td>" + pager.data[i].courseName + "</td><td>" +
+			                	var content = changeStr(pager.data[i].subject, 60);//单行字符长度最长为60个字符，否则自动换行
+			                	if(pager.data[i].type == "单选题" || pager.data[i].type == "多选题"){
+			                		content += generateContent(pager.data[i]);
+			                	}
+			                	console.log("content:" + content);
+			                   s += "<tr><td>" + '<input type = "checkbox" class = "questionItem" value = "' + i +'" name = "question" onclick = "checkOneQuestion()"/>' + "</td><td>" + pager.data[i].type + "</td><td>" + pager.data[i].courseName + "</td><td title=\"" + content + "\">" +
 			                    pager.data[i].subject + "</td><td>" +  pager.data[i].difficulty + "</td></tr>";
 			                    console.log(i);
 			                    // $("#quesTable").append(s);
@@ -1136,6 +1141,292 @@
 		      $(this).removeData("modal");
 		   })
 		 });
+		 
+// 		 根据难度筛选试题
+			function showQuestionBydif(){
+//				        定义一个分页方法，可多次调用
+				        function paginationNick(opt){
+//				            参数设置
+				            var pager={
+				                paginationBox:'',//分页容器-- 必填
+				                mainBox:'',//内容盒子--必填
+				                numBtnBox:'',//数字按钮盒子-- 必填
+				                btnBox:'',//按钮盒子 --必填
+				                ipt:'',//input class-- 必填
+				                goBtn:'',//go btn class --必填
+				                currentBtn:'',//当前按钮class name --必填
+				                pageCount:10,//每页显示几条数据
+				                numBtnCount:3,//当前页左右两边各多少个数字按钮
+				                currentPage:0,//当前页码data-page，首屏默认值
+				                maxCount:0,//ajax请求数据分成的最大页码
+				                data:[]//ajax请求的数据
+				            };
+				            pager = $.extend(pager,opt);
+				            //请求数据页面跳转方法
+				            function goPage(btn){
+				                //obj为ajax请求数据
+				                
+				                var obj = Data
+
+				                //将展示的数据赋值给pager.data  (array)
+				                 // pager.data=obj.value;
+				                pager.data=obj[0].rows;
+				                //设置ajax请求数据分成的最大页码
+//				                alert(pager.data.length)
+
+				                pager.maxCount=pager.data.length % pager.pageCount ? parseInt(pager.data.length / pager.pageCount) +1 :
+				                    pager.data.length / pager.pageCount;
+
+//				                设置当前页码
+				                if(!isNaN(btn)){//数字按钮
+				                    pager.currentPage=parseInt(btn);
+				                }else{
+				                    switch(btn){
+				                        case 'first':
+				                            pager.currentPage=0;
+				                            break;
+				                        case 'prev':
+				                            if(pager.currentPage>0){
+				                                --pager.currentPage;
+				                            }
+				                            break;
+				                        case 'next':
+				                            if(pager.currentPage+1<pager.maxCount){
+				                                ++pager.currentPage;
+				                            }
+				                            break;
+				                        case 'last':
+				                            pager.currentPage=pager.maxCount-1;
+				                            break;
+				                    }
+				                }
+				                //创建数字按钮
+				                createNumBtn(pager.currentPage);
+				                //赋值给页码跳转输入框的value，表示当前页码
+				                $('.'+pager.btnBox+' .'+pager.ipt).val(pager.currentPage+1);
+//				              内容区填充数据
+				                var arr=[],str='';
+				                arr=pager.data.slice(pager.pageCount*pager.currentPage,
+				                        pager.data.length - pager.pageCount*(pager.currentPage+1) > -1 ?
+				                        pager.pageCount*(pager.currentPage+1) : pager.data.length);
+
+								var start = pager.pageCount*pager.currentPage
+				                var end = pager.data.length - pager.pageCount*(pager.currentPage+1) > -1 ?
+				                        pager.pageCount*(pager.currentPage+1) : pager.data.length  
+				                var s = '' 
+				                var Html = '										<thead>'+
+				                '											<tr>'+
+				                '												<th><input type = "checkbox" class = "questionItemTotal" value = "" name = "questionTotal"  onclick = "checkTotalQuestions()"/></th>'+
+				                '												<th>题型</th>'+
+				                '												<th>科目</th>'+
+				                '												<th   title= "鼠标移至题干处，可查看具体内容">题干</th>'+
+				                '												<th>难度</th>'+
+				                '											</tr>'+
+				                '										</thead>';
+				                $("#quesTable").html(Html)
+				                for(var i = start; i < end; i++) {
+				                	var content = changeStr(pager.data[i].subject, 60);//单行字符长度最长为60个字符，否则自动换行
+				                	if(pager.data[i].type == "单选题" || pager.data[i].type == "多选题"){
+				                		content += generateContent(pager.data[i]);
+				                	}
+				                	console.log("content:" + content);
+				                	if(pager.data[i].difficulty == $(".selDifficulty").val()){
+				                		
+				                		s += "<tr><td>" + '<input type = "checkbox" class = "questionItem" value = "' + i +'" name = "question" onclick = "checkOneQuestion()"/>' + "</td><td>" + pager.data[i].type + "</td><td>" + pager.data[i].courseName + "</td><td title=\"" + content + "\">" +
+					                    pager.data[i].subject + "</td><td>" +  pager.data[i].difficulty + "</td></tr>";
+					                    console.log(i);
+				                	}
+				                    
+				                    // $("#quesTable").append(s);
+				                }
+				                $("#quesTable").append(s);
+				                
+//				                arr.forEach(function(v){
+//				                    str+='<div>'+v+'</div>';
+//				                });
+//				                $('.'+pager.mainBox).html(s);
+				            }
+				            //创建非数字按钮和数据内容区
+				            function createOtherBtn(){
+				            	$('.'+pager.paginationBox).html('<div class="'+pager.btnBox+'"><button data-page="first" class="first-btn">首页</button><button data-page="prev" class="prev-btn">上一页</button><span class="'+pager.numBtnBox+'"></span><button data-page="next" class="next-btn">下一页</button><input type="text" placeholder="请输入页码" class="'+pager.ipt+'"><button class="'+pager.goBtn+'">确定go</button><button data-page="last" class="last-btn">尾页</button></div><div class="'+pager.mainBox+'"></div>');
+				                //ipt value变化并赋值给go btn data-page
+				                $('.'+pager.btnBox+' .'+pager.ipt).change(function(){
+				                    if(!isNaN($(this).val())){//是数字
+				                        if($(this).val() > pager.maxCount){//限制value最大值，跳转尾页
+				                            $(this).val(pager.maxCount);
+				                        }
+				                        if($(this).val()<1){//限制value最小值，跳转首页
+				                            $(this).val(1);
+				                        }
+				                    }else{//非数字清空value
+				                        $(this).val('');
+				                    }
+				                    $('.'+pager.btnBox+' .'+pager.goBtn).attr('data-page',$(this).val() ? $(this).val()-1 : '');
+				                });
+				                //每个btn绑定请求数据页面跳转方法
+				                $('.'+pager.btnBox+' button').each(function(i,v){
+				                    $(this).click(function(){
+				                        //有值且不是上一次的页码时才调用
+				                        if(v.getAttribute('data-page') && v.getAttribute('data-page') != pager.currentPage){
+				                            goPage(v.getAttribute('data-page'));
+				                        }
+				                    });
+				                });
+				            }
+				            //创建数字按钮
+				            function createNumBtn(page){
+				                //page是页面index从0开始，这里的page加减一要注意
+				                var str='';
+				                if(pager.maxCount>pager.numBtnCount*2){//若最大页码数大于等于固定数字按钮总数（pager.numBtnCount*2+1）时
+				                    //此页左边右边各pager.numBtnCount个数字按钮
+				                    if(page-pager.numBtnCount>-1){//此页左边有pager.numBtnCount页 page页码从0开始
+				                        for(var m=pager.numBtnCount;m>0;m--){
+				                            str+='<button data-page="'+(page-m)+'">'+(page-m+1)+'</button>';
+				                        }
+				                    }else{
+				                        for(var k=0;k<page;k++){
+				                            str+='<button data-page="'+k+'">'+(k+1)+'</button>';
+				                        }
+				                    }
+				                    str+='<button data-page="'+page+'" class="'+pager.currentBtn+'" disabled="disabled">'+(page+1)+'</button>';//此页
+				                    if(pager.maxCount-page>3){//此页右边有pager.numBtnCount页 page页码从0开始
+				                        for(var j=1;j<pager.numBtnCount+1;j++){
+				                            str+='<button data-page="'+(page+j)+'">'+(page+j+1)+'</button>';
+				                        }
+				                    }else{
+				                        for(var i=page+1;i<pager.maxCount;i++){
+				                            str+='<button data-page="'+i+'">'+(i+1)+'</button>';
+				                        }
+				                    }
+				                    /*数字按钮总数小于固定的数字按钮总数pager.numBtnCount*2+1时，
+				                     这个分支，可以省略*/
+				                    if(str.match(/<\/button>/ig).length<pager.numBtnCount*2+1){
+				                        str='';
+				                        if(page<pager.numBtnCount){//此页左边页码少于固定按钮数时
+				                            for(var n=0;n<page;n++){//此页左边
+				                                str+='<button data-page="'+n+'">'+(n+1)+'</button>';
+				                            }
+				                            str+='<button data-page="'+page+'" class="'+pager.currentBtn+'" disabled="disabled">'+(page+1)+'</button>';//此页
+				                            for(var x=1;x<pager.numBtnCount*2+1-page;x++){//此页右边
+				                                str+='<button data-page="'+(page+x)+'">'+(page+x+1)+'</button>';
+				                            }
+				                        }
+				                        if(pager.maxCount-page-1<pager.numBtnCount){
+				                            for(var y=pager.numBtnCount*2-(pager.maxCount-page-1);y>0;y--){//此页左边
+				                                str+='<button data-page="'+(page-y)+'">'+(page-y+1)+'</button>';
+				                            }
+				                            str+='<button data-page="'+page+'" class="'+pager.currentBtn+'" disabled="disabled">'+(page+1)+'</button>';//此页
+				                            for(var z=page+1;z<pager.maxCount;z++){//此页右边
+				                                str+='<button data-page="'+z+'">'+(z+1)+'</button>';
+				                            }
+				                        }
+				                    }
+				                }else{
+				                    str='';
+				                    for(var n=0;n<page;n++){//此页左边
+				                        str+='<button data-page="'+n+'">'+(n+1)+'</button>';
+				                    }
+				                    str+='<button data-page="'+page+'" class="'+pager.currentBtn+'" disabled="disabled">'+(page+1)+'</button>';//此页
+				                    for(var x=1;x<pager.maxCount-page;x++){//此页右边
+				                        str+='<button data-page="'+(page+x)+'">'+(page+x+1)+'</button>';
+				                    }
+				                }
+
+				                $('.'+pager.numBtnBox).html(str);
+
+				                //每个btn绑定请求数据页面跳转方法
+				                $('.'+pager.numBtnBox+' button').each(function(i,v){
+				                    $(this).click(function(){
+				                        goPage(v.getAttribute('data-page'));
+				                    });
+				                });
+
+				                //按钮禁用
+				                $('.'+pager.btnBox+' button').not('.'+pager.currentBtn).attr('disabled',false);
+				                if(!page){//首页时
+				                    $('.'+pager.btnBox+' .first-btn').attr('disabled',true);
+				                    $('.'+pager.btnBox+' .prev-btn').attr('disabled','disabled');
+				                }
+				                if(page==pager.maxCount-1){//尾页时
+				                    $('.'+pager.btnBox+' .last-btn').attr('disabled',true);
+				                    $('.'+pager.btnBox+' .next-btn').attr('disabled',true);
+				                }
+				            }
+
+				            //首屏加载
+				            createOtherBtn();//首屏加载一次非数字按钮即可
+				            goPage();//请求数据页面跳转满足条件按钮点击都执行，首屏默认跳转到currentPage
+				        }
+				        //调用
+				        paginationNick({
+				            paginationBox:'pagination-nick',//分页容器--必填
+				            mainBox:'main-box-nick',//内容盒子--必填
+				            numBtnBox:'num-box-nick',//数字按钮盒子-- 必填
+				            btnBox:'btn-box-nick',//按钮盒子 --必填
+				            ipt:'page-ipt-nick',//input class-- 必填
+				            goBtn:'go-btn-nick',//go btn class --必填
+				            currentBtn:'active-nick'//当前按钮class name --必填
+				        });
+						
+				   
+					
+			}
+			
+
+		</script>
+		<script type="text/javascript">
+		//字符串指定长度换行
+		 function changeStr(str,len){
+		     if(str==null||str==""){
+		         return "";
+		     }
+		     if(len==null){
+		         len=10;
+		     }
+		     var result="";
+		     var curlen=0;
+		     var patten= /.*[\u4e00-\u9fa5]+.*$/;
+		     for(var i=0;i<str.length;i++){
+		         if(patten.test(str[i])){
+		             curlen+=2;
+		         }else{
+		             curlen++;
+		         }
+		         if(curlen>=len){
+		             curlen=0;
+		             result+="\n";
+
+		         }
+		         result+=str[i];
+		     }
+		     return result;
+		 }
+		 //生成试题选项内容
+		 function generateContent(question){
+			 var content = "";
+			 if(question.optionA != ""){
+				 content += ("\nA. " + changeStr(question.optionA, 60));//单行字符长度最长为60个字符，否则自动换行
+				 if(question.optionB != ""){
+					 content += ("\nB. " + changeStr(question.optionB, 60));//单行字符长度最长为60个字符，否则自动换行
+					 if(question.optionC != ""){
+						 content += ("\nC. " + changeStr(question.optionC, 60));//单行字符长度最长为60个字符，否则自动换行
+						 if(question.optionD != ""){
+							 content += ("\nD. " + changeStr(question.optionD, 60));//单行字符长度最长为60个字符，否则自动换行
+							 if(question.optionE != ""){
+								 content += ("\nE. " + changeStr(question.optionE, 60));//单行字符长度最长为60个字符，否则自动换行
+								 if(question.optionF != ""){
+									 content += ("\nF. " + changeStr(question.optionF, 60));//单行字符长度最长为60个字符，否则自动换行
+									 if(question.optionG != ""){
+										 content += ("\nG. " + changeStr(question.optionG, 60));//单行字符长度最长为60个字符，否则自动换行
+									 }
+								 }
+							 }
+						 }
+					 }
+				 }
+			 }
+			 return content;
+		 }
 
 	</script>
 	
@@ -1257,10 +1548,10 @@
 			'        </div>'+
 			'          '+
 			'        <div class="keyJudge keyPanel judgeOfQuestion" style="display: block;">'+
-			'            <input type="radio" class="hidden judgeYes"  name="answerJudge" value="正确" checked>'+
-			'            <label for="judgeYes" class="btn btn-border-gray content">正确</label>'+
-			'            <input type="radio" class="hidden judgeNo"  name="answerJudge" value="错误">'+
-			'            <label for="judgeNo" class="btn btn-border-gray content">错误</label> '+
+			'            <div class = "content">'+
+			'			 	<span class = "answerDes">答案:&nbsp&nbsp</span>'+
+			'                <span>'+ question.answer + '</span>'+
+			'            </div>'+
 			'        </div>'+
 			'            '+
 			'        <div class="keyCloze keyPanel clozeOfQuestion" style="display: block;">'+
@@ -1344,7 +1635,7 @@
 			var mainHtml = 
 				'<div class="group_simple" num="' + resNum + '">'+
 				'					<div class="questions-title">' + 
-				'						<input type = "checkbox" class = "questionTotal" value = "" name = "questionTotal"/>'+
+				'						<input type = "checkbox" class = "questionItemTotal" value = "" name = "questionTotal" onclick = "checkTotalQuestions2(this)"/>'+
 				'						<span>' + type + '(共<span class = "quesNum">0</span>题)<span></div>'+
 				'					<div class="questions-group">'+
 				'						<div class="group_questionShow">'+
@@ -1388,7 +1679,7 @@
 			'		<input name="qid" class="questionId" type="hidden" value="' + question.qid +'">		'+
 			'		<div class="descPanel descOfQuestion">            '+
 			'			<div class="content">' + 
-			'				<input type = "checkbox" class = "questionItem" value = "' + pageIdx  +'#' + quesIdx + '" name = "questionItem"/>' + question.subject+
+			'				<input type = "checkbox" class = "questionItem" value = "' + pageIdx  +'#' + quesIdx + '" name = "questionItem" onclick = "checkOneQuestion2(this)"/>' + question.subject+
 			'			</div>               '+
 			'		</div>        '+
 			'		<div class="keyRadio keyPanel radioOfQuestion" style="display: block;">            '+
@@ -1422,10 +1713,10 @@
 			'			</div>        '+
 			'		</div>                  '+
 			'		<div class="keyJudge keyPanel judgeOfQuestion" style="display: none;">            '+
-			'			<input name="answerJudge" class="hidden judgeYes" type="radio" checked="" value="正确">            '+
-			'			<label class="btn btn-border-gray content" for="judgeYes">正确</label>            '+
-			'			<input name="answerJudge" class="hidden judgeNo" type="radio" value="错误">            '+
-			'			<label class="btn btn-border-gray content" for="judgeNo">错误</label>         '+
+			'			<div class="content">			 	'+
+			'				<span class="answerDes">答案:&nbsp;&nbsp;</span>                '+
+			'				<span>' + question.answer+'</span>            '+
+			'			</div>        '+
 			'		</div>                    '+
 			'		<div class="keyCloze keyPanel clozeOfQuestion" style="display: none;">            '+
 			'			<div class="content">			 	'+
@@ -1586,7 +1877,7 @@
 			var qids = getQidsAndQnums();
 			alert("aaaa")
 <%-- 			url:"<%=basePath%>paper/showQuestion.action?courseId=" + ${courseId} + "&type=" + type + "&checkNodes=" + checkNode, --%>
-			var str = "<%=basePath%>paper/Generate.action?qids[]=" + qids[0] + "&courseId=" + ${courseId} + "&paperName=" + '${paperName}';
+			var str = "<%=basePath%>paper/Generate.action?qids[]=" + qids[0] + "&courseId=" + ${courseId} + "&paperName=" + '${paperName}' + "&userName=" + '${userName}' + "&userId=" + '${userId}';
 <%-- 			var str = "<%=basePath%>paper/Generate.action?qids[]=" + qids[0]; --%>
 			for(var i = 1; i < qids.length; ++i){
 				var tmp = "&qids[]=" + qids[i];
@@ -1619,6 +1910,99 @@
 		}
 	</script>
 
+<!-- 全选全不选 以及级联-->
+	<script type = "text/javascript">
+		function checkTotalQuestions(){
+			var questionItems = $(".questionItem");
+			var questionTotal = $(".questionItemTotal");
+			if($(questionTotal).prop("checked") == true){
+				for(var i = 0; i < questionItems.length; ++i){
+					$(questionItems[i]).prop("checked", true);
+				}
+			}
+			else{
+				for(var i = 0; i < questionItems.length; ++i){
+					$(questionItems[i]).prop("checked", false);
+				}
+			}
+		}
+		function checkOneQuestion(){
+			var questionItems = $(".questionItem");
+			var flag = true;
+			for(var i = 0; i < questionItems.length; ++i){
+				if($(questionItems[i]).prop("checked") == false){
+					flag = false;
+					break;
+				}
+			}
+			if(flag){
+				$(".questionItemTotal").prop("checked", true);
+			}
+			else{
+				$(".questionItemTotal").prop("checked", false);
+			}
+		}
+		function checkTotalPapers(){
+			var paperItems = $(".paperItem");
+			var paperTotal = $(".paperItemTotal");
+			if($(paperTotal).prop("checked") == true){
+				for(var i = 0; i < paperItems.length; ++i){
+					$(paperItems[i]).prop("checked", true);
+				}
+			}
+			else{
+				for(var i = 0; i < paperItems.length; ++i){
+					$(paperItems[i]).prop("checked", false);
+				}
+			}
+		}
+		function checkOnePaper(){
+			var paperItems = $(".paperItem");
+			var flag = true;
+			for(var i = 0; i < paperItems.length; ++i){
+				if($(paperItems[i]).prop("checked") == false){
+					flag = false;
+					break;
+				}
+			}
+			if(flag){
+				$(".paperItemTotal").prop("checked", true);
+			}
+			else{
+				$(".paperItemTotal").prop("checked", false);
+			}
+		}
+		function checkTotalQuestions2(obj){
+			var questionItems = $(obj).parents(".questions-title").next().find(".questionItem");
+			var questionTotal = $(obj);
+			if($(questionTotal).prop("checked") == true){
+				for(var i = 0; i < questionItems.length; ++i){
+					$(questionItems[i]).prop("checked", true);
+				}
+			}
+			else{
+				for(var i = 0; i < questionItems.length; ++i){
+					$(questionItems[i]).prop("checked", false);
+				}
+			}
+		}
+		function checkOneQuestion2(obj){
+			var questionItems = $(obj).parents(".group_questionShow").find(".questionItem");
+			var flag = true;
+			for(var i = 0; i < questionItems.length; ++i){
+				if($(questionItems[i]).prop("checked") == false){
+					flag = false;
+					break;
+				}
+			}
+			if(flag){
+				$(obj).parents(".questions-group").prev().find(".questionItemTotal").prop("checked", true);
+			}
+			else{
+				$(obj).parents(".questions-group").prev().find(".questionItemTotal").prop("checked", false);
+			}
+		}
+	</script>
 </body>
 
 </html>

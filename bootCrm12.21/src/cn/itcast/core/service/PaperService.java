@@ -17,7 +17,7 @@ import cn.itcast.core.bean.Course;
 public interface PaperService {
 
 	// 查询试卷列表
-	public Page<Paper> findPaperList(Integer page, Integer rows, Long qid);
+	public Page<Paper> findPaperList(Integer page, Integer rows, Long qid, Long courseId);
 
 	//查询章节列表
 	public ArrayList<String>findChapterList(Integer courseId);
@@ -32,11 +32,11 @@ public interface PaperService {
 	public List<Course> findCourseList();
 	
 	//保存试卷到数据库并生成试卷到word中供下载
-	public String paperSave(Long[] qids, String courseId, String paperName) throws Exception;
-	
+	public String paperSave(Long[] qids, Long courseId, String paperName, String userId, String userName) throws Exception;
+		
 	//删除试卷
 	public void deletePaper(Long id);
 	
 	// 查询试卷列表,供试卷选题
-	public Page<Paper> findPaper(String courseId);
+	public Page<Paper> findPaper(Long courseId);
 }

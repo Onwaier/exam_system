@@ -72,7 +72,7 @@
 				<div class="sidebar-nav navbar-collapse">
 					<ul class="nav" id="side-menu">
 						<li><a href="${pageContext.request.contextPath }/question/list.action"><i
-								class="fa fa-edit fa-fw"></i> 题库管理</a></li>
+								class="fa fa-edit fa-fw"></i> 题目管理</a></li>
 						<li><a href="${pageContext.request.contextPath }/paper/list.action"  class="active"><i
 								class="fa fa-dashboard fa-fw"></i> 试卷管理</a></li>
 					</ul>
@@ -92,12 +92,7 @@
 	                </li>
 	                <li role="presentation" class="step2">
 	                    <a href="#createTest2" aria-controls="create2" role="tab" data-toggle="">
-	                        第二步:添加试题
-	                    </a>
-	                </li>
-	                <li role="presentation" class="step3">
-	                    <a href="#createTest3" aria-controls="create3" role="tab" data-toggle="">
-	                        第三步:保存生成试卷
+	                        第二步:添加试题并生成试卷
 	                    </a>
 	                </li>
             	</ul>
@@ -106,30 +101,36 @@
 			<div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="createTest1">
                 	<form action="${pageContext.request.contextPath }/paper/manualadd.action"   name="form"  method="post" id="subForm">
+                		<div class="infoRow username">
+                            <span class="intro title">创建人：&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <input class = "userName" type="text" name="userName" value="" readonly="readonly"/>
+                            <span class="f-style4">*</span>
+                        </div>
+                        <div class="infoRow userId" style="display:none">
+                            <span class="intro title">创建人Id：&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <input class = "userId" type="text" name="userId" value="" readonly="readonly"/>
+                            <span class="f-style4">*</span>
+                        </div>
                         <div class="infoRow paperName">
                             <span class="intro title">试卷名称：</span>
                             <input type="text" name="paperName" placeholder="请输入试卷名称" value="" />
                             <span class="f-style4">*</span>
                         </div>
-						<div class="form-group">
-							<label for="custIndustry">试卷名称</label> 
+						<div class="infoRow courseName">
+							<span class = "intro courseName">科目名称：</span> 
 							<select	class="form-control" id="courseName"  name="courseName">
 								<option value="">--请选择--</option>
 								<c:forEach items="${course}" var="item">
 									<option value="${item.courseName}">${item.courseName}</option>					
 								</c:forEach>
 							</select>
+							<span class="f-style4">*</span>
 						</div>
 
                         <div class="infoRow paperType">
                             <span class="intro title">组卷方式：</span>
-                            <input type="radio" class="hidden"  name="paperType" id="paperByChapter" value="章节出题" checked="true">
-                			<label for="paperByChapter" class="btn btn-border-gray" title="勾选想出的题生成一份试卷">章节出题</label>
-                            <input type="radio" class="hidden"  name="paperType" id="paperByPapers" value="试卷出题">
-                            <label for="paperByPapers" class="btn btn-border-gray" title="勾选想出的题生成一份试卷">试卷出题</label>
-                            <input type="radio" class="hidden"  name="paperType" id="paperBySmart" value="智能出题">
-                            <label for="paperBySmart" class="btn btn-border-gray"title="勾选想出的题生成一份试卷" >
-                            智能出题</label>  
+                            <input type="radio" class="hidden"  name="paperType" id="paperByChapter" value="章节出题和试卷出题" checked="true">
+                			<label for="paperByChapter" class="btn btn-border-gray" title="根据章节选题生成一份试卷或者从试卷中选题生成一份试卷">章节出题和试卷出题</label>
                         </div>
                                 
                         <input type="text" class="hidden" name="add_style"> 
@@ -164,160 +165,30 @@
 	<!-- Custom Theme JavaScript -->
 	<script src="<%=basePath%>/js/sb-admin-2.js"></script>
 	
+
+
+
+	
 	<script type="text/javascript">
-		function editCustomer(id) {
-			$.ajax({
-				type:"get",
-				url:"./customer/edit.action",
-				data:{"id":id},
-				success:function(data) {
-					$("#edit_cust_id").val(data.cust_id);
-					$("#edit_customerName").val(data.cust_name);
-					$("#edit_customerFrom").val(data.cust_source)
-					$("#edit_custIndustry").val(data.cust_industry)
-					$("#edit_custLevel").val(data.cust_level)
-					$("#edit_linkMan").val(data.cust_linkman);
-					$("#edit_phone").val(data.cust_phone);
-					$("#edit_mobile").val(data.cust_mobile);
-					$("#edit_zipcode").val(data.cust_zipcode);
-					$("#edit_address").val(data.cust_address);
-					
-				}
-			});
-		}
-		function updateCustomer() {
-			$.post("./customer/update.action",$("#edit_customer_form").serialize(),function(data){
-				alert("客户信息更新成功！");
-				window.location.reload();
-			});
-		}
-		
-		function deleteCustomer(id) {
-			if(confirm('确实要删除该客户吗?')) {
-				$.post("./customer/delete.action",{"id":id},function(data){
-					alert("客户删除更新成功！");
-					window.location.reload();
-				});
-			}
-		}
-	</script>
-
-<!-- 实现题目显示的每一列拉伸 -->
-	<script type = "text/javascript">
-		var tTD; //用来存储当前更改宽度的Table Cell,避免快速移动鼠标的问题 
-		var table = document.getElementById("quesTable"); 
-		for (j = 0; j < table.rows[0].cells.length; j++) { 
-			table.rows[0].cells[j].onmousedown = function () { 
-				//记录单元格 
-				tTD = this; 
-				if (event.offsetX > tTD.offsetWidth - 10) { 
-				tTD.mouseDown = true; 
-				tTD.oldX = event.x; 
-				tTD.oldWidth = tTD.offsetWidth; 
-				} 
-			}; 
-			table.rows[0].cells[j].onmouseup = function () { 
-				//结束宽度调整 
-				if (tTD == undefined) tTD = this; 
-				tTD.mouseDown = false; 
-				tTD.style.cursor = 'default'; 
-				}; 
-			table.rows[0].cells[j].onmousemove = function () { 
-				//更改鼠标样式 
-				if (event.offsetX > this.offsetWidth - 10) 
-				this.style.cursor = 'col-resize'; 
-				else 
-				this.style.cursor = 'default'; 
-				//取出暂存的Table Cell 
-				if (tTD == undefined) tTD = this; 
-				//调整宽度 
-				if (tTD.mouseDown != null && tTD.mouseDown == true) { 
-					tTD.style.cursor = 'default'; 
-					if (tTD.oldWidth + (event.x - tTD.oldX)>0) 
-					tTD.width = tTD.oldWidth + (event.x - tTD.oldX); 
-					//调整列宽 
-					tTD.style.width = tTD.width; 
-					tTD.style.cursor = 'col-resize'; 
-					//调整该列中的每个Cell 
-					table = tTD; while (table.tagName != 'TABLE') table = table.parentElement; 
-					for (j = 0; j < table.rows.length; j++) { 
-					table.rows[j].cells[tTD.cellIndex].width = tTD.width; 
-					}
-				} 
-			}; 
-		} 
-
-	</script>
-	
-	
-	<!-- jquery快速实现全局搜索表格内容 -->
-	<script type = "text/javascript">
-		$(function () {
-		$("#searchbox").keyup(function () { 
-			$("table tbody tr").hide() .filter(":contains('"+($(this).val())+"')").show();//filter和contains共同来实现了这个功能。 
-			}).keyup(); 
-		}); 
-	</script>
-		
-
-<!--   批量删除与编辑题目 -->
-	<script type = "text/javascript">
-		function deleteQuestion(id){
-			if(confirm('确实要删除该题目吗?')) {
-				$.post("./question/delete.action",{"id":id},function(data){
-					alert("题目删除成功！");
-					window.location.reload();
-				});
-			}
-		}
-		$("#batchDelete").click(function(e){
-			var questionItems = $(".questionItem");
-			var cnt = 0;
-			var idArray = [];
-			for(var i = 0; i < questionItems.length; ++i){
-				if($(questionItems[i]).prop("checked") == true){
-					var id = parseInt($(questionItems[i]).val());
-					idArray.push(id);
-					++cnt;
-				}
-			}
-			if(cnt == 0){
-				alert("请选择题目！");
-			}
-			else if(confirm('确实要删除已选中的' + cnt + '道题目吗?')) {
-				for(var i = 0; i < idArray.length; ++i){
-					$.post("./question/delete.action",{"id":idArray[i]},function(data){
-					});
-				}
-				alert("删除成功");
-				window.location.reload();
-			}
+	$(document).ready(function(){
+		$.ajax({
+		    type: "get",
+		    url: "${pageContext.request.contextPath }/login/getUserName.action",
+		    dataType: "json",
+		  	success: function (result) { 
+		  		var activeUser = JSON.stringify(result);//解析json
+		  		var user = eval(activeUser);//转成对象
+				console.log("user:" + user);
+		  		console.log("userId:" + user[0].userid);
+				$(".userName").val(user[0].username);
+				$(".userId").val(user[0].userid);
+		    },
+		    failure: function (result) { 
+				console.log("请求失败");
+			}  
 		});
-		$("#batchEdit").click(function(e){
-			var questionItems = $(".questionItem");
-			var cnt = 0;
-			var idArray = [];
-			for(var i = 0; i < questionItems.length; ++i){
-				if($(questionItems[i]).prop("checked") == true){
-					var id = parseInt($(questionItems[i]).val());
-					idArray.push(id);
-					++cnt;
-				}
-			}
-			if(cnt == 0){
-				alert("请选择题目！");
-			}
-			else
-			{
-				var str = "./question/batchEdit.action?qids[]=" + idArray[0];
-				for(var i = 1; i < idArray.length; ++i){
-					var tmp = "&qids[]=" + idArray[i];
-					str += tmp;
-				}
-				alert(str);
-				window.location.href = str;
-			}
-		})
+		 
+	});
 	</script>
 	
 

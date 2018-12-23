@@ -23,8 +23,25 @@ public class Question {
 	private String analysis;
 	private String knowPoint;
 	private String pictureUrl;
+	private String score;
+	private String spendTime;
 	
-	
+	public String getScore() {
+		return score;
+	}
+
+	public void setScore(String score) {
+		this.score = score;
+	}
+
+	public String getSpendTime() {
+		return spendTime;
+	}
+
+	public void setSpendTime(String spendTime) {
+		this.spendTime = spendTime;
+	}
+
 	public String getPictureUrl() {
 		return pictureUrl;
 	}

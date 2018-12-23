@@ -29,7 +29,7 @@ import cn.itcast.core.bean.Question;
 import cn.itcast.core.bean.SysUser;
 import cn.itcast.core.service.CustomerService;
 import cn.itcast.core.service.SysService;
-
+import net.sf.json.JSONArray;
 import cn.itcast.core.service.QuestionService;
 
 import java.io.File;
@@ -108,5 +108,17 @@ public class LoginController {
 			
 		}
 	
+		//获取当前登陆用户的名称
+		@RequestMapping("/login/getUserName")
+		@ResponseBody
+		public String getUserName()throws Exception {
+			System.out.println("/login/getUserName");
+			ActiveUser activeUser  = (ActiveUser)SecurityUtils.getSubject().getPrincipal(); 
+			JSONArray json = JSONArray.fromObject(activeUser);//将java对象转换为json对象
+			String str = json.toString();//将json对象转换为字符串
+			System.out.println(str);
+			return str;
+
+		}
 
 }

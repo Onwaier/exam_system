@@ -21,13 +21,16 @@ public interface QuestionService {
 	//添加问题
 	public Boolean addQuestion(Long qid, String subject, String type, String optionA, String optionB, String optionC, String optionD,  String optionE, String optionF, String optionG, 
 			String answerOption, String answerJudge, String[] answerFill, String answerCloze, 
-			String courseName, String analysis, String chapter, String knowPoint, String difficulty, String pictureUrl);
+			String courseName, String analysis, String chapter, String knowPoint, String difficulty, String pictureUrl, String score, String spendTime);
 	
 //	用word导入题目到数据库
 	public void addQuestionByword(String position) throws IOException;
 
-	//根据多个id查询题目列表
+	//根据多个id查询题目列表(自动排序)
 	public Page<Question> findQuestionListByIds(Integer page, Integer rows, Long[] qids);
+	
+	//根据多个id查询题目列表(按照原序)
+	public Page<Question> findQuestionListByIdsOriginOrder(Integer page, Integer rows, Long[] qids);
 
 	//更新题目
 	public void updateQuestion(String qid, String subject, String type, String optionA, String optionB, String optionC,

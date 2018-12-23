@@ -3,11 +3,12 @@ package cn.itcast.core.bean;
 public class Paper {
 	private Long id;
 	private String title;
-	private String courseId;
+	private Long courseId;
 	private String courseName;
 	private String joinTime;
 	private String questionSet;
 	private String userId;
+	private String userName;
 	private Integer scoreAve;
 	private Integer typeNum;
 	private String typeScore;
@@ -31,11 +32,11 @@ public class Paper {
 		this.title = title;
 	}
 
-	public String getCourseId() {
+	public Long getCourseId() {
 		return courseId;
 	}
 
-	public void setCourseId(String courseId) {
+	public void setCourseId(Long courseId) {
 		this.courseId = courseId;
 	}
 
@@ -109,6 +110,14 @@ public class Paper {
 
 	public void setCourseName(String courseName) {
 		this.courseName = courseName;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 }

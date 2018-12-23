@@ -101,15 +101,14 @@ public class PaperServiceImpl implements PaperService {
 	public static ResultSet rs;
 	
 //	查询试卷列表
-	public Page<Paper> findPaperList(Integer page, Integer rows, Long qid) {
+	public Page<Paper> findPaperList(Integer page, Integer rows, Long qid, Long courseId) {
 		Paper paper = new Paper();
 		
 		
 		paper.setId(qid);
-		
-
-		
-		System.out.println("\nfindPaperList: " + paper.getId());
+		if(courseId != null)
+			paper.setCourseId(courseId);
+		System.out.println("\nfindPaperList: " + paper.getCourseId());
 		
 		//当前页
 		paper.setStart((page-1) * rows) ;
@@ -131,7 +130,7 @@ public class PaperServiceImpl implements PaperService {
 	
 	//查询试卷列表，供试卷选题
 	@Override
-	public Page<Paper> findPaper(String courseId){
+	public Page<Paper> findPaper(Long courseId){
 		Paper paper = new Paper();
 		
 		paper.setCourseId(courseId);
@@ -217,6 +216,7 @@ public class PaperServiceImpl implements PaperService {
         			}
         		}
         	}
+        	
 //        	for(int j = 1; j < chapterKnowpoint.length; ++j){
 //        		question.setKnowPoint(chapterKnowpoint[j]);
 //        		//查询题目列表
@@ -226,6 +226,10 @@ public class PaperServiceImpl implements PaperService {
 //        		questions.addAll(questionTemp);
 //        	}
         }
+        
+        for(int i = 0; i < questions.size(); ++i){
+        	System.out.println("question: " + questions.get(i).getSubject() + "\t" + questions.get(i).getType());
+        }	
 		
 //		//查询题目列表
 //		List<Question> questions = paperDao.selectQuestionList(question);
@@ -258,45 +262,47 @@ public class PaperServiceImpl implements PaperService {
 	}
 	
 	//保存试卷到数据库并生成试卷到word中供下载，返回存储位置
-	@Override
-	public String paperSave(Long[] qids, String courseId, String paperName) throws Exception{
-		Paper paper = new Paper();
-		SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String datetime = tempDate.format(new java.util.Date());  
-		
-		System.out.println("paperQuestionId: ");
-		for(int i = 0; i < qids.length; ++i){
-			System.out.println(qids[i]);
+		@Override
+		public String paperSave(Long[] qids, Long courseId, String paperName, String userId, String userName) throws Exception{
+			Paper paper = new Paper();
+			SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String datetime = tempDate.format(new java.util.Date());  
+			
+			System.out.println("paperQuestionId: ");
+			for(int i = 0; i < qids.length; ++i){
+				System.out.println(qids[i]);
+			}
+			
+			paper.setId(worker2.nextId());
+			paper.setTitle(paperName);
+			String Set = Arrays.toString(qids);
+			Set = Set.replace(", ", "#");
+			paper.setCourseId(courseId);
+			paper.setQuestionSet(Set.substring(1, Set.length()-1));
+			paper.setJoinTime(datetime);
+			paper.setUserId(userId);
+			paper.setUserName(userName);
+			System.out.println("paperSave id: " + paper.getId() + "   paperName: " + paper.getTitle() + "   courseId: " + paper.getCourseId() + "   questionSet: " + paper.getQuestionSet() + "   joinTime: " + paper.getJoinTime() + "   userId: " + paper.getUserId());
+			paperDao.savePaper(paper);
+			
+			List<Question> questions = new ArrayList();
+					for(int i = 0; i < qids.length; ++i){
+						Question question = paperDao.selectQuestionListById(qids[i]);
+						questions.add(question);
+					}
+			String paperString = questionToWord(questions); //将试题生成到word试卷中
+			
+//			return "/paper";
+			return paperString;
+			
 		}
-		
-		paper.setId(worker2.nextId());
-		paper.setTitle(paperName);
-		String Set = Arrays.toString(qids);
-		Set = Set.replace(", ", "#");
-		paper.setCourseId(courseId);
-		paper.setQuestionSet(Set.substring(1, Set.length()-1));
-		paper.setJoinTime(datetime);
-		
-		System.out.println("paperSave id: " + paper.getId() + "   paperName: " + paper.getTitle() + "   courseId: " + paper.getCourseId() + "   questionSet: " + paper.getQuestionSet() + "   joinTime: " + paper.getJoinTime());
-		paperDao.savePaper(paper);
-		
-		List<Question> questions = new ArrayList();
-				for(int i = 0; i < qids.length; ++i){
-					Question question = paperDao.selectQuestionListById(qids[i]);
-					questions.add(question);
-				}
-		String paperString = questionToWord(questions); //将试题生成到word试卷中
-		
-//		return "/paper";
-		return paperString;
-		
-	}
 	
 	
 	//将试题生成到word试卷中
 	public String questionToWord(List<Question> questions) throws Exception{
 		//题目类型
-		String[] questionType = {"一,单选题", "二,多选题", "三,填空题"};
+		String[] questionType = {"一,单选题", "二,多选题", "三,判断题", "四,填空题", "五,问答题", "六,简述题", "七,名词解释"};
+		
 		String paperPath = "D:\\";
 		String wordName = UUID.randomUUID() + "_" + "paper.docx";
 		
@@ -333,7 +339,8 @@ public class PaperServiceImpl implements PaperService {
         	while(questions.get(i).getType().equals("单选题")){
         		int questionNum = 1;
         		if(typeFlag) {
-        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[0]);
+        			//template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[0]);
+        			examTitle(template,questionType[0],false);
         			typeFlag = false;
         		}
         		
@@ -414,7 +421,7 @@ public class PaperServiceImpl implements PaperService {
         	
         	//录入填空题
         	typeFlag = true;
-        	while(questions.get(i).getType().equals("填空题")){
+        	while(questions.get(i).getType().equals("判断题")){
         		int questionNum = 1;
         		if(typeFlag) {
         			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[2]);
@@ -427,6 +434,75 @@ public class PaperServiceImpl implements PaperService {
         		if(i >= len){ fileEnd = true; break; }
         		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
         	}
+        	if(fileEnd) break;
+        	
+        	//录入填空题
+        	typeFlag = true;
+        	while(questions.get(i).getType().equals("填空题")){
+        		int questionNum = 1;
+        		if(typeFlag) {
+        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[3]);
+        			typeFlag = false;
+        		}
+        		
+        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum++) + "、" + (questions.get(i).getSubject()));
+            	
+        		++i;
+        		if(i >= len){ fileEnd = true; break; }
+        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
+        	}
+        	if(fileEnd) break;
+        	
+        	//录入填空题
+        	typeFlag = true;
+        	while(questions.get(i).getType().equals("问答题")){
+        		int questionNum = 1;
+        		if(typeFlag) {
+        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[4]);
+        			typeFlag = false;
+        		}
+        		
+        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum++) + "、" + (questions.get(i).getSubject()));
+            	
+        		++i;
+        		if(i >= len){ fileEnd = true; break; }
+        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
+        	}
+        	if(fileEnd) break;
+        	
+        	//录入填空题
+        	typeFlag = true;
+        	while(questions.get(i).getType().equals("简述题")){
+        		int questionNum = 1;
+        		if(typeFlag) {
+        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[5]);
+        			typeFlag = false;
+        		}
+        		
+        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum++) + "、" + (questions.get(i).getSubject()));
+            	
+        		++i;
+        		if(i >= len){ fileEnd = true; break; }
+        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
+        	}
+        	
+        	//录入填空题
+        	typeFlag = true;
+        	while(questions.get(i).getType().equals("名次解释")){
+        		int questionNum = 1;
+        		if(typeFlag) {
+        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[6]);
+        			typeFlag = false;
+        		}
+        		
+        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum++) + "、" + (questions.get(i).getSubject()));
+            	
+        		++i;
+        		if(i >= len){ fileEnd = true; break; }
+        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
+        	}
+        	if(fileEnd) break;
+        	
         }
     	
         	

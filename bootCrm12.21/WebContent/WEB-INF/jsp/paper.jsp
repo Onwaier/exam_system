@@ -71,7 +71,7 @@
 			<div class="sidebar-nav navbar-collapse">
 				<ul class="nav" id="side-menu">
 					<li><a href="${pageContext.request.contextPath }/question/list.action"><i
-							class="fa fa-edit fa-fw"></i> 题库管理</a></li>
+							class="fa fa-edit fa-fw"></i> 题目管理</a></li>
 					<!-- 有paper:query权限才修改链接 ，没有该权限不显示-->
 					<shiro:hasPermission name="paper:query">
 					<li><a href="${pageContext.request.contextPath }/paper/list.action"  class="active"><i
@@ -93,6 +93,9 @@
 					<button onclick="window.location.href='${pageContext.request.contextPath }/paper/add.action'" class="btn btn-default" type="button">
 						创建试卷
 					</button>
+					<button class="btn btn-default" type="button" id = "batchDelete">
+						批量删除
+					</button>
 					</shiro:hasPermission>
 				</div>
 				<div class = "search pull-right">
@@ -104,7 +107,7 @@
 							</button>
 						</span>
 					</div><!-- /input-group -->
-					<p class="form-control-static" data-toggle="modal" data-target="#questionEditDialog" onclick="editCustomer(1)">
+					<p class="form-control-static" data-toggle="modal" data-target="#questionEditDialog" onclick="editCustomer(1)" style = "display:none">
 			        	高级搜索
 			        	<b class="caret"></b>
 			        </p>
@@ -115,70 +118,65 @@
 	</div>
 	<!-- /.row -->
 			
-	<div class="panel panel-default" style="display: none;">
-		<div class="panel-body">
-			<form class="form-inline" action="${pageContext.request.contextPath }/question/list.action" method="get" >
-			<div class="form-group">
-					<label for="questionFrom">题型</label> 
-					<select  id="questionType" name="type" onchange="show_sub()"> 
-						<option value="0">--请选择--</option>
-						<option value="单选题">单选题</option>
-						<option value="多选题">多选题</option>
-						<option value="判断题">判断题</option>
-						<option value="填空题">填空题</option>
-						<option value="问答题">问答题</option>
-						<option value="简述题">简述题</option>
-						<option value="名词解释">名词解释</option>		    
- 					</select> 
-			</div>
-			<button type="submit" class="btn btn-primary">查询</button>
-		</form>			
-		</div>
-	</div>	
 	
-					
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">试卷信息列表</div>
-						<!-- /.panel-heading -->
-						<table class="table table-bordered table-striped table-hover" id = "quesTable">
-							<thead>
-								<tr>
-									<th><input type = "checkbox" class = "paperItemTotal" value = "" name = "papers"/></th>
-									<th>试卷标题</th>
-									<th>科目</th>
-									<th>出题时间</th>
-									<th>出题人</th>
-									<th>操作</th>
-								</tr>
-							</thead>
-							<tbody>
-								<c:forEach items="${page.rows}" var="row">
-									<tr>
-										<td><input type = "checkbox" class = "paperItem" value = "" name = "paper"/></td>
-										<td>${row.title}</td>
-										<td>${row.courseName}</td>
-										<td>${row.joinTime}</td>
-										<td>${row.userId}</td>
-										<td>
-											<a onclick="preview('${row.questionSet}')"><i class="fa fa-eye fa-fw"></i></a> 
-											<a onclick="deletePaper(${row.id})"><i class="fa fa-trash" aria-hidden="true"></i></a>
-										</td>
-									</tr>
+				
+	<div class="row">
+		  <div class="col-lg-12">
+		  		<form class="form-inline" action="${pageContext.request.contextPath }/paper/list.action" method="get">
+				   <div class="form-group">
+							<label for="custIndustry">科目</label> 
+							<select	class="form-control" id="courseName"  name="courseName">
+								<option value="">--请选择--</option>
+								<c:forEach items="${course}" var="item">
+									<option value="${item.courseName}"<c:if test="${item.courseName == courseName}"> selected</c:if>>${item.courseName}</option>					
 								</c:forEach>
-							</tbody>
-						</table>
-							
-						<div class="col-md-12 text-right">
-							<itcast:page url="${pageContext.request.contextPath }/question/list.action" />
-						</div>
-						<!-- /.panel-body -->
+								
+<%-- 								<c:forEach items="${levelType}" var="item"> --%>
+<%-- 									<option value="${item.dict_id}"<c:if test="${item.dict_id == custLevel}"> selected</c:if>>${item.dict_item_name }</option> --%>
+<%-- 								</c:forEach> --%>
+							</select>
 					</div>
-					<!-- /.panel -->
+					<button type="submit" class="btn btn-primary">查询</button>
+				</form>
+				<div class="panel panel-default">
+					<div class="panel-heading">试卷信息列表</div>
+					<!-- /.panel-heading -->
+					<table class="table table-bordered table-striped table-hover" id = "quesTable">
+						<thead>
+							<tr>
+								<th><input type = "checkbox" class = "paperItemTotal" value = "" name = "papers"/></th>
+								<th>试卷标题</th>
+								<th>科目</th>
+								<th>出题时间</th>
+								<th>出题人</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${page.rows}" var="row">
+								<tr>
+									<td><input type = "checkbox" class = "paperItem" value = "${row.id }" name = "paper"/></td>
+									<td>${row.title}</td>
+									<td>${row.courseName}</td>
+									<td>${row.joinTime}</td>
+									<td>${row.userName}</td>
+									<td>
+										<a onclick="preview('${row.questionSet}')"><i class="fa fa-eye fa-fw"></i></a> 
+										<a onclick="deletePaper('${row.userId}')"><i class="fa fa-trash" aria-hidden="true"></i></a>
+									</td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+						
+					<div class="col-md-12 text-right">
+						<itcast:page url="${pageContext.request.contextPath }/paper/list.action" />
+					</div>
+					<!-- /.panel-body -->
 				</div>
-				<!-- /.col-lg-12 -->
-			</div>
+		</div>
+		<!-- /.col-lg-12 -->
+	</div>
 </div>
 		<!-- /#page-wrapper -->
 
@@ -300,66 +298,7 @@
 	</script>
 		
 
-<!--   批量删除与编辑题目 -->
-	<script type = "text/javascript">
-		function deleteQuestion(id){
-			if(confirm('确实要删除该题目吗?')) {
-				$.post("./question/delete.action",{"id":id},function(data){
-					alert("题目删除成功！");
-					window.location.reload();
-				});
-			}
-		}
-		$("#batchDelete").click(function(e){
-			var questionItems = $(".questionItem");
-			var cnt = 0;
-			var idArray = [];
-			for(var i = 0; i < questionItems.length; ++i){
-				if($(questionItems[i]).prop("checked") == true){
-					var id = parseInt($(questionItems[i]).val());
-					idArray.push(id);
-					++cnt;
-				}
-			}
-			if(cnt == 0){
-				alert("请选择题目！");
-			}
-			else if(confirm('确实要删除已选中的' + cnt + '道题目吗?')) {
-				for(var i = 0; i < idArray.length; ++i){
-					$.post("./question/delete.action",{"id":idArray[i]},function(data){
-					});
-				}
-				alert("删除成功");
-				window.location.reload();
-			}
-		});
-		$("#batchEdit").click(function(e){
-			var questionItems = $(".questionItem");
-			var cnt = 0;
-			var idArray = [];
-			for(var i = 0; i < questionItems.length; ++i){
-				if($(questionItems[i]).prop("checked") == true){
-					var id = parseInt($(questionItems[i]).val());
-					idArray.push(id);
-					++cnt;
-				}
-			}
-			if(cnt == 0){
-				alert("请选择题目！");
-			}
-			else
-			{
-				var str = "./question/batchEdit.action?qids[]=" + idArray[0];
-				for(var i = 1; i < idArray.length; ++i){
-					var tmp = "&qids[]=" + idArray[i];
-					str += tmp;
-				}
-				alert(str);
-				window.location.href = str;
-				window.open(str);//新窗口打开预览界面
-			}
-		})
-	</script>
+
 	
 	<!-- 预览试卷 -->
 	<script type="text/javascript">
@@ -382,16 +321,97 @@
 	
 	</script>
 	
-	<!-- 删除试卷 -->
+	<!-- 删除试卷与批量删除 -->
 	<script type="text/javascript">
-	function deletePaper(id){
-		if(confirm('确实要删除该试卷吗?')) {
-			$.post("<%=basePath%>/paper/delete.action",{"id":id},function(data){
-				alert("试卷删除成功！");
-				window.location.reload();
-			});
-		}
+	function deletePaper(userId){
+		var nowUserId ="";
+		$.ajax({
+		    type: "get",
+		    url: "${pageContext.request.contextPath }/login/getUserName.action",
+		    dataType: "json",
+		  	success: function (result) { 
+		  		var activeUser = JSON.stringify(result);//解析json
+		  		var user = eval(activeUser);//转成对象
+		  		nowUserId = user[0].userid;
+		  		console.log("userId:" + userId);
+				console.log("nowUserId:" + nowUserId);
+				if(nowUserId != userId){
+					alert("你无权限删除其它用户创建的试卷！")
+				}
+				else{
+					if(confirm('确实要删除该试卷吗?')) {
+						$.post("<%=basePath%>/paper/delete.action",{"id":id},function(data){
+							alert("试卷删除成功！");
+							window.location.reload();
+						});
+					}
+				}
+		    },
+		    failure: function (result) { 
+				console.log("请求失败");
+			}  
+		});
+		
 	}
+	$("#batchDelete").click(function(e){
+		var paperItems = $(".paperItem");
+		var cnt = 0;
+		var idArray = [];
+		for(var i = 0; i < paperItems.length; ++i){
+			if($(paperItems[i]).prop("checked") == true){
+				var id = parseInt($(paperItems[i]).val());
+				idArray.push(id);
+				++cnt;
+			}
+		}
+		if(cnt == 0){
+			alert("请选择题目！");
+		}
+		else if(confirm('确实要删除已选中的' + cnt + '道题目吗?')) {
+			for(var i = 0; i < idArray.length; ++i){
+				$.post("<%=basePath%>paper/delete.action",{"id":idArray[i]},function(data){
+				});
+			}
+			alert("删除成功");
+			window.location.reload();
+		}
+	});
+	</script>
+	
+	<!-- 全选全不选 以及级联-->
+	<script type = "text/javascript">
+		$(".paperItemTotal").click(function(e){
+			var paperItems = $(".paperItem");
+			if($(this).prop("checked") == true){
+				for(var i = 0; i < paperItems.length; ++i){
+					$(paperItems[i]).prop("checked", true);
+				}
+			}
+			else{
+				for(var i = 0; i < paperItems.length; ++i){
+					$(paperItems[i]).prop("checked", false);
+				}
+			}
+		});
+		$(".paperItem").click(function(e){
+			var paperItems = $(".paperItem");
+			var flag = true;
+			for(var i = 0; i < paperItems.length; ++i){
+				if($(paperItems[i]).prop("checked") == false){
+					flag = false;
+					break;
+				}
+			}
+			if(flag){
+				$(".paperItemTotal").prop("checked", true);
+			}
+			else{
+				$(".paperItemTotal").prop("checked", false);
+			}
+		});
+		
+	</script>
+	
 	</script>
 </body>
 
