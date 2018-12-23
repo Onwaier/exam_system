@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.ContextLoader;
 import org.springframework.web.multipart.MultipartFile;
 
 import cn.itcast.common.utils.Page;
@@ -32,7 +33,7 @@ import java.io.File;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
-
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -58,6 +59,8 @@ public class QuestionController {
 	
 //	保存题目图片的位置
 	private String pictureUrl = "";
+	private String lastPictureUrl = ""; //存储当前待编辑题目的图片
+	private int index = 0;
 	boolean flag = true; //第一张图片的标识
 	
 	// 依赖注入
@@ -101,70 +104,64 @@ public class QuestionController {
 			String answerOption, String answerJudge, @RequestParam(value = "answerFill[]", required = false, defaultValue = "") String[] answerFills, String answerCloze, 
 			String courseName, String analysis, String chapter, String knowPoint, String difficulty, @RequestParam(value = "uploadfile", required = false, defaultValue = "")List<MultipartFile> uploadfile, HttpServletRequest request) {
 		
+		String[] pic = new String[5];
 		System.out.println("\n/question/add " + "  answerOption: " + answerOption + "   answerJudge: " + answerJudge + "   answerCloze: " + answerCloze);
 	
 		
 //		处理题目中的图片
 		// 如果上传文件存在
-				if (!uploadfile.isEmpty() && uploadfile.size() > 0) {
-					// 遍历文件
-					for (MultipartFile file : uploadfile) {
+		if (!uploadfile.isEmpty() && uploadfile.size() > 0) {
+			// 遍历文件
+			for (MultipartFile file : uploadfile) {
 
-						// 获取上传文件的名称
-						String originalFilename = file.getOriginalFilename();
-						System.out.println("文件名："+originalFilename);
+				// 获取上传文件的名称
+				String originalFilename = file.getOriginalFilename();
+				System.out.println("文件名："+originalFilename);
 
-						// 设置上传文件保存的地址目录
-						String dirpath = request.getServletContext().getRealPath("/images");
-
-						File filepath = new File(dirpath);
-						// 如果保存文件的目录不存在，创建upload文件夹
-						if (!filepath.exists()) {
-							filepath.mkdirs();
-						}
-						// 使用UUID重新命名上传文件的名称
-//						String newFilename = name + "_" + UUID.randomUUID() + "_" + originalFilename;
-						String newFilename = UUID.randomUUID() + "_" + originalFilename;
-		                System.out.println(newFilename);
-						try {
-							// 使用MultipartFile的方法将文件上传到指定位置
-							file.transferTo(new File(dirpath +File.separator+ newFilename));
-							System.out.println("目标路径："+dirpath +File.separator+ newFilename);
-							
-							
-							if(originalFilename.equals("")){
-								if(flag){
-									pictureUrl = "null"  + "#";
-									flag = false;
-								}else{
-									pictureUrl = pictureUrl + "null" + "#";
-								}
-								
-							}else{
-								if(flag){
-									pictureUrl = new String(dirpath +File.separator+ newFilename) + "#";
-									flag = false;
-								}else{
-									pictureUrl = pictureUrl + new String(dirpath +File.separator+ newFilename) + "#";
-								}
-								
-							}
-							
-						} catch (Exception e) {
-
-							e.printStackTrace();
-							return "error";
-
-						}
-					}
+				// 设置上传文件保存的地址目录
+				String dirpath = request.getServletContext().getRealPath("");
+				String[] temp = dirpath.split("\\\\");
+				int mark = dirpath.indexOf(".metadata");
+				dirpath = dirpath.substring(0, mark) + temp[temp.length-1];
+				System.out.println(dirpath);
+				File filepath = new File(dirpath);
+				// 如果保存文件的目录不存在，创建upload文件夹
+				if (!filepath.exists()) {
+					filepath.mkdirs();
 				}
+				// 使用UUID重新命名上传文件的名称
+//						String newFilename = name + "_" + UUID.randomUUID() + "_" + originalFilename;
+				String newFilename = UUID.randomUUID() + "_" + originalFilename;
+                System.out.println(newFilename);
+				try {
+					System.out.println("目标路径："+dirpath + "\\WebContent\\image\\questionImg" +File.separator+ newFilename);
+					
+					if(originalFilename.equals("")){
+						pic[index] = "null"; ++index;
+					}
+					else{
+						// 使用MultipartFile的方法将文件上传到指定位置
+						file.transferTo(new File(dirpath + "\\WebContent\\images\\questionImg" + File.separator+ newFilename));
+						pic[index] = dirpath + "\\WebContent\\images\\questionImg" + File.separator+ newFilename; ++index;
+					}
+					
+				} catch (Exception e) {
+
+					e.printStackTrace();
+					return "error";
+
+				}
+			}
+		}
 		
-		
+		index = 0;
+		pictureUrl = pic[0] + '&' + pic[1];
 		System.out.println("/question/add  qid: " + qid + "  optionA: " + optionE + "  optionE: " + optionE + "   type: " + type + "   difficulty: " + difficulty + "  position: " + pictureUrl + "\n");
 		
 		questionService.addQuestion(qid, subject, type, optionA, optionB, optionC, optionD, optionE, optionF, optionG, 
 				answerOption,  answerJudge, answerFills, answerCloze, courseName,  analysis,  chapter,  knowPoint,  difficulty, pictureUrl);
 		pictureUrl = null; //这里应该不会有内存泄漏
+		index = 0;
 		flag = true;
 		
 		return "addQuestion";
@@ -219,6 +216,7 @@ public class QuestionController {
 
 				// 设置上传文件保存的地址目录
 				String dirpath = request.getServletContext().getRealPath("/images");
+				
 
 				File filepath = new File(dirpath);
 				// 如果保存文件的目录不存在，创建upload文件夹
@@ -382,9 +380,17 @@ public class QuestionController {
 		System.out.println(" qid: " + qid + "\n");
 		Page<Question> questions = questionService.findQuestionList(page, rows, qid, subject, type);
 		
+		if(StringUtils.isNotBlank(questions.getRows().get(0).getPictureUrl())){
+			lastPictureUrl = questions.getRows().get(0).getPictureUrl();
+			String[] pic = questions.getRows().get(0).getPictureUrl().split("&");
+			String[] subjectPic = pic[0].split("\\\\");
+			String[] answerPic = pic[1].split("\\\\");
+			model.addAttribute("subjectPic", subjectPic[subjectPic.length-1]);
+			model.addAttribute("answerPic", answerPic[answerPic.length-1]);
+		}
+		
 		model.addAttribute("page", questions);
-
-
+		
 
 
 		return "editQuestion";
@@ -433,11 +439,79 @@ public class QuestionController {
 		@RequestMapping(value = "/question/update", method={RequestMethod.POST})
 		public String questionUpdate(String qid, String subject, String type, String optionA, String optionB, String optionC, String optionD,  String optionE, String optionF, String optionG, 
 				String answerOption, String answerJudge, @RequestParam(value = "answerFill[]", required = false, defaultValue = "") String[] answerFills, String answerCloze, 
-				String courseName, String analysis, String chapter, String knowPoint, String difficulty) {
-			System.out.println("/question/update");
+				String courseName, String analysis, String chapter, String knowPoint, String difficulty, String deleteSubjectPic, String deleteAnswerPic, @RequestParam(value = "uploadfile", required = false, defaultValue = "")List<MultipartFile> uploadfile, HttpServletRequest request) {
+			System.out.println("/question/update: " + deleteSubjectPic + "   " + deleteAnswerPic);
+			String[] pic = new String[5];
+//			处理题目中的图片
+			// 如果上传文件存在
+			if (!uploadfile.isEmpty() && uploadfile.size() > 0) {
+				// 遍历文件
+				for (MultipartFile file : uploadfile) {
+
+					// 获取上传文件的名称
+					String originalFilename = file.getOriginalFilename();
+					System.out.println("文件名："+originalFilename);
+
+					// 设置上传文件保存的地址目录
+					String dirpath = request.getServletContext().getRealPath("");
+					String[] temp = dirpath.split("\\\\");
+					int mark = dirpath.indexOf(".metadata");
+					dirpath = dirpath.substring(0, mark) + temp[temp.length-1];
+					System.out.println(dirpath);
+					File filepath = new File(dirpath);
+					// 如果保存文件的目录不存在，创建upload文件夹
+					if (!filepath.exists()) {
+						filepath.mkdirs();
+					}
+					// 使用UUID重新命名上传文件的名称
+//							String newFilename = name + "_" + UUID.randomUUID() + "_" + originalFilename;
+					String newFilename = UUID.randomUUID() + "_" + originalFilename;
+	                System.out.println(newFilename);
+					try {
+						System.out.println("目标路径："+dirpath + "\\WebContent\\image\\questionImg" +File.separator+ newFilename);
+						
+						if(originalFilename.equals("")){
+							pic[index] = "null"; ++index;
+						}
+						else{
+							// 使用MultipartFile的方法将文件上传到指定位置
+							file.transferTo(new File(dirpath + "\\WebContent\\images\\questionImg" + File.separator+ newFilename));
+							pic[index] = dirpath + "\\WebContent\\images\\questionImg" + File.separator+ newFilename; ++index;
+						}
+						
+					} catch (Exception e) {
+
+						e.printStackTrace();
+						return "error";
+
+					}
+				}
+			}
+					
+			index = 0;
+			System.out.println("/question/update: \n" + lastPictureUrl + "\n" + pictureUrl);		
+			if(StringUtils.isNotBlank(lastPictureUrl)){
+				String[] oldPic = lastPictureUrl.split("&");
+				
+//				System.out.println(oldPic[0] + "\n" + oldPic[1] + "\n" + pic[0] + "\n" + pic[1]);
+				if(!pic[0].equals("null")) oldPic[0] = pic[0];
+				if(!pic[1].equals("null")) oldPic[1] = pic[1];
+				if(StringUtils.isNotBlank(deleteSubjectPic)) oldPic[0] = "null";
+				if(StringUtils.isNotBlank(deleteAnswerPic)) oldPic[1] = "null";
+				pictureUrl = oldPic[0] + '&' + oldPic[1];
+			}else{
+				if(StringUtils.isNotBlank(deleteSubjectPic)) pic[0] = "null";
+				if(StringUtils.isNotBlank(deleteAnswerPic)) pic[1] = "null";
+				pictureUrl = pic[0] + '&' + pic[1];
+			}
+			
+			
+			
+			System.out.println(pictureUrl);		
 			questionService.updateQuestion(qid, subject, type, optionA, optionB, optionC, optionD, optionE, optionF, optionG, 
 					answerOption,  answerJudge, answerFills, answerCloze, courseName,  analysis,  chapter,  knowPoint,  difficulty, pictureUrl);
 			pictureUrl = null; //这里应该不会有内存泄漏
+			index = 0;
 			return "redirect:/question/list.action";
 		}
 		

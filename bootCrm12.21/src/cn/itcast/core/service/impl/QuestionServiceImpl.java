@@ -430,6 +430,9 @@ public class QuestionServiceImpl implements QuestionService {
 					
 					question.setAnswer(paragraph[i++].substring(4));
 					question.setAnalysis(paragraph[i++].substring(4));
+					question.setScore(paragraph[i++].substring(4));
+					question.setDifficulty(paragraph[i++].substring(4));
+					question.setSpendTime(paragraph[i++].substring(6));
 					if(!judgeBoundary(i, len, question)) {judgeAddQuestion(question); dispQuestion(question); break;}
 					question.setPictureUrl(paragraph[i]);
 					
@@ -462,6 +465,9 @@ public class QuestionServiceImpl implements QuestionService {
 					question.setSubject(paragraph[i++].substring(4));
 					question.setAnswer(paragraph[i++].substring(4));
 					question.setAnalysis(paragraph[i++].substring(4));
+					question.setScore(paragraph[i++].substring(4));
+					question.setDifficulty(paragraph[i++].substring(4));
+					question.setSpendTime(paragraph[i++].substring(6));
 					if(!judgeBoundary(i, len, question)) {judgeAddQuestion(question); dispQuestion(question); break;}
 					question.setPictureUrl(paragraph[i]);
 					

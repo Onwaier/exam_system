@@ -4,21 +4,7 @@
 
    <sql id="selectPaperListWhere">
  		<where>
-	      <if test="courseId != null" >
-	        and courseId = #{courseId}
-	      </if>
-	      <if test="difficulty != null" >
-	        and difficulty = #{difficulty}
-	      </if>
-	       <if test="type != null" >
-	        and type = #{type}
-	      </if>
-	       <if test="chapter != null" >
-	        and chapter = #{chapter}
-	      </if>
-	       <if test="knowPoint != null" >
-	        and knowPoint = #{knowPoint}
-	      </if>
+	    
     	</where>
 	</sql>
 	
@@ -40,7 +26,9 @@
 			paper, course
 		WHERE paper.courseId = course.courseId	 
     		
-<!--     	<include refid="selectPaperListWhere"/> -->
+    	<if test="courseId != null" >
+	        and paper.courseId = #{courseId}
+	     </if>
 		<if test="start !=null and rows != null">
 			limit #{start},#{rows}
 		</if>

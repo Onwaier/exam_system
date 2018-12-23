@@ -136,49 +136,64 @@
 		</div>
 	</div>	
 	
-					
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">试卷信息列表</div>
-						<!-- /.panel-heading -->
-						<table class="table table-bordered table-striped table-hover" id = "quesTable">
-							<thead>
-								<tr>
-									<th><input type = "checkbox" class = "paperItemTotal" value = "" name = "papers"/></th>
-									<th>试卷标题</th>
-									<th>科目</th>
-									<th>出题时间</th>
-									<th>出题人</th>
-									<th>操作</th>
-								</tr>
-							</thead>
-							<tbody>
-								<c:forEach items="${page.rows}" var="row">
-									<tr>
-										<td><input type = "checkbox" class = "paperItem" value = "" name = "paper"/></td>
-										<td>${row.title}</td>
-										<td>${row.courseName}</td>
-										<td>${row.joinTime}</td>
-										<td>${row.userId}</td>
-										<td>
-											<a onclick="preview('${row.questionSet}')"><i class="fa fa-eye fa-fw"></i></a> 
-											<a onclick="deletePaper(${row.id})"><i class="fa fa-trash" aria-hidden="true"></i></a>
-										</td>
-									</tr>
+				
+	<div class="row">
+		  <div class="col-lg-12">
+		  		<form class="form-inline" action="${pageContext.request.contextPath }/paper/list.action" method="get">
+				   <div class="form-group">
+							<label for="custIndustry">科目</label> 
+							<select	class="form-control" id="courseName"  name="courseName">
+								<option value="">--请选择--</option>
+								<c:forEach items="${course}" var="item">
+									<option value="${item.courseName}"<c:if test="${item.courseName == courseName}"> selected</c:if>>${item.courseName}</option>					
 								</c:forEach>
-							</tbody>
-						</table>
-							
-						<div class="col-md-12 text-right">
-							<itcast:page url="${pageContext.request.contextPath }/question/list.action" />
-						</div>
-						<!-- /.panel-body -->
+								
+<%-- 								<c:forEach items="${levelType}" var="item"> --%>
+<%-- 									<option value="${item.dict_id}"<c:if test="${item.dict_id == custLevel}"> selected</c:if>>${item.dict_item_name }</option> --%>
+<%-- 								</c:forEach> --%>
+							</select>
 					</div>
-					<!-- /.panel -->
+					<button type="submit" class="btn btn-primary">查询</button>
+				</form>
+				<div class="panel panel-default">
+					<div class="panel-heading">试卷信息列表</div>
+					<!-- /.panel-heading -->
+					<table class="table table-bordered table-striped table-hover" id = "quesTable">
+						<thead>
+							<tr>
+								<th><input type = "checkbox" class = "paperItemTotal" value = "" name = "papers"/></th>
+								<th>试卷标题</th>
+								<th>科目</th>
+								<th>出题时间</th>
+								<th>出题人</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${page.rows}" var="row">
+								<tr>
+									<td><input type = "checkbox" class = "paperItem" value = "" name = "paper"/></td>
+									<td>${row.title}</td>
+									<td>${row.courseName}</td>
+									<td>${row.joinTime}</td>
+									<td>${row.userId}</td>
+									<td>
+										<a onclick="preview('${row.questionSet}')"><i class="fa fa-eye fa-fw"></i></a> 
+										<a onclick="deletePaper(${row.id})"><i class="fa fa-trash" aria-hidden="true"></i></a>
+									</td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+						
+					<div class="col-md-12 text-right">
+						<itcast:page url="${pageContext.request.contextPath }/paper/list.action" />
+					</div>
+					<!-- /.panel-body -->
 				</div>
-				<!-- /.col-lg-12 -->
-			</div>
+		</div>
+		<!-- /.col-lg-12 -->
+	</div>
 </div>
 		<!-- /#page-wrapper -->
 
