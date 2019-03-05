@@ -306,6 +306,10 @@ public class PaperServiceImpl implements PaperService {
 		
 		String paperPath = "D:\\";
 		String wordName = UUID.randomUUID() + "_" + "paper.docx";
+		String path = request.getContextPath();
+		String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+				+ path + "/";
+		 System.out.println("basePath: " + basePath);
 		
 		//提取模板
 		String placeholder = "SJ_EX1";

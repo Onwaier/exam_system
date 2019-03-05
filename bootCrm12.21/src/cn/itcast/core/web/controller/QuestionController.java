@@ -23,10 +23,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import cn.itcast.common.utils.Page;
 import cn.itcast.core.bean.BaseDict;
+import cn.itcast.core.bean.Course;
 import cn.itcast.core.bean.Customer;
+import cn.itcast.core.bean.Knowledgepoint;
 import cn.itcast.core.bean.Question;
+import cn.itcast.core.dao.PaperDao;
 import cn.itcast.core.service.CustomerService;
+import cn.itcast.core.service.PaperService;
 import cn.itcast.core.service.QuestionService;
+import net.sf.json.JSONArray;
 
 import java.io.File;
 
@@ -63,11 +68,17 @@ public class QuestionController {
 	private String lastPictureUrl = ""; //存储当前待编辑题目的图片
 	private int index = 0;
 	boolean flag = true; //第一张图片的标识
+	List<Course> course;
+	List<Knowledgepoint> knowledgepoint;
 	
 	// 依赖注入
 	@Autowired
 	private QuestionService questionService;
+	@Autowired
+	private PaperDao paperDao;
 	
+	@Autowired
+	private PaperService paperService;
 	
 	
 	@RequestMapping(value = "/question")
@@ -173,8 +184,49 @@ public class QuestionController {
 	}
 	
 	@RequestMapping(value = "/question/add",method={RequestMethod.GET})
-	public String questionAdd() {
+	public String questionAdd(Model model) {
+		ArrayList<String> Cour = new ArrayList<String>();
+		ArrayList<ArrayList<String>> Chapter = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<ArrayList<String>>> Konw = new ArrayList<ArrayList<ArrayList<String>>>();
+		course = paperService.findCourseList();
+		ArrayList<String> chapterList = null;
+		ArrayList<String> knowpointList = null;
+		for(int i = 0; i < course.size(); ++i){
+			Cour.add(course.get(i).getCourseName());
+			chapterList = paperDao.selectChapterList((course.get(i).getCourseId().intValue()));
+			Chapter.add(chapterList);
+			
+			for(ArrayList<String> chapter : Chapter){
+				ArrayList<ArrayList<String>> tempKonw = new ArrayList<ArrayList<String>>();
+				for(String c : chapter){
+					knowpointList = paperDao.selectKnowpointList((course.get(i).getCourseId().intValue()), c);
+					tempKonw.add(knowpointList);
+				}
+				Konw.add(tempKonw);
+//				knowpointList = paperDao.selectKnowpointList((course.get(i).getCourseId().intValue()), chapter);
+//				Konw.get(i).get(j).add(knowpointList);
+//				++j;
+//				for(String knowpoint : knowpointList){
+//					System.out.println(course.get(i).getCourseName() + "\t" + chapter + "\t" + knowpoint);
+//				}
+			}
+		}
 		
+		for(int i = 0;i < Chapter.size(); i ++){
+            System.out.println(Chapter.get(i));
+        }
+		for(int i = 0;i < Konw.size(); i ++){
+            System.out.println(Konw.get(i));
+        }
+		 	
+		
+//		ArrayList<String>knowpointList = paperDao.selectKnowpointList(courseId, chapter);
+		System.out.println("/question/add:  " + course.get(0).getCourseName());
+		model.addAttribute("course", course);
+//		JSONArray json = JSONArray.fromObject(nodes);//将java对象转换为json对象
+//		String str = json.toString();//将json对象转换为字符串
+//		System.out.println(str);
+//		model.addAttribute("knowpointData", json);
 		
 		return "addQuestion";
 	}

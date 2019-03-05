@@ -377,12 +377,12 @@ public class QuestionServiceImpl implements QuestionService {
 		String text = xwpfWordExtractor.getText();
 		String[]  paragraph =text.split("\n");
 		int i = 0, len = paragraph.length;
-		while(paragraph[i].equals("\n"))
+		while(paragraph[i].equals("\n") || paragraph[i].equals(""))
 			 ++i;
 		String courseName = paragraph[i++];
 		String knowPoint = "";
 		String chapter = "";
-		while(paragraph[i].equals("\n"))
+		while(paragraph[i].equals("\n") || paragraph[i].equals(""))
 			++i;
 		Question question = new Question();
 		boolean flag = false;
@@ -448,17 +448,19 @@ public class QuestionServiceImpl implements QuestionService {
 					if(!judgeBoundary(i, len, question)) {judgeAddQuestion(question); dispQuestion(question); break;}
 					question.setPictureUrl(paragraph[i]);
 					
-	//				解决一道题可能有多张图片的问题
-					int numPicture = judegWithPicture(question, paragraph[i], pictureLastParagraphText, pictureUrl);
-					//跳过图片标识
-					String pictureMark = paragraph[i++];
-					int num = 0;
-					while(num < numPicture){
-						if(paragraph[i].equals(pictureMark)) {
-							++num;
+					//				解决一道题可能有多张图片的问题
+					if(!(paragraph[i].equals("\n") && !paragraph[i].equals(""))){
+						int numPicture = judegWithPicture(question, paragraph[i], pictureLastParagraphText, pictureUrl);
+						//跳过图片标识
+						String pictureMark = paragraph[i++];
+						int num = 0;
+						while(num < numPicture){
+							if(paragraph[i].equals(pictureMark)) {
+								++num;
+							}
+							++i;
+							if(!judgeBoundary(i, len, question)) break;
 						}
-						++i;
-						if(!judgeBoundary(i, len, question)) break;
 					}
 
 					if(!judgeBoundary(i, len, question)) {judgeAddQuestion(question); dispQuestion(question); break;}
@@ -468,7 +470,7 @@ public class QuestionServiceImpl implements QuestionService {
 					
 					continue;
 					//有多少种题型
-				}else if(paragraph[i].substring(4).equals("计算题") || paragraph[i].substring(4).equals("名词解释") || paragraph[i].substring(4).equals("问答题") || paragraph[i].substring(4).equals("填空题") || paragraph[i].substring(4).equals("简答题")){ //对判断题，填空题，问答题进行录入
+				}else if(paragraph[i].substring(4).equals("计算题") || paragraph[i].substring(4).equals("名词解释") || paragraph[i].substring(4).equals("问答题") || paragraph[i].substring(4).equals("填空题") || paragraph[i].substring(4).equals("简答题") || paragraph[i].substring(4).equals("设计题")){ //对判断题，填空题，问答题进行录入
 					IdWorker worker2 = new IdWorker(1);
 					question.setQid(worker2.nextId());
 					question.setChapter(chapter);
@@ -484,16 +486,18 @@ public class QuestionServiceImpl implements QuestionService {
 					question.setPictureUrl(paragraph[i]);
 					
 					//解决一道题可能有多张图片的问题
-					int numPicture = judegWithPicture(question, paragraph[i], pictureLastParagraphText, pictureUrl);
-					//跳过图片标识
-					String pictureMark = paragraph[i++];
-					int num = 0;
-					while(num < numPicture){
-						if(paragraph[i].equals(pictureMark)) {
-							++num;
+					if(!(paragraph[i].equals("\n") && !paragraph[i].equals(""))){
+						int numPicture = judegWithPicture(question, paragraph[i], pictureLastParagraphText, pictureUrl);
+						//跳过图片标识
+						String pictureMark = paragraph[i++];
+						int num = 0;
+						while(num < numPicture){
+							if(paragraph[i].equals(pictureMark)) {
+								++num;
+							}
+							++i;
+							if(!judgeBoundary(i, len, question)) break;
 						}
-						++i;
-						if(!judgeBoundary(i, len, question)) break;
 					}
 					
  					if(!judgeBoundary(i, len, question)) {judgeAddQuestion(question); dispQuestion(question); break;} 
@@ -562,7 +566,8 @@ public class QuestionServiceImpl implements QuestionService {
 		  boolean flag = false;
 		  int book = 0;
 		  if(StringUtils.isNotBlank(pictureMark)){
-			  book = pictureMark.charAt(pictureMark.length()-3) - '0';
+			  //这里假设总图片每道题目的图片数目不会超过10
+			  book = pictureMark.charAt(pictureMark.length()-3) - pictureMark.charAt(pictureMark.length()-1);
 			  flag = true;
 		  }
 		  for(int i = 0; i < len; ++i){
@@ -682,4 +687,7 @@ public class QuestionServiceImpl implements QuestionService {
 			result.setTotal(count);
 			return result;
 		}
+
+
+		
 }

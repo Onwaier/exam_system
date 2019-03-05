@@ -56,7 +56,7 @@
 
 </head>
 
-<body>
+<body onload = "initSelect();">
 
 	<div id="wrapper">
 
@@ -121,12 +121,16 @@
 								method="post" enctype="multipart/form-data" onsubmit="return checkAddQuestion()">		
 						<div class="batch-type">
 					
+									<span class="intro course">科目</span>
+									<select	class="form-control" name = "course" style="width:100px;" id = "course" onchange="updateChapterSel();">
+										<option value="">--请选择--</option>
+									</select>
 									<span class="intro chapter">章节</span>
-									<select	class="form-control" name = "chapter">
+									<select	class="form-control" name = "chapter" style="width:100px;" id = "chapter" onchange="updateKnowpointSel();">
 										<option value="">--请选择--</option>
 									</select>
 									<span class="intro knowpoint">知识点</span>
-									<select	class="form-control" name = "knowPoint">
+									<select	class="form-control" name = "knowPoint" style="width:100px;" id = "knowpoint">
 										<option value="">--请选择--</option>
 									</select>
 			
@@ -642,9 +646,10 @@
                     //wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
                     //wb.Sheets[Sheet名]获取第一个Sheet的数据
                     //document.getElementById("demo").innerHTML= JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
-                    var sheetNames = ["混合题", "单选题", "多选题", "判断题", "填空题", "问答题", "简述题", "名词解释"];
+                    var sheetNames = ["课程题库", "混合题", "单选题", "多选题", "判断题", "填空题", "问答题", "简述题", "名词解释"];
                     var str = JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
                     var successCnt = 0;
+                    var failCnt = 0;
                     var questions = [];//存储excel中的question
                     obj = eval(str);
                     $(".loading").show();
@@ -662,53 +667,136 @@
                     	if(flag){
                     		var str = JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[i]]));
                             obj = eval(str);
-                            for(var j = 1; j < obj.length; ++j){
-                            	if(sheetArray[0] != "混合题"){
-                        			obj[j].type = sheetArray[0];
-                        		}
-                            	if(obj[j].subject == null || obj[j].answer == null || obj[j].type == null){
-                            		alert("模板不规范,请检查后重试");
-                            		break;
+                            if(sheetArray[0] == "课程题库"){
+                            	for(var j = 0; j < obj.length; ++j){
+                            		/* 对题干处理*/
+                            		obj[j].subject = obj[j].题干;
+                            		/* 对难度进行处理 */
+                            		obj[j].difficulty = obj[j].难易度;
+                                	if(obj[j].difficulty == "难" || obj[j].difficulty == "困难"){
+                              			obj[j].difficulty = "困难";
+                              		}
+                              		else if(obj[j].difficulty == "中" || obj[j].difficulty == "中等"){
+                              			obj[j].difficulty = "中等";
+                              		}
+                              		else if(obj[j].difficulty == "易" || obj[j].difficulty == "困难"){
+                              			obj[j].difficulty = "简单";
+                              		}
+                              		else{
+                              			//处理：当难度用小数表示时
+                              			var floatDifficulty = parseFloat(obj[j].difficulty);
+                              			if(!isNaN(floatDifficulty)){
+                              				if(floatDifficulty >= 0.1 && floatDifficulty <= 0.3){
+                              					obj[j].difficulty = "简单";
+                              				}
+                              				else if(floatDifficulty >= 0.4 && floatDifficulty <= 0.6){
+                              					obj[j].difficulty = "中等";
+                              				}
+                              				else{
+                              					obj[j].difficulty = "困难";
+                              				}
+                              			}
+                              		}
+                                	/*  对解析处理*/
+                                	obj[j].analysis = obj[j].答案解析;
+                                	/* 对题型处理*/
+                                	obj[j].type = obj[j].题型;
+                                	/*题型的容错处理*/
+                                	if(obj[j].type == "简答题"){
+                                		obj[j].type = "问答题";
+                                	}
+                                	if(obj[j].type == "论述题"){
+                                		obj[j].type = "简述题";
+                                	}
+                                	/*对选项处理*/
+                                	obj[j].optionA = obj[j].A;
+                                	obj[j].optionB = obj[j].B;
+                                	obj[j].optionC = obj[j].C;
+                                	obj[j].optionD = obj[j].D;
+                                	obj[j].optionE = obj[j].E;
+                                	obj[j].optionF = obj[j].F;
+                                	obj[j].optionG = obj[j].G;
+                                	/*对选项数处理*/
+                                	obj[j].optionNum = obj[j].选项数;
+                                	/* 对答案处理*/
+                                	obj[j].answer = obj[j].正确答案;
+                                	if(obj[j].type == "单选题"){
+                                		//不用处理
+                                	}
+                                	else if(obj[j].type == "多选题"){
+                                		var str = obj[j].answer.split('').join(',');
+                                		obj[j].answer = str;	
+                                	}
+                                	else if(obj[j].type == "判断题"){
+                                		obj[j].answer = obj[j][obj[j].answer];
+                                	}
+                                	else if(obj[j].type == "填空题"){
+                                		var arr = obj[j].answer.split('');
+                                		var res = [];
+                                		for(var i = 0; i < arr.length; ++i){
+                                			res.push(obj[j][arr[i]]);
+                                		}
+                                		obj[j].answer = res.join("#");
+                                	}
+                                	else if(obj[j].type == "问答题" || obj[j].type == "名词解释" || obj[j].type == "简述题"){
+                                		obj[j].answer = obj[j][obj[j].answer];
+                                	}
+                                	obj[j].answerOption = obj[j].answer;
+                                	obj[j].answerJudge = obj[j].answer;
+                                	obj[j].type == "填空题"?obj[j].answerFill = obj[j].answer.split("#"):obj[j].answerFill = [];
+                                	obj[j].answerCloze = obj[j].answer;
+                                	/* 对章节进行处理 */
+                                	console.log(obj[j]);
+                            		questions.push(obj[j]);
                             	}
-                            	if(sheetArray.length == 2){
-                            		obj[j].courseName = sheetArray[1];
+                            }
+                            else{
+                            	for(var j = 1; j < obj.length; ++j){
+                            		if(sheetArray[0] != "混合题"){
+                            			obj[j].type = sheetArray[0];
+                            		}
+                                	if(obj[j].subject == null || obj[j].answer == null || obj[j].type == null){
+                                		alert("模板不规范,请检查后重试");
+                                		break;
+                                	}
+                                	if(sheetArray.length == 2){
+                                		obj[j].courseName = sheetArray[1];
+                                	}
+                                	/* 对答案进行处理 */
+                                	obj[j].answerOption = obj[j].answer;
+                                	obj[j].answerJudge = obj[j].answer;
+                                	obj[j].type == "填空题"?obj[j].answerFill = obj[j].answer.split("#"):obj[j].answerFill = [];
+                                	obj[j].answerCloze = obj[j].answer;
+                                	/* 对难度进行处理 */
+                                	if(obj[j].difficulty == "难" || obj[j].difficulty == "困难"){
+                              			obj[j].difficulty = "困难";
+                              		}
+                              		else if(obj[j].difficulty == "中" || obj[j].difficulty == "中等"){
+                              			obj[j].difficulty = "中等";
+                              		}
+                              		else if(obj[j].difficulty == "易" || obj[j].difficulty == "困难"){
+                              			obj[j].difficulty = "简单";
+                              		}
+                              		else{
+                              			//处理：当难度用小数表示时
+                              			var floatDifficulty = parseFloat(obj[j].difficulty);
+                              			if(!isNaN(floatDifficulty)){
+                              				if(floatDifficulty >= 0.1 && floatDifficulty <= 0.3){
+                              					obj[j].difficulty = "简单";
+                              				}
+                              				else if(floatDifficulty >= 0.4 && floatDifficulty <= 0.6){
+                              					obj[j].difficulty = "中等";
+                              				}
+                              				else{
+                              					obj[j].difficulty = "困难";
+                              				}
+                              			}
+                              		}
+                                	/* 对章节进行处理 */
+                                	console.log(obj[j]);
+                            		questions.push(obj[j]);
                             	}
-                            	/* 对答案进行处理 */
-                            	obj[j].answerOption = obj[j].answer;
-                            	obj[j].answerJudge = obj[j].answer;
-                            	obj[j].type == "填空题"?obj[j].answerFill = obj[j].answer.split("#"):obj[j].answerFill = [];
-                            	obj[j].answerCloze = obj[j].answer;
-                            	/* 对难度进行处理 */
-                            	if(obj[j].difficulty == "难" || obj[j].difficulty == "困难"){
-                          			obj[j].difficulty = "困难";
-                          		}
-                          		else if(obj[j].difficulty == "中" || obj[j].difficulty == "中等"){
-                          			obj[j].difficulty = "中等";
-                          		}
-                          		else if(obj[j].difficulty == "易" || obj[j].difficulty == "困难"){
-                          			obj[j].difficulty = "简单";
-                          		}
-                          		else{
-                          			//处理：当难度用小数表示时
-                          			var floatDifficulty = parseFloat(obj[j].difficulty);
-                          			if(!isNaN(floatDifficulty)){
-                          				if(floatDifficulty >= 0.1 && floatDifficulty <= 0.3){
-                          					obj[j].difficulty = "简单";
-                          				}
-                          				else if(floatDifficulty >= 0.4 && floatDifficulty <= 0.6){
-                          					obj[j].difficulty = "中等";
-                          				}
-                          				else{
-                          					obj[j].difficulty = "困难";
-                          				}
-                          			}
-                          		}
-                            	/* 对章节进行处理 */
-                            	console.log(obj[j]);
-                            	questions.push(obj[j]);
-                            	
-                			}
-                    		
+                            }
                     	}
                     }
                     for(var k = 0; k < questions.length; ++k){
@@ -724,15 +812,19 @@
 				                    	if(response == "success"){
 				                    		++successCnt;
 				                    	}
+				                    	else{
+				                    		++failCnt;
+				                    	}
 				                    	console.log(response);
-						                console.log(k);
-				                        if(k == questions.length - 1){
+						                console.log(successCnt);
+				                        if((successCnt + failCnt) == questions.length - 1){
 				                        var mes = successCnt + "道题录入成功";
 				                       	 alert(mes);
 				                       	 $(".loading").hide();
 				                      }
 				                    },
 				                    failure: function (response) { 
+				                    	
 				                    }
                 
 				                });
@@ -819,11 +911,74 @@
 			});
 	</script>
 
+	<!-- 级联展现科目、章节、知识点 -->
+	<script type = "text/javascript">
+		var courses = ["软件工程"];
+	    var chapters = [["软件工程概述-软件开发模型", "软件工程概述#软件危机"]];
+		var knowpoints = [[["知识点1", "知识点2"], ["知识点3", "知识点4"]]];
+	    var courseSelNode;
+	    var chapterSelNode;
+		var knowpointSelNode;
+	    function initSelect(){
+	        //初始化科目、章节和知识点下拉菜单
+	
+	        courseSelNode = document.getElementById("course");
+	        chapterSelNode = document.getElementById("chapter");
+	        knowpointSelNode = document.getElementById("knowpoint");
+	        //1.初始化科目下拉菜单
+	        for(var i=0;i<courses.length;i++){
+	
+	            //更简洁的操作
+	            var optNode = new Option(courses[i],"");
+	            courseSelNode.appendChild(optNode);
+	        }
+	
+	        //2.初始化章节下拉菜单
+	        for(var i=0;i<chapters[0].length;i++){
+	
+	            var optNode = new Option(chapters[0][i],"");
+	            chapterSelNode.appendChild(optNode);
+	        }
+	        
+	        //3.初始化知识点下拉菜章
+	        for(var i=0;i<knowpoints[0][0].length;i++){
+	        	
+	            var optNode = new Option(knowpoints[0][0][i],"");
+	            knowpointSelNode.appendChild(optNode);
+	        }
+	    }
+	    function updateChapterSel(){
+	        //清空章节下拉菜单
+	        chapterSelNode.options.length = 0;
+			//清空知识点下拉菜单
+			knowpointSelNode.options.length = 0;
+	        //更新章节下拉菜单
+	        var index = courseSelNode.selectedIndex - 1;
+	        for(var i=0;i<chapters[index].length;i++){
+	            var optNode = new Option(chapters[index][i],"");
+	            chapterSelNode.appendChild(optNode);
+	            if(i == 0){
+	            	for(var j=0;j<knowpoints[index][0].length; j++){
+	            		var optNode = new Option(knowpoints[index][0][j],"");
+	     	            knowpointSelNode.appendChild(optNode);
+	            	}
+	            }
+	        }
+	    }
+	    function updateKnowpointSel(){
+	    	//清空知识点下拉菜单
+			knowpointSelNode.options.length = 0;
+			var index1 = courseSelNode.selectedIndex - 1;
+			var index2 = chapterSelNode.selectedIndex;
+			for(var i=0;i<knowpoints[index1][index2].length;i++){
+	            var optNode = new Option(knowpoints[index1][index2][i],"");
+	            knowpointSelNode.appendChild(optNode);
+	        }
+	    }
+	</script>
 
 
 
-
-</script>
 
 </body>
 

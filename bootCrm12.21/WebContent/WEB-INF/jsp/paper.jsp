@@ -130,10 +130,6 @@
 								<c:forEach items="${course}" var="item">
 									<option value="${item.courseName}"<c:if test="${item.courseName == courseName}"> selected</c:if>>${item.courseName}</option>					
 								</c:forEach>
-								
-<%-- 								<c:forEach items="${levelType}" var="item"> --%>
-<%-- 									<option value="${item.dict_id}"<c:if test="${item.dict_id == custLevel}"> selected</c:if>>${item.dict_item_name }</option> --%>
-<%-- 								</c:forEach> --%>
 							</select>
 					</div>
 					<button type="submit" class="btn btn-primary">查询</button>

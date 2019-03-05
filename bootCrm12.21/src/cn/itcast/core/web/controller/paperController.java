@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -24,7 +25,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sun.corba.se.impl.oa.poa.ActiveObjectMap.Key;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
 import cn.itcast.common.utils.ChildNode;
+import cn.itcast.common.utils.GrandsonNode;
 import cn.itcast.common.utils.Page;
 import cn.itcast.common.utils.ParentNode;
 import cn.itcast.core.bean.BaseDict;
@@ -139,17 +144,53 @@ public class paperController {
 	@RequestMapping(value = "/paper/knowpointlist", method={RequestMethod.POST})
 	@ResponseBody
 	public String knowpointList(int courseId, Model model){
+//		System.out.println("courseId:" + courseId);
+//		ArrayList<String>chapterList = paperService.findChapterList(courseId);
+//		ArrayList<ParentNode>nodes = new ArrayList<ParentNode>();
+//		for(String chapter : chapterList){
+//			ArrayList<ChildNode>childNodes = new ArrayList<ChildNode>();
+//			ArrayList<String>knowpointList = paperService.findKnowpointList(courseId, chapter);
+//			for(String knowpoint : knowpointList){
+//				childNodes.add(new ChildNode(knowpoint));
+//			}
+//			ParentNode node = new ParentNode(chapter, childNodes);
+//			nodes.add(node);
+//		}
+		
 		System.out.println("courseId:" + courseId);
-		ArrayList<String>chapterList = paperService.findChapterList(courseId);
+		ArrayList<String>chapterList = paperService.findChapterList(courseId);//获得章节列表
+		System.out.println("chapterList：" + chapterList);
 		ArrayList<ParentNode>nodes = new ArrayList<ParentNode>();
+		Map<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
 		for(String chapter : chapterList){
-			ArrayList<ChildNode>childNodes = new ArrayList<ChildNode>();
-			ArrayList<String>knowpointList = paperService.findKnowpointList(courseId, chapter);
-			for(String knowpoint : knowpointList){
-				childNodes.add(new ChildNode(knowpoint));
+			String[] arr = chapter.split("#");
+			System.out.println("arr:" + Arrays.toString(arr));
+			if(map.containsKey(arr[0])){
+				ArrayList<String>list = map.get(arr[0]);
+				list.add(arr[1]);
+				map.put(arr[0], list);
 			}
-			ParentNode node = new ParentNode(chapter, childNodes);
-			nodes.add(node);
+			else{
+				ArrayList<String>list = new ArrayList<String>();
+				list.add(arr[1]);
+				map.put(arr[0], list);
+			}
+		}
+		for (Map.Entry<String, ArrayList<String>> entry : map.entrySet()) { 
+			System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue()); 
+			String key = entry.getKey();
+			ArrayList<String>value = entry.getValue();
+			ArrayList<ChildNode>childNodes = new ArrayList<ChildNode>();
+			for(String part : value){
+				String chapter = key + "#" + part;
+				ArrayList<GrandsonNode>grandsonNodes = new ArrayList<GrandsonNode>();
+				ArrayList<String>knowpointList = paperService.findKnowpointList(courseId, chapter);
+				for(String knowpoint : knowpointList){
+					grandsonNodes.add(new GrandsonNode(knowpoint));
+				}
+				childNodes.add(new ChildNode(part, grandsonNodes));
+			}
+			nodes.add(new ParentNode(key, childNodes));
 		}
 		JSONArray json = JSONArray.fromObject(nodes);//将java对象转换为json对象
 		String str = json.toString();//将json对象转换为字符串

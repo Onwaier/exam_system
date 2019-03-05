@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.apache.poi.poifs.property.Child;
 
-public class ParentNode {
+public class ParentNode {//第一级
 	private String text;
 	private ArrayList<ChildNode> nodes;
 	

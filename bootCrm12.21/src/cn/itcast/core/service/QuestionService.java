@@ -37,5 +37,7 @@ public interface QuestionService {
 			String optionD, String optionE, String optionF, String optionG, String answerOption, String answerJudge,
 			String[] answerFills, String answerCloze, String courseName, String analysis, String chapter,
 			String knowPoint, String difficulty, String pictureUrl);
+	
+	
 		
 }

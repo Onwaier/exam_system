@@ -137,6 +137,7 @@
                 <div role="tabpanel" class="tab-pane active" id="createTest2" style = "display: block;">
                 	<div class="row">
                 		<div class="chapterList col-sm-3">
+                			<h3 class = "intro title courseName">科目名称</h3>
 	                		<h3 class="intro title">章节</h3>
 	                		<HR style="FILTER: alpha(opacity=100,finishopacity=0,style=3)" width="80%" color=#987cb9 SIZE=3>
 	                		<div id="knowpointTree"></div>
