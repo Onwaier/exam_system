@@ -158,7 +158,7 @@
 									<td>${row.userName}</td>
 									<td>
 										<a onclick="preview('${row.questionSet}')"><i class="fa fa-eye fa-fw"></i></a> 
-										<a onclick="deletePaper('${row.userId}')"><i class="fa fa-trash" aria-hidden="true"></i></a>
+										<a onclick="deletePaper('${row.userId}', '${row.id}')"><i class="fa fa-trash" aria-hidden="true"></i></a>
 
 									</td>
 								</tr>
@@ -320,7 +320,7 @@
 	
 	<!-- 删除试卷与批量删除 -->
 	<script type="text/javascript">
-	function deletePaper(userId){
+	function deletePaper(userId, id){
 		var nowUserId ="";
 		$.ajax({
 		    type: "get",
@@ -339,7 +339,7 @@
 					if(confirm('确实要删除该试卷吗?')) {
 						$.post("<%=basePath%>/paper/delete.action",{"id":id},function(data){
 							alert("试卷删除成功！");
-							window.location.reload();
+// 							window.location.reload();
 						});
 					}
 				}

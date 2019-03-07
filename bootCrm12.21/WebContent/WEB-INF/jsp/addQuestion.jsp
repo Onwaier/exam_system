@@ -453,7 +453,7 @@
 				case 7:document.getElementById(typeArray[3]).style.display = "block";
 				break;
 				default:
-				alert("其它");
+// 				alert("其它");
 				break;
 			}
 		}
@@ -554,7 +554,7 @@
 				case 1:
 					var keyLefts = $(".keyLeft");
 					var flag = false;
-					alert(keyLefts.length);
+// 					alert(keyLefts.length);
 					for(var i = 0; i < keyLefts.length; ++i){
 						var radioEdit = $(keyLefts[i]).find("textarea").val();
 						if(radioEdit == "" || radioEdit == null){
@@ -582,7 +582,7 @@
 							alert("选项内容不能为空");
 							return false;
 						}
-						alert($(keyLefts[i]).find("input").prop("checked"));
+// 						alert($(keyLefts[i]).find("input").prop("checked"));
 						if($(keyLefts[i]).find("input").prop("checked") != false){
 							++cnt;
 						}
@@ -819,7 +819,7 @@
 						                console.log(successCnt);
 				                        if((successCnt + failCnt) == questions.length - 1){
 				                        var mes = successCnt + "道题录入成功";
-				                       	 alert(mes);
+// 				                       	 alert(mes);
 				                       	 $(".loading").hide();
 				                      }
 				                    },
@@ -895,7 +895,7 @@
 				if(filePath.indexOf("jpg") != -1 || filePath.indexOf("JPG") != -1 || filePath.indexOf("PNG") != -1 || filePath.indexOf("png") != -1) {
 					var arr = filePath.split('\\');
 					var fileName = arr[arr.length - 1];
-					alert(fileName)
+// 					alert(fileName)
 				
 
 					$(this).parent().next().show();

@@ -251,7 +251,7 @@
 			case 7:$(groupQuestionShow).find("." + typeArray[3]).hide();
 			break;
 			default:
-			alert("其它");
+// 			alert("其它");
 			break;
 		}
 		}

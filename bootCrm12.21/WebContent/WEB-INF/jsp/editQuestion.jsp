@@ -94,7 +94,7 @@
 							<div class="batch-type">
 										<span class="intro course">科目</span>
 										<input id="editQuestionCourse" type="hidden"  value="${row.courseName}" >
-										<select	class="form-control" id = "questionCourse" style="width:100px;" name = "course" onchange="updateChapterSel();">
+										<select	class="form-control" id = "questionCourse" style="width:100px;" name = "courseName" onchange="updateChapterSel();">
 											<option value="">--请选择--</option>
 										</select>
 										<span class="intro chapter">章节</span>
@@ -374,7 +374,7 @@
 				case 7:$("#" + typeArray[3]).show();
 				break;
 				default:
-				alert("其它");
+// 				alert("其它");
 				break;
 			}
 		}
@@ -532,7 +532,7 @@
 					}
 					break;
 			}
-			alert("添加成功");
+			alert("修改成功");
 			return true;
 		}
 	</script>
@@ -741,7 +741,7 @@
 				break;
 			case 4:
 				var answer = '${row.answer}'.split("#");
-				alert(answer);
+// 				alert(answer);
 				var fill = $(".keyFillContent");
 				$(fill).find("input").val(answer[0]);
 				for(var i = 1; i < answer.length; ++i){
@@ -778,7 +778,7 @@
 				$("#" + typeArray[3]).show();
 				break;
 			default:
-			alert("其它");
+// 			alert("其它");
 		};
 
 		</c:forEach>
@@ -848,7 +848,7 @@
 				if(filePath.indexOf("jpg") != -1 || filePath.indexOf("JPG") != -1 || filePath.indexOf("PNG") != -1 || filePath.indexOf("png") != -1) {
 					var arr = filePath.split('\\');
 					var fileName = arr[arr.length - 1];
-					alert(fileName)
+// 					alert(fileName)
 				
 
 					$(this).parent().next().show();

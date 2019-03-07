@@ -319,7 +319,7 @@
 				case 7:$(questionForm).find("." + typeArray[3]).show();
 				break;
 				default:
-				alert("其它");
+// 				alert("其它");
 				break;
 			}
 		}
@@ -357,7 +357,7 @@
 					case 7:$(".questionForm:eq(" + i + ") ." + typeArray[3]).show();
 					break;
 					default:
-					alert("其它");
+// 					alert("其它");
 					break;
 				}
 			});
@@ -762,7 +762,7 @@
 					break;
 				case 4:
 					var answer = `${row.answer}`.split("#");
-					alert(answer);
+// 					alert(answer);
 					var fill = $(".questionForm:eq(" + cnt + ") .keyFillContent");
 					$(fill).find("input").val(answer[0]);
 					for(var i = 1; i < answer.length; ++i){
@@ -803,7 +803,7 @@
 					$(".questionForm:eq(" + cnt + ") .clozeOfQuestion").find("textarea").val(`${row.answer}`);
 					break;
 				default:
-					alert("其它");
+// 					alert("其它");
 			};
 			++cnt;
 			</c:forEach>
@@ -827,7 +827,7 @@
 '						<HR style="FILTER: alpha(opacity=100,finishopacity=0,style=3)" width="80%" color=#987cb9 SIZE=3>		'+
 '						<div class="batch-type" style="display: none">'+
 '							<span class="intro Course">科目</span>'+
-'							<select	class="form-control questionCourse" style="width:100px;" name = "course">'+
+'							<select	class="form-control questionCourse" style="width:100px;" name = "courseName">'+
 '								<option value="">--请选择--</option>'+
 '							</select>'+
 '							<span class="intro chapter">章节</span>'+
@@ -987,10 +987,10 @@
 		            //几个参数需要注意一下
 		                type: "POST",//方法类型
 		                dataType: "text",//预期服务器返回的数据类型
-		                url:  "${pageContext.request.contextPath }/question/update.action",//url
+		                url:  "${pageContext.request.contextPath }/question/batchUpdate.action",//url
 		                data: $(questionForms[i]).serialize(),
 		                success: function (result) {
-		                	alert("SUCCESS");
+// 		                	alert("SUCCESS");
 		                },
 		                error : function() {
 		                    alert("异常！");

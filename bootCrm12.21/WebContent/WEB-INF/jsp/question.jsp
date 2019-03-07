@@ -372,7 +372,7 @@
 					var tmp = "&qids[]=" + idArray[i];
 					str += tmp;
 				}
-				alert(str);
+// 				alert(str);
 				window.location.href = str;
 			}
 		})

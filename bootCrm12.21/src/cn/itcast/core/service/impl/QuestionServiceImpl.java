@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -340,11 +342,26 @@ public class QuestionServiceImpl implements QuestionService {
 	
 //	通过word模板添加试题
 	@Override
-	public void addQuestionByword(String position)  throws IOException{
+	public void addQuestionByword(HttpServletRequest request, String position)  throws IOException{
 		List<String> pictureLastParagraphText = new ArrayList(); //保存各个图片的上文
 		List<String> pictureUrl = new ArrayList(); //保存各个图片的存储位置
 		List<String> errorQuestion = new ArrayList(); //保存有问题题目的上一道题目
 		String path =  position; //模板的位置
+		
+		
+		// 设置题目图片保存的地址目录
+		String dirpath = request.getServletContext().getRealPath("");
+		String[] temp = dirpath.split("\\\\");
+		int mark = dirpath.indexOf(".metadata");
+		dirpath = dirpath.substring(0, mark) + temp[temp.length-1];
+		dirpath = dirpath + "\\questionImg";
+
+		System.out.println(dirpath);
+		File filepath = new File(dirpath);
+		// 如果保存文件的目录不存在，创建upload文件夹
+		if (!filepath.exists()) {
+			filepath.mkdirs();
+		}
 		
 		
 		//获取word中图片的上文
@@ -362,7 +379,7 @@ public class QuestionServiceImpl implements QuestionService {
                     String lastParagraphText = paragraphList.get(i-1).getParagraphText();
                     System.out.println(pictureId +"\t|" + imageName + "\t|" + lastParagraphText);
                     pictureLastParagraphText.add(lastParagraphText); //存储每张图片的上文
-                    pictureUrl.add("d:\\"+ "a" + imageName); //存储每张图片的位置
+                    pictureUrl.add(dirpath + File.separator+ imageName); //存储每张图片的位置
                 }
             }
         }
@@ -383,7 +400,7 @@ public class QuestionServiceImpl implements QuestionService {
 			System.out.println(length + ": " + pic.getPictureType() + file.separator + pic.suggestFileExtension()
 					+file.separator+pic.getFileName());
 			byte[] bytev = pic.getData();
-			FileOutputStream fos = new FileOutputStream("d:\\"+ "a" + pic.getFileName()); 
+			FileOutputStream fos = new FileOutputStream(dirpath + File.separator  + pic.getFileName()); 
 //			pictureUrl.add("d:\\"+ "a" + pic.getFileName()); //存储每张图片的位置，如果存在多张同样的图片侧不行
 			fos.write(bytev);
 			length++;

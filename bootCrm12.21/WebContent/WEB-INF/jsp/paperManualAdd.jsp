@@ -137,7 +137,7 @@
                 <div role="tabpanel" class="tab-pane active" id="createTest2" style = "display: block;">
                 	<div class="row">
                 		<div class="chapterList col-sm-3">
-                			<h3 class = "intro title courseName">科目名称</h3>
+<!--                 			<h3 class = "intro title courseName">科目名称</h3> -->
 	                		<h3 class="intro title">章节</h3>
 	                		<HR style="FILTER: alpha(opacity=100,finishopacity=0,style=3)" width="80%" color=#987cb9 SIZE=3>
 	                		<div id="knowpointTree"></div>
@@ -255,8 +255,8 @@
 					<div class="pagination-nick"></div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" id = "shutQuestionChooseDialog" class="btn btn-primary">保存修改</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">保存修改</button>
+					<!-- <button type="button" id = "shutQuestionChooseDialog" class="btn btn-primary">保存修改</button> -->
 				</div>
 			</div>
 		</div>
@@ -303,8 +303,8 @@
 					<div class="pagination-nick"></div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" id = "shutQuestionChooseDialog" class="btn btn-primary" onclick="choose()">保存修改</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">保存修改</button>
+<!-- 					<button type="button" id = "shutQuestionChooseDialog" class="btn btn-primary" onclick="choose()">保存修改</button> -->
 				</div>
 			</div>
 		</div>
@@ -342,8 +342,8 @@
 <!-- 					<div class="pagination-nick"></div> -->
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" id = "shutQuestionChooseDialog" class="btn btn-primary" onclick="choose()">保存修改</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">保存修改</button>
+<!-- 					<button type="button" id = "shutQuestionChooseDialog" class="btn btn-primary" onclick="choose()">保存修改</button> -->
 				</div>
 			</div>
 		</div>
@@ -585,7 +585,7 @@
 		var Data;
 		var quesData;
 		function showPaper(){
-			alert('aaa');
+// 			alert('aaa');
 			$.ajax({
 				type:"post",
 				url:"<%=basePath%>paper/showPaper.action",
@@ -593,7 +593,7 @@
 				dataType: "json",
 				async: false, //同步传输，并添加返回值，返回值应为已定义的全局变量 
 				success:function(data) {
-					alert(data)
+// 					alert(data)
 					Data = data
 					
 //			        定义一个分页方法，可多次调用
@@ -845,7 +845,7 @@
 			dataType: "json",
 			async: false, //同步传输，并添加返回值，返回值应为已定义的全局变量 
 			success:function(data) {
-				alert(data);
+// 				alert(data);
 				quesData = data;
 				console.log(data);
 				$("#paperQuestionList").find(".group_main").html("");
@@ -1642,7 +1642,7 @@
 			case 7:$(groupQuestionShow).find("." + typeArray[3]).show();
 			break;
 			default:
-			alert("其它");
+// 			alert("其它");
 			break;
 		}
 		}
@@ -1798,7 +1798,7 @@
 			case 7:$(groupQuestionShow).find("." + typeArray[3]).show();
 			break;
 			default:
-			alert("其它");
+// 			alert("其它");
 			break;
 		}
 		}
@@ -1898,7 +1898,7 @@
 	<script type="text/javascript">
 		function paperGenerate(){
 			var qids = getQidsAndQnums();
-			alert("aaaa")
+// 			alert("aaaa")
 <%-- 			url:"<%=basePath%>paper/showQuestion.action?courseId=" + ${courseId} + "&type=" + type + "&checkNodes=" + checkNode, --%>
 			var str = "<%=basePath%>paper/Generate.action?qids[]=" + qids[0] + "&courseId=" + ${courseId} + "&paperName=" + '${paperName}' + "&userName=" + '${userName}' + "&userId=" + '${userId}';
 <%-- 			var str = "<%=basePath%>paper/Generate.action?qids[]=" + qids[0]; --%>

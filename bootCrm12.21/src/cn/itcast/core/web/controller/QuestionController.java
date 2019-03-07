@@ -432,7 +432,7 @@ public class QuestionController {
 					// 使用MultipartFile的方法将文件上传到指定位置
 					file.transferTo(new File(dirpath +File.separator+ newFilename));
 					System.out.println("\nwordInput 目标路径"+dirpath +File.separator+ newFilename + "\n");
-					questionService.addQuestionByword(dirpath +File.separator+ newFilename);
+					questionService.addQuestionByword(request, dirpath +File.separator+ newFilename);
 					System.out.println("wordInput 目标路径"+dirpath +File.separator+ newFilename);
 
 				} catch (Exception e) {
@@ -702,6 +702,22 @@ public class QuestionController {
 		public String questionUpdate(){
 			return "OK";
 		}
+		
+		
+		//更新试题
+				@RequestMapping(value = "/question/batchUpdate", method={RequestMethod.POST})
+				public String questionBatchUpdate(String qid, String subject, String type, String optionA, String optionB, String optionC, String optionD,  String optionE, String optionF, String optionG, 
+						String answerOption, String answerJudge, @RequestParam(value = "answerFill[]", required = false, defaultValue = "") String[] answerFills, String answerCloze, 
+						String courseName, String analysis, String chapter, String knowPoint, String difficulty, String deleteSubjectPic, String deleteAnswerPic, HttpServletRequest request) {
+					System.out.println("/question/batchUpdate: " + deleteSubjectPic + "   " + deleteAnswerPic);
+					String[] pic = new String[5];
+					System.out.println(pictureUrl);		
+					questionService.updateQuestion(qid, subject, type, optionA, optionB, optionC, optionD, optionE, optionF, optionG, 
+							answerOption,  answerJudge, answerFills, answerCloze, courseName,  analysis,  chapter,  knowPoint,  difficulty, pictureUrl);
+					pictureUrl = null; //这里应该不会有内存泄漏
+					index = 0;
+					return "redirect:/question/list.action";
+				}
 /*	
 	@RequestMapping("/customer/update")
 	@ResponseBody

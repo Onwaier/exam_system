@@ -327,251 +327,248 @@ public class PaperServiceImpl implements PaperService {
 		}
 	
 	
-	//将试题生成到word试卷中
-	public String questionToWord(List<Question> questions) throws Exception{
-		//题目类型
-		String[] questionType = {"一,单选题", "二,多选题", "三,填空题", "四,简答题", "五,应该题", "六,设计题"};
-		
-		String paperPath = "D:\\";
-		String wordName = UUID.randomUUID() + "_" + "paper.docx";
-//		String path = request.getContextPath();
-//		String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-//				+ path + "/";
-//		 System.out.println("basePath: " + basePath);
-		
-		//提取模板
-		String placeholder = "SJ_EX1";
-		String toAdd = "武汉工程大学计算机科学与工程学院";
-		WordprocessingMLPackage template = null;
-		template = getTemplate("d:/HelloWord7.docx");
-		replaceParagraph(placeholder, toAdd, template, template.getMainDocumentPart());
-		
-		//设置试卷信息
-		examTitle(template,"2008-2009学年第2学期考试试题（B）卷",true);
-		examTitle(template,"课程名称  软件体系结构        任课教师签名   刘玮",false);
-		examTitle(template,"出题教师签名  刘玮             审题教师签名",false);
-		examTitle(template,"考试方式   （开、闭）卷        适用专业     计算机",false);
-		examTitle(template,"考试时间   （ 120 ）分钟",false);
-		File file1 = new File("d:/landscape.png");//得分表格
-        byte[] bytes1 = convertImageToByteArray(file1);
-        addImageToPackage(template, bytes1);
-		
-        
-        System.out.println("questionToWord: " + questions.size());
-        for(int i = 0; i < questions.size(); ++i){
-        	System.out.println(questions.get(i).getSubject());
-        }
-        int len = questions.size(), i = 0;
-//        System.out.println("nums: " + questions.size());
-        //录入单选题
-        
-        boolean fileEnd = false;
-        while(true){
-        	if(fileEnd) break;
-        	
-        	boolean typeFlag = true; //每道题型第一题的标识
-        	while(questions.get(i).getType().equals("单选题")){
-        		int questionNum = 1;
-        		if(typeFlag) {
-        			//template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[0]);
-        			examTitle(template,questionType[0],false);
-        			typeFlag = false;
-        		}
-        		
-        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum++) + "、" + (questions.get(i).getSubject()));
-        		template.getMainDocumentPart().addStyledParagraphOfText("Normal", "A." + (questions.get(i).getOptionA()));
-        		template.getMainDocumentPart().addStyledParagraphOfText("Normal", "B." + (questions.get(i).getOptionB()));
-        		template.getMainDocumentPart().addStyledParagraphOfText("Normal", "C." + (questions.get(i).getOptionC()));
-        		template.getMainDocumentPart().addStyledParagraphOfText("Normal", "D." + (questions.get(i).getOptionD()));
-        		if(StringUtils.isNotBlank((questions.get(i).getOptionE()))){
-        			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "E." + (questions.get(i).getOptionE()));
-        		}else {
-        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
-        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
-        			++i; 
-        			if(i >= len){ fileEnd = true; break; }
-        			continue;
-        		}
-        		if(StringUtils.isNotBlank((questions.get(i).getOptionF()))){
-        			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "F." + (questions.get(i).getOptionF()));
-        		}else {
-        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
-        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
-        			++i; 
-        			if(i >= len){ fileEnd = true; break; }
-        			continue;
-        		}
-        		if(StringUtils.isNotBlank((questions.get(i).getOptionG()))){
-        			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "G." + (questions.get(i).getOptionG()));
-        		}else {
-        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
-        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
-        			++i; 
-        			if(i >= len){ fileEnd = true; break; }
-        			continue;
-        		}
-       
-        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
-    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
-        		++i;
-        		if(i >= len){ fileEnd = true; break; }
+		//将试题生成到word试卷中
+		public String questionToWord(List<Question> questions) throws Exception{
+			//题目类型
+			String[] questionSeq = {"一", "二", "三", "四", "五", "六"};
+			String[] questionType = {"单选题", "多选题", "填空题", "简答题", "应该题", "设计题"};
+			int[] questionNum = {1, 1, 1, 1, 1, 1};
+			
+			String paperPath = "D:\\";
+			String wordName = UUID.randomUUID() + "_" + "paper.docx";
+//			String path = request.getContextPath();
+//			String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+//					+ path + "/";
+//			 System.out.println("basePath: " + basePath);
+			
+			//提取模板
+			String placeholder = "SJ_EX1";
+			String toAdd = "武汉工程大学计算机科学与工程学院";
+			WordprocessingMLPackage template = null;
+			template = getTemplate("d:/HelloWord7.docx");
+			replaceParagraph(placeholder, toAdd, template, template.getMainDocumentPart());
+			
+			//设置试卷信息
+			examTitle(template,"2008-2009学年第2学期考试试题（B）卷",true);
+			examTitle(template,"课程名称  软件体系结构        任课教师签名   刘玮",false);
+			examTitle(template,"出题教师签名  刘玮             审题教师签名",false);
+			examTitle(template,"考试方式   （开、闭）卷        适用专业     计算机",false);
+			examTitle(template,"考试时间   （ 120 ）分钟",false);
+			File file1 = new File("d:/exTable.png");//得分表格
+	        byte[] bytes1 = convertImageToByteArray(file1);
+	        addImageToPackage(template, bytes1);
+			
+	        
+	        System.out.println("questionToWord: " + questions.size());
+	        for(int i = 0; i < questions.size(); ++i){
+	        	System.out.println(questions.get(i).getSubject());
+	        }
+	        int len = questions.size(), i = 0, s = 0;
+//	        System.out.println("nums: " + questions.size());
+	        //录入单选题
+	        
+	        boolean fileEnd = false;
+	        while(true){
+	        	if(fileEnd) break;
+	        	
+	        	boolean typeFlag = true; //每道题型第一题的标识
+	        	while(questions.get(i).getType().equals("单选题")){
+	        		
+	        		if(typeFlag) {
+	        			//template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[0]);
+	        			examTitle(template,questionSeq[s++]+','+questionType[0],false);
+	        			typeFlag = false;
+	        		}
+	        		
+	        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum[0]++) + "、" + (questions.get(i).getSubject()));
+	        		template.getMainDocumentPart().addStyledParagraphOfText("Normal", "A." + (questions.get(i).getOptionA()));
+	        		template.getMainDocumentPart().addStyledParagraphOfText("Normal", "B." + (questions.get(i).getOptionB()));
+	        		template.getMainDocumentPart().addStyledParagraphOfText("Normal", "C." + (questions.get(i).getOptionC()));
+	        		template.getMainDocumentPart().addStyledParagraphOfText("Normal", "D." + (questions.get(i).getOptionD()));
+	        		if(StringUtils.isNotBlank((questions.get(i).getOptionE()))){
+	        			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "E." + (questions.get(i).getOptionE()));
+	        		}else {
+	        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+	        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
+	        			++i; 
+	        			if(i >= len){ fileEnd = true; break; }
+	        			continue;
+	        		}
+	        		if(StringUtils.isNotBlank((questions.get(i).getOptionF()))){
+	        			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "F." + (questions.get(i).getOptionF()));
+	        		}else {
+	        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+	        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
+	        			++i; 
+	        			if(i >= len){ fileEnd = true; break; }
+	        			continue;
+	        		}
+	        		if(StringUtils.isNotBlank((questions.get(i).getOptionG()))){
+	        			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "G." + (questions.get(i).getOptionG()));
+	        		}else {
+	        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+	        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
+	        			++i; 
+	        			if(i >= len){ fileEnd = true; break; }
+	        			continue;
+	        		}
+	       
+	        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+	    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
+	        		++i;
+	        		if(i >= len){ fileEnd = true; break; }
 
-        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
-        	} 	
-        	if(fileEnd) break;
-        	
-        	//录入多选题
-        	typeFlag = true; //每道题型第一题的标识
-        	while(questions.get(i).getType().equals("多选题")){
-        		int questionNum = 1;
-        		if(typeFlag) {
-        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[1]);
-        			typeFlag = false;
-        		}
-        		
-        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum++) + "、" + (questions.get(i).getSubject()));
-        		template.getMainDocumentPart().addStyledParagraphOfText("Normal", "A." + (questions.get(i).getOptionA()));
-        		template.getMainDocumentPart().addStyledParagraphOfText("Normal", "B." + (questions.get(i).getOptionB()));
-        		template.getMainDocumentPart().addStyledParagraphOfText("Normal", "C." + (questions.get(i).getOptionC()));
-        		template.getMainDocumentPart().addStyledParagraphOfText("Normal", "D." + (questions.get(i).getOptionD()));
-        		if(StringUtils.isNotBlank((questions.get(i).getOptionE()))){
-        			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "E." + (questions.get(i).getOptionE()));
-        		}else {
-        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
-        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
-        			++i; 
-        			if(i >= len){ fileEnd = true; break; }
-        			continue;
-        		}
-        		if(StringUtils.isNotBlank((questions.get(i).getOptionF()))){
-        			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "F." + (questions.get(i).getOptionF()));
-        		}else {
-        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
-        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
-        			++i; 
-        			if(i >= len){ fileEnd = true; break; }
-        			continue;
-        		}
-        		if(StringUtils.isNotBlank((questions.get(i).getOptionG()))){
-        			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "G." + (questions.get(i).getOptionG()));
-        		}else {
-        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
-        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
-        			++i; 
-        			if(i >= len){ fileEnd = true; break; }
-        			continue;
-        		}
-            	
-        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
-    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
-        		++i;
-        		if(i >= len){ fileEnd = true; break; }
-        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
-        	} 	
-        	if(fileEnd) break;
-        	
-        	//录入填空题
-        	typeFlag = true;
-        	while(questions.get(i).getType().equals("填空题")){
-        		int questionNum = 1;
-        		if(typeFlag) {
-        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[2]);
-        			typeFlag = false;
-        		}
-        		
-        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum++) + "、" + (questions.get(i).getSubject()));
-        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
-    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
-        		++i;
-        		if(i >= len){ fileEnd = true; break; }
-        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
-        	}
-        	if(fileEnd) break;
+	        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
+	        	} 	
+	        	if(fileEnd) break;
+	        	
+	        	//录入多选题
+	        	typeFlag = true; //每道题型第一题的标识
+	        	while(questions.get(i).getType().equals("多选题")){
+	        		if(typeFlag) {
+	        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[1]);
+	        			typeFlag = false;
+	        		}
+	        		
+	        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum[1]++) + "、" + (questions.get(i).getSubject()));
+	        		template.getMainDocumentPart().addStyledParagraphOfText("Normal", "A." + (questions.get(i).getOptionA()));
+	        		template.getMainDocumentPart().addStyledParagraphOfText("Normal", "B." + (questions.get(i).getOptionB()));
+	        		template.getMainDocumentPart().addStyledParagraphOfText("Normal", "C." + (questions.get(i).getOptionC()));
+	        		template.getMainDocumentPart().addStyledParagraphOfText("Normal", "D." + (questions.get(i).getOptionD()));
+	        		if(StringUtils.isNotBlank((questions.get(i).getOptionE()))){
+	        			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "E." + (questions.get(i).getOptionE()));
+	        		}else {
+	        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+	        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
+	        			++i; 
+	        			if(i >= len){ fileEnd = true; break; }
+	        			continue;
+	        		}
+	        		if(StringUtils.isNotBlank((questions.get(i).getOptionF()))){
+	        			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "F." + (questions.get(i).getOptionF()));
+	        		}else {
+	        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+	        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
+	        			++i; 
+	        			if(i >= len){ fileEnd = true; break; }
+	        			continue;
+	        		}
+	        		if(StringUtils.isNotBlank((questions.get(i).getOptionG()))){
+	        			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "G." + (questions.get(i).getOptionG()));
+	        		}else {
+	        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+	        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
+	        			++i; 
+	        			if(i >= len){ fileEnd = true; break; }
+	        			continue;
+	        		}
+	            	
+	        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+	    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
+	        		++i;
+	        		if(i >= len){ fileEnd = true; break; }
+	        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
+	        	} 	
+	        	if(fileEnd) break;
+	        	
+	        	//录入填空题
+	        	typeFlag = true;
+	        	while(questions.get(i).getType().equals("填空题")){
+	        		if(typeFlag) {
+	        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[2]);
+	        			typeFlag = false;
+	        		}
+	        		
+	        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum[2]++) + "、" + (questions.get(i).getSubject()));
+	        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+	    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
+	        		++i;
+	        		if(i >= len){ fileEnd = true; break; }
+	        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
+	        	}
+	        	if(fileEnd) break;
 
-        	
-        	//录入填空题
-        	typeFlag = true;
-        	while(questions.get(i).getType().equals("简答题")){
-        		int questionNum = 1;
-        		if(typeFlag) {
-        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[3]);
-        			typeFlag = false;
-        		}
-        		
-        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum++) + "、" + (questions.get(i).getSubject()));
-        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
-    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
-        		++i;
-        		if(i >= len){ fileEnd = true; break; }
-        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
-        	}
-        	if(fileEnd) break;
+	        	
+	        	//录入填空题
+	        	typeFlag = true;
+	        	while(questions.get(i).getType().equals("简答题")){
+	        		if(typeFlag) {
+	        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[3]);
+	        			typeFlag = false;
+	        		}
+	        		
+	        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum[3]++) + "、" + (questions.get(i).getSubject()));
+	        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+	    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
+	        		++i;
+	        		if(i >= len){ fileEnd = true; break; }
+	        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
+	        	}
+	        	if(fileEnd) break;
 
-        	
-        	//录入填空题
-        	typeFlag = true;
-        	while(questions.get(i).getType().equals("应用题")){
-        		int questionNum = 1;
-        		if(typeFlag) {
-        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[4]);
-        			typeFlag = false;
-        		}
-        		
-        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum++) + "、" + (questions.get(i).getSubject()));
-        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
-    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
-        		++i;
-        		if(i >= len){ fileEnd = true; break; }
-        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
-        	}
-        	if(fileEnd) break;
+	        	
+	        	//录入填空题
+	        	typeFlag = true;
+	        	while(questions.get(i).getType().equals("应用题")){
+	        		if(typeFlag) {
+	        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[4]);
+	        			typeFlag = false;
+	        		}
+	        		
+	        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum[4]++) + "、" + (questions.get(i).getSubject()));
+	        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+	    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
+	        		++i;
+	        		if(i >= len){ fileEnd = true; break; }
+	        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
+	        	}
+	        	if(fileEnd) break;
 
-        	
-        	//录入填空题
-        	typeFlag = true;
-        	while(questions.get(i).getType().equals("设计题")){
-        		int questionNum = 1;
-        		if(typeFlag) {
-        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[5]);
-        			typeFlag = false;
-        		}
-        		
-        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum++) + "、" + (questions.get(i).getSubject()));
-        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
-    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
-        		++i;
-        		if(i >= len){ fileEnd = true; break; }
-        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
-        	}
-        	
-        	//录入填空题
-        	typeFlag = true;
-        	while(questions.get(i).getType().equals("名次解释")){
-        		int questionNum = 1;
-        		if(typeFlag) {
-        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[6]);
-        			typeFlag = false;
-        		}
-        		
-        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum++) + "、" + (questions.get(i).getSubject()));
-        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
-    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
-        		++i;
-        		if(i >= len){ fileEnd = true; break; }
-        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
-        	}
-        	if(fileEnd) break;
+	        	
+	        	//录入填空题
+	        	typeFlag = true;
+	        	while(questions.get(i).getType().equals("设计题")){
+	        		if(typeFlag) {
+	        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[5]);
+	        			typeFlag = false;
+	        		}
+	        		
+	        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum[5]++) + "、" + (questions.get(i).getSubject()));
+	        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+	    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
+	        		++i;
+	        		if(i >= len){ fileEnd = true; break; }
+	        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
+	        	}
+	        	if(fileEnd) break;
+	        	
+	        	//录入填空题
+	        	typeFlag = true;
+	        	while(questions.get(i).getType().equals("名次解释")){
+	        		if(typeFlag) {
+	        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[6]);
+	        			typeFlag = false;
+	        		}
+	        		
+	        		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum[6]++) + "、" + (questions.get(i).getSubject()));
+	        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+	    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
+	        		++i;
+	        		if(i >= len){ fileEnd = true; break; }
+	        		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
+	        	}
+	        	if(fileEnd) break;
 
-        	
-        }
-    	
-        	
-        
-		writeDocxToStream(template, paperPath+wordName);
-		System.out.println(paperPath+wordName);
-		return (paperPath + '#' + wordName);
-		
-	}
+	        	
+	        }
+	    	
+	        	
+	        
+			writeDocxToStream(template, paperPath+wordName);
+			System.out.println(paperPath+wordName);
+			return (paperPath + '#' + wordName);
+			
+		}
 	
 	public static void addPicture(WordprocessingMLPackage template, String pic) throws Exception{
 		String[] quesPic = pic.split("&");

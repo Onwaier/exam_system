@@ -2,6 +2,8 @@ package cn.itcast.core.service;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.web.bind.annotation.RequestParam;
 
 import cn.itcast.common.utils.Page;
@@ -24,7 +26,7 @@ public interface QuestionService {
 			String courseName, String analysis, String chapter, String knowPoint, String difficulty, String pictureUrl, String score, String spendTime);
 	
 //	用word导入题目到数据库
-	public void addQuestionByword(String position) throws IOException;
+	public void addQuestionByword(HttpServletRequest request, String position) throws IOException;
 
 	//根据多个id查询题目列表(自动排序)
 	public Page<Question> findQuestionListByIds(Integer page, Integer rows, Long[] qids);
