@@ -183,32 +183,60 @@ public class PaperServiceImpl implements PaperService {
 				question.setDifficulty(difficulty);
 		}
 		
-		Pattern p=Pattern.compile("\"(.*?)\"");
+		
 		checkNodes = checkNodes.substring(1, checkNodes.length()-1);
-//		System.out.println(checkNodes);
-
-		String[] strArray = checkNodes.split("],"); //分割各个章节
-		String[] chapterKnowpoints = new String[strArray.length];
-        for (int i = 0; i < strArray.length; i++) { //从分割的各个章节中提取中章节与知识点
-        	 String temp = "";
-        	 Matcher m=p.matcher(strArray[i]);
-             while(m.find()){
-//                 System.out.println(m.group());
-                 temp = temp + m.group().substring(1, m.group().length()-1) + '#';
-             }
-            chapterKnowpoints[i] = temp;
-            //其他操作   
-        }
+		String[] strArray = checkNodes.split("],"); //分割各个章
+		ArrayList<String> chapterKnowpoints = new ArrayList<String>();
+		for(int i = 0; i < strArray.length; ++i){
+			int s = strArray[i].indexOf("\"");
+			int e = strArray[i].indexOf("\"", s+1);
+			String temp = strArray[i].substring(e+2);
+			String[] chapterRear = temp.split("},"); //分割章中各个节与知识点
+			for(int j = 0; j < chapterRear.length; ++j){
+				String chapterKnowpoint = strArray[i].substring(s+1, e);
+				String cr = chapterRear[j];
+				int ss = cr.indexOf("\"");
+				int ee = cr.indexOf("\"", ss+1);
+				chapterKnowpoint = chapterKnowpoint + '#' + cr.substring(ss+1, ee);
+				while(ee != -1){
+					ss = cr.indexOf("\"", ee+1);
+					if(ss == -1){
+						break;
+					}
+					ee = cr.indexOf("\"", ss+1);
+					chapterKnowpoint = chapterKnowpoint + '#' + cr.substring(ss+1, ee);
+				}
+//				System.out.println(chapterKnowpoint);
+				chapterKnowpoints.add(chapterKnowpoint);	
+			}	
+		}
+		
+//		Pattern p=Pattern.compile("\"(.*?)\"");
+//		checkNodes = checkNodes.substring(1, checkNodes.length()-1);
+////		System.out.println(checkNodes);
+//
+//		String[] strArray = checkNodes.split("],"); //分割各个章节
+//		String[] chapterKnowpoints = new String[strArray.length];
+//        for (int i = 0; i < strArray.length; i++) { //从分割的各个章节中提取中章节与知识点
+//        	 String temp = "";
+//        	 Matcher m=p.matcher(strArray[i]);
+//             while(m.find()){
+////                 System.out.println(m.group());
+//                 temp = temp + m.group().substring(1, m.group().length()-1) + '#';
+//             }
+//            chapterKnowpoints[i] = temp;
+//            //其他操作   
+//        }
         
         //如果可以考虑优化为先查询所有章节的试题，然后在用相应知识点进行刷选
         List<Question> questions = new ArrayList();
         Integer count = 0;
-        for(int i = 0; i < chapterKnowpoints.length; ++i){
-        	String[] chapterKnowpoint = chapterKnowpoints[i].split("#");
-        	question.setChapter(chapterKnowpoint[0]);
+        for(int i = 0; i < chapterKnowpoints.size(); ++i){
+        	String[] chapterKnowpoint = chapterKnowpoints.get(i).split("#");
+        	question.setChapter(chapterKnowpoint[0]+ '#' + chapterKnowpoint[1]);
         	List<Question> questionTemp = paperDao.selectQuestionList(question);
         	for(int j = 0; j < questionTemp.size(); ++j){
-        		for(int k = 1; k < chapterKnowpoint.length; ++k){
+        		for(int k = 2; k < chapterKnowpoint.length; ++k){
         			if(questionTemp.get(j).getKnowPoint().equals(chapterKnowpoint[k])){
         				questions.add(questionTemp.get(j));
         				System.out.println("Papre findQuestionList: " + "   type: " + question.getType() + "   difficluty: " + question.getDifficulty() + "   courseId: " + question.getCourseId() + "   chapter: " + question.getChapter() + "   knowPoint: " + chapterKnowpoint[k] );

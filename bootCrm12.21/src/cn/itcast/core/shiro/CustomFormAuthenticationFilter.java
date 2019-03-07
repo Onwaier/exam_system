@@ -24,14 +24,14 @@ public class CustomFormAuthenticationFilter extends FormAuthenticationFilter{
 		String randomcode = request.getParameter("randomcode");
 		//从session中取出验证码
 		String validateCode = (String) session.getAttribute("validateCode");
-		if (randomcode!=null && validateCode!=null) {
-			if (!randomcode.equals(validateCode)) {
-				// randomCodeError表示验证码错误 
-				request.setAttribute("shiroLoginFailure", "randomCodeError");
-				//拒绝访问，不再校验账号和密码 
-				return true; 
-			}
-		}
+//		if (randomcode!=null && validateCode!=null) {
+//			if (!randomcode.equals(validateCode)) {
+//				// randomCodeError表示验证码错误 
+//				request.setAttribute("shiroLoginFailure", "randomCodeError");
+//				//拒绝访问，不再校验账号和密码 
+//				return true; 
+//			}
+//		}
 		return super.onAccessDenied(request, response, mappedValue);
 	}
 

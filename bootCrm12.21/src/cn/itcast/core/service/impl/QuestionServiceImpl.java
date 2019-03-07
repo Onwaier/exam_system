@@ -25,6 +25,7 @@ import cn.itcast.common.utils.CosineSimilarAlgorithm;
 import cn.itcast.common.utils.IdWorker;
 import cn.itcast.common.utils.Page;
 import cn.itcast.common.utils.XWPFUtils;
+import cn.itcast.core.bean.Course;
 import cn.itcast.core.bean.Customer;
 import cn.itcast.core.bean.Question;
 import cn.itcast.core.dao.BaseDictDao;
@@ -253,7 +254,17 @@ public class QuestionServiceImpl implements QuestionService {
 		}
 
 		if(StringUtils.isNotBlank(courseName)){
+			Course course = new Course();
+			Long courseId = null;
+			List<Course> courses = paperDao.selectCourseList(course);
+			for(int i = 0; i < courses.size(); ++i){
+				if(courses.get(i).getCourseName().equals(courseName)){
+					courseId = courses.get(i).getCourseId();
+					break;
+				}
+			}
 			question.setCourseName(courseName);
+			question.setCourseId(courseId);
 		}
 
 		if(StringUtils.isNotBlank(analysis)){
@@ -454,7 +465,11 @@ public class QuestionServiceImpl implements QuestionService {
 						//跳过图片标识
 						String pictureMark = paragraph[i++];
 						int num = 0;
-						while(num < numPicture){
+						while(num < numPicture-1){
+							if(paragraph[i].equals("\n") || paragraph[i].equals("") && (i < len)){
+								++i;
+								continue;
+							}
 							if(paragraph[i].equals(pictureMark)) {
 								++num;
 							}
@@ -491,7 +506,11 @@ public class QuestionServiceImpl implements QuestionService {
 						//跳过图片标识
 						String pictureMark = paragraph[i++];
 						int num = 0;
-						while(num < numPicture){
+						while(num < numPicture-1){
+							if(paragraph[i].equals("\n") || paragraph[i].equals("") && (i < len)){
+								++i;
+								continue;
+							}
 							if(paragraph[i].equals(pictureMark)) {
 								++num;
 							}
@@ -570,10 +589,14 @@ public class QuestionServiceImpl implements QuestionService {
 			  book = pictureMark.charAt(pictureMark.length()-3) - pictureMark.charAt(pictureMark.length()-1);
 			  flag = true;
 		  }
+		  
+		  int j = 0;
 		  for(int i = 0; i < len; ++i){
 			  if(pictureMark.equals( pictureText[i] )){
-				  if(book == (i+1) && flag){
+				  if(book == (j+1) && flag){
+					  ++j;
 					  tempUrl = tempUrl + Url[i] + "&";
+					  ++numPicture;
 					  continue;
 				  }
 				  tempUrl = tempUrl + Url[i] + "#";

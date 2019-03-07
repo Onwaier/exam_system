@@ -430,22 +430,42 @@
 			function checkNodes(){
 				var nodeIds = $('#knowpointTree').treeview('getChecked');
 				var res = {};
-				var person={fname:"Bill",lname:"Gates",age:56}; 
+				var tmp = {};
+				var roots = [];
 				for(var i = 0; i < nodeIds.length; ++i){
 					var parentNode = $('#knowpointTree').treeview('getParent', nodeIds[i]);
 					if(typeof parentNode.text != "function"){
 						parentText = parentNode.text;
 						childText = nodeIds[i].text;
-						if(typeof res[parentText] == "undefined"){
-							res[parentText] = [];
-							res[parentText].push(childText);
+						if(typeof tmp[parentText] == "undefined"){
+							tmp[parentText] = [];
+							tmp[parentText].push(childText);
 						}
 						else{
-							res[parentText].push(childText);
+							tmp[parentText].push(childText);
+						}
+					}
+					else{
+						roots.push(nodeIds[i].text);
+					}
+				}
+				for(var i = 0; i < roots.length; ++i){
+					if(typeof res[roots[i]] == "undefined"){
+						var text = roots[i];
+						res[text] = [];
+						for(var j = 0; j < tmp[text].length; ++j){
+							var part = {};
+							part[tmp[text][j]] = tmp[tmp[text][j]];
+							res[text].push(part);
 						}
 					}
 				}
 				console.log(res);
+				/*
+				
+				返回的数据结构为：
+				{章1：{节1：[知识点1, 知识点2, ...], 节2:[知识点1, 知识点2, ...]}, 章2:{节1：[知识点1, 知识点2, ...]}}
+				*/
 				return res
 			}
 	</script>
@@ -877,6 +897,7 @@
 		function addQuestion(obj) {
 			var type = $(obj).parents(".group_simple").find(".questionTypeText").html();
 			var checkNodeTemp = checkNodes();
+			console.log(checkNodeTemp);
 			var checkNode= JSON.stringify(checkNodeTemp);
 			$.ajax({
 				type:"post",

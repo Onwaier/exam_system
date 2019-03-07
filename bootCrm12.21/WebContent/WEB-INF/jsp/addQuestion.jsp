@@ -913,57 +913,70 @@
 
 	<!-- 级联展现科目、章节、知识点 -->
 	<script type = "text/javascript">
-		var courses = ["软件工程"];
-	    var chapters = [["软件工程概述-软件开发模型", "软件工程概述#软件危机"]];
-		var knowpoints = [[["知识点1", "知识点2"], ["知识点3", "知识点4"]]];
+		var courseList = eval('${course}');
+		var courses = eval('${course}');
+	    var chapters = eval('${chapter}');
+		var knowpoints = eval('${knowpoint}');
 	    var courseSelNode;
 	    var chapterSelNode;
 		var knowpointSelNode;
 	    function initSelect(){
+// 	    	alert("courses: " + courses);
+// 			alert("chapters: " + chapters);
+// 			alert("knowpoints: " + knowpoints);
 	        //初始化科目、章节和知识点下拉菜单
 	
-	        courseSelNode = document.getElementById("course");
+	       	courseSelNode = document.getElementById("course");
 	        chapterSelNode = document.getElementById("chapter");
 	        knowpointSelNode = document.getElementById("knowpoint");
 	        //1.初始化科目下拉菜单
 	        for(var i=0;i<courses.length;i++){
 	
 	            //更简洁的操作
-	            var optNode = new Option(courses[i],"");
+	            var optNode = new Option(courses[i],courses[i]);
 	            courseSelNode.appendChild(optNode);
 	        }
 	
 	        //2.初始化章节下拉菜单
-	        for(var i=0;i<chapters[0].length;i++){
-	
-	            var optNode = new Option(chapters[0][i],"");
-	            chapterSelNode.appendChild(optNode);
+	        if(chapters.length > 0 && chapters[0].length > 0){
+	        	for(var i=0;i<chapters[0].length;i++){
+	        		
+		            var optNode = new Option(chapters[0][i],chapters[0][i]);
+		            chapterSelNode.appendChild(optNode);
+		        }
 	        }
+	         
 	        
 	        //3.初始化知识点下拉菜章
-	        for(var i=0;i<knowpoints[0][0].length;i++){
+	        if(knowpoints.length > 0 && knowpoints[0].length > 0 && knowpoints[0][0].length > 0){
+	        	for(var i=0;i<knowpoints[0][0].length;i++){
+		            var optNode = new Option(knowpoints[0][0][i],knowpoints[0][0][i]);
+		            knowpointSelNode.appendChild(optNode);
+		        }
+
 	        	
-	            var optNode = new Option(knowpoints[0][0][i],"");
-	            knowpointSelNode.appendChild(optNode);
 	        }
+	        	        
+	        var courseList = eval('${course}');
+	        //console.log(courseList[0]);
 	    }
 	    function updateChapterSel(){
 	        //清空章节下拉菜单
-	        chapterSelNode.options.length = 0;
+	       chapterSelNode.options.length = 0;
 			//清空知识点下拉菜单
 			knowpointSelNode.options.length = 0;
 	        //更新章节下拉菜单
 	        var index = courseSelNode.selectedIndex - 1;
 	        for(var i=0;i<chapters[index].length;i++){
-	            var optNode = new Option(chapters[index][i],"");
+	            var optNode = new Option(chapters[index][i],chapters[index][i]);
 	            chapterSelNode.appendChild(optNode);
 	            if(i == 0){
 	            	for(var j=0;j<knowpoints[index][0].length; j++){
-	            		var optNode = new Option(knowpoints[index][0][j],"");
+	            		var optNode = new Option(knowpoints[index][0][j],knowpoints[index][0][j]);
 	     	            knowpointSelNode.appendChild(optNode);
 	            	}
 	            }
-	        }
+	        } 
 	    }
 	    function updateKnowpointSel(){
 	    	//清空知识点下拉菜单
@@ -971,9 +984,9 @@
 			var index1 = courseSelNode.selectedIndex - 1;
 			var index2 = chapterSelNode.selectedIndex;
 			for(var i=0;i<knowpoints[index1][index2].length;i++){
-	            var optNode = new Option(knowpoints[index1][index2][i],"");
+	            var optNode = new Option(knowpoints[index1][index2][i],knowpoints[index1][index2][i]);
 	            knowpointSelNode.appendChild(optNode);
-	        }
+	        } 
 	    }
 	</script>
 

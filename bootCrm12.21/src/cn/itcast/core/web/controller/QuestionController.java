@@ -112,12 +112,12 @@ public class QuestionController {
 	}
 	
 	@RequestMapping(value = "/question/add",method={RequestMethod.POST})
-	public String questionAdd(Long qid, String subject, String type, String optionA, String optionB, String optionC, String optionD,  String optionE, String optionF, String optionG, 
+	public String questionAdd(Model model, Long qid, String subject, String type, String optionA, String optionB, String optionC, String optionD,  String optionE, String optionF, String optionG, 
 			String answerOption, String answerJudge, @RequestParam(value = "answerFill[]", required = false, defaultValue = "") String[] answerFills, String answerCloze, 
-			String courseName, String analysis, String chapter, String knowPoint, String difficulty, String score, String spendTime, @RequestParam(value = "uploadfile", required = false, defaultValue = "")List<MultipartFile> uploadfile, HttpServletRequest request) {
+			String course, String analysis, String chapter, String knowPoint, String difficulty, String score, String spendTime, @RequestParam(value = "uploadfile", required = false, defaultValue = "")List<MultipartFile> uploadfile, HttpServletRequest request) {
 
 		String[] pic = new String[5];
-		System.out.println("\n/question/add " + "  answerOption: " + answerOption + "   answerJudge: " + answerJudge + "   answerCloze: " + answerCloze);
+		System.out.println("\n/question/add " + "  answerOption: " + answerOption + "   answerJudge: " + answerJudge + "   answerCloze: " + answerCloze + "   course:" + course);
 	
 		
 //		处理题目中的图片
@@ -148,7 +148,7 @@ public class QuestionController {
 				String newFilename = UUID.randomUUID() + "_" + originalFilename;
                 System.out.println(newFilename);
 				try {
-					System.out.println("目标路径："+dirpath + "\\WebContent\\image\\questionImg" +File.separator+ newFilename);
+					System.out.println("目标路径："+dirpath + File.separator+ newFilename);
 
 					
 					if(originalFilename.equals("")){
@@ -157,8 +157,8 @@ public class QuestionController {
 					else{
 						// 使用MultipartFile的方法将文件上传到指定位置
 
-						file.transferTo(new File(dirpath + "\\WebContent\\images\\questionImg" + File.separator+ newFilename));
-						pic[index] = dirpath + "\\WebContent\\images\\questionImg" + File.separator+ newFilename; ++index;
+						file.transferTo(new File(dirpath + File.separator+ newFilename));
+						pic[index] = dirpath  + File.separator+ newFilename; ++index;
 					}
 					
 				} catch (Exception e) {
@@ -175,10 +175,46 @@ public class QuestionController {
 		System.out.println("/question/add  qid: " + qid + "  optionA: " + optionE + "  optionE: " + optionE + "   type: " + type + "   difficulty: " + difficulty + "  position: " + pictureUrl + "\n");
 		
 		questionService.addQuestion(qid, subject, type, optionA, optionB, optionC, optionD, optionE, optionF, optionG, 
-				answerOption,  answerJudge, answerFills, answerCloze, courseName,  analysis,  chapter,  knowPoint,  difficulty, pictureUrl, score, spendTime);
+				answerOption,  answerJudge, answerFills, answerCloze, course,  analysis, chapter,  knowPoint,  difficulty, pictureUrl, score, spendTime);
 		pictureUrl = null; //这里应该不会有内存泄漏
 		index = 0;
 		flag = true;
+		
+		
+		ArrayList<String> Cour = new ArrayList<String>();
+		ArrayList<ArrayList<String>> Chapter = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<ArrayList<String>>> Konw = new ArrayList<ArrayList<ArrayList<String>>>();
+		List<Course> courseList;
+		courseList = paperService.findCourseList();
+		ArrayList<String> chapterList = null;
+		ArrayList<String> knowpointList = null;
+		for(int i = 0; i < courseList.size(); ++i){
+			Cour.add(courseList.get(i).getCourseName());
+			chapterList = paperDao.selectChapterList((courseList.get(i).getCourseId().intValue()));
+			Chapter.add(chapterList);
+			
+			ArrayList<ArrayList<String>> tempKonw = new ArrayList<ArrayList<String>>();
+			for(String chapter1 : chapterList){
+				knowpointList = paperDao.selectKnowpointList((courseList.get(i).getCourseId().intValue()), chapter1);
+				tempKonw.add(knowpointList);
+			}
+			Konw.add(tempKonw);
+
+		}
+		
+//		for(int i = 0;i < Chapter.size(); i ++){
+//            System.out.println(Chapter.get(i));
+//        }
+//		for(int i = 0;i < Konw.size(); i ++){
+//            System.out.println(Konw.get(i));
+//        }
+		 	
+		
+
+		model.addAttribute("course", JSONArray.fromObject(Cour));
+		model.addAttribute("chapter", JSONArray.fromObject(Chapter));
+		model.addAttribute("knowpoint", JSONArray.fromObject(Konw));
+		
 		
 		return "addQuestion";
 	}
@@ -196,37 +232,28 @@ public class QuestionController {
 			chapterList = paperDao.selectChapterList((course.get(i).getCourseId().intValue()));
 			Chapter.add(chapterList);
 			
-			for(ArrayList<String> chapter : Chapter){
-				ArrayList<ArrayList<String>> tempKonw = new ArrayList<ArrayList<String>>();
-				for(String c : chapter){
-					knowpointList = paperDao.selectKnowpointList((course.get(i).getCourseId().intValue()), c);
-					tempKonw.add(knowpointList);
-				}
-				Konw.add(tempKonw);
-//				knowpointList = paperDao.selectKnowpointList((course.get(i).getCourseId().intValue()), chapter);
-//				Konw.get(i).get(j).add(knowpointList);
-//				++j;
-//				for(String knowpoint : knowpointList){
-//					System.out.println(course.get(i).getCourseName() + "\t" + chapter + "\t" + knowpoint);
-//				}
+			ArrayList<ArrayList<String>> tempKonw = new ArrayList<ArrayList<String>>();
+			for(String chapter : chapterList){
+				knowpointList = paperDao.selectKnowpointList((course.get(i).getCourseId().intValue()), chapter);
+				tempKonw.add(knowpointList);
 			}
+			Konw.add(tempKonw);
+
 		}
 		
-		for(int i = 0;i < Chapter.size(); i ++){
-            System.out.println(Chapter.get(i));
-        }
-		for(int i = 0;i < Konw.size(); i ++){
-            System.out.println(Konw.get(i));
-        }
+//		for(int i = 0;i < Chapter.size(); i ++){
+//            System.out.println(Chapter.get(i));
+//        }
+//		for(int i = 0;i < Konw.size(); i ++){
+//            System.out.println(Konw.get(i));
+//        }
 		 	
 		
-//		ArrayList<String>knowpointList = paperDao.selectKnowpointList(courseId, chapter);
 		System.out.println("/question/add:  " + course.get(0).getCourseName());
-		model.addAttribute("course", course);
-//		JSONArray json = JSONArray.fromObject(nodes);//将java对象转换为json对象
-//		String str = json.toString();//将json对象转换为字符串
-//		System.out.println(str);
-//		model.addAttribute("knowpointData", json);
+		model.addAttribute("course", JSONArray.fromObject(Cour));
+		model.addAttribute("chapter", JSONArray.fromObject(Chapter));
+		model.addAttribute("knowpoint", JSONArray.fromObject(Konw));
+
 		
 		return "addQuestion";
 	}

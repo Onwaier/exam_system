@@ -131,7 +131,7 @@ public class paperController {
 				break;
 			}
 		}
-		model.addAttribute("paperName", paperName);
+		model.addAttribute("paperName", courseName + "-----" + paperName);
 		model.addAttribute("userId", userId);
 		model.addAttribute("userName", userName);
 		return "paperManualAdd";
