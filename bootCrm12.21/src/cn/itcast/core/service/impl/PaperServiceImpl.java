@@ -330,14 +330,14 @@ public class PaperServiceImpl implements PaperService {
 	//将试题生成到word试卷中
 	public String questionToWord(List<Question> questions) throws Exception{
 		//题目类型
-		String[] questionType = {"一,单选题", "二,多选题", "三,判断题", "四,填空题", "五,问答题", "六,简述题", "七,名词解释"};
+		String[] questionType = {"一,单选题", "二,多选题", "三,填空题", "四,简答题", "五,应该题", "六,设计题"};
 		
 		String paperPath = "D:\\";
 		String wordName = UUID.randomUUID() + "_" + "paper.docx";
-		String path = request.getContextPath();
-		String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-				+ path + "/";
-		 System.out.println("basePath: " + basePath);
+//		String path = request.getContextPath();
+//		String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+//				+ path + "/";
+//		 System.out.println("basePath: " + basePath);
 		
 		//提取模板
 		String placeholder = "SJ_EX1";
@@ -352,9 +352,10 @@ public class PaperServiceImpl implements PaperService {
 		examTitle(template,"出题教师签名  刘玮             审题教师签名",false);
 		examTitle(template,"考试方式   （开、闭）卷        适用专业     计算机",false);
 		examTitle(template,"考试时间   （ 120 ）分钟",false);
-		File file1 = new File("d:/exam.png");//得分表格
+		File file1 = new File("d:/landscape.png");//得分表格
         byte[] bytes1 = convertImageToByteArray(file1);
         addImageToPackage(template, bytes1);
+		
         
         System.out.println("questionToWord: " + questions.size());
         for(int i = 0; i < questions.size(); ++i){
@@ -385,6 +386,8 @@ public class PaperServiceImpl implements PaperService {
         		if(StringUtils.isNotBlank((questions.get(i).getOptionE()))){
         			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "E." + (questions.get(i).getOptionE()));
         		}else {
+        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
         			++i; 
         			if(i >= len){ fileEnd = true; break; }
         			continue;
@@ -392,6 +395,8 @@ public class PaperServiceImpl implements PaperService {
         		if(StringUtils.isNotBlank((questions.get(i).getOptionF()))){
         			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "F." + (questions.get(i).getOptionF()));
         		}else {
+        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
         			++i; 
         			if(i >= len){ fileEnd = true; break; }
         			continue;
@@ -399,13 +404,18 @@ public class PaperServiceImpl implements PaperService {
         		if(StringUtils.isNotBlank((questions.get(i).getOptionG()))){
         			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "G." + (questions.get(i).getOptionG()));
         		}else {
+        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
         			++i; 
         			if(i >= len){ fileEnd = true; break; }
         			continue;
         		}
-            	
+       
+        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
         		++i;
         		if(i >= len){ fileEnd = true; break; }
+
         		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
         	} 	
         	if(fileEnd) break;
@@ -427,6 +437,8 @@ public class PaperServiceImpl implements PaperService {
         		if(StringUtils.isNotBlank((questions.get(i).getOptionE()))){
         			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "E." + (questions.get(i).getOptionE()));
         		}else {
+        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
         			++i; 
         			if(i >= len){ fileEnd = true; break; }
         			continue;
@@ -434,6 +446,8 @@ public class PaperServiceImpl implements PaperService {
         		if(StringUtils.isNotBlank((questions.get(i).getOptionF()))){
         			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "F." + (questions.get(i).getOptionF()));
         		}else {
+        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
         			++i; 
         			if(i >= len){ fileEnd = true; break; }
         			continue;
@@ -441,11 +455,15 @@ public class PaperServiceImpl implements PaperService {
         		if(StringUtils.isNotBlank((questions.get(i).getOptionG()))){
         			template.getMainDocumentPart().addStyledParagraphOfText("Normal", "G." + (questions.get(i).getOptionG()));
         		}else {
+        			if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+        				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
         			++i; 
         			if(i >= len){ fileEnd = true; break; }
         			continue;
         		}
             	
+        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
         		++i;
         		if(i >= len){ fileEnd = true; break; }
         		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
@@ -454,7 +472,7 @@ public class PaperServiceImpl implements PaperService {
         	
         	//录入填空题
         	typeFlag = true;
-        	while(questions.get(i).getType().equals("判断题")){
+        	while(questions.get(i).getType().equals("填空题")){
         		int questionNum = 1;
         		if(typeFlag) {
         			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[2]);
@@ -462,7 +480,8 @@ public class PaperServiceImpl implements PaperService {
         		}
         		
         		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum++) + "、" + (questions.get(i).getSubject()));
-            	
+        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
         		++i;
         		if(i >= len){ fileEnd = true; break; }
         		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
@@ -472,7 +491,7 @@ public class PaperServiceImpl implements PaperService {
         	
         	//录入填空题
         	typeFlag = true;
-        	while(questions.get(i).getType().equals("填空题")){
+        	while(questions.get(i).getType().equals("简答题")){
         		int questionNum = 1;
         		if(typeFlag) {
         			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[3]);
@@ -480,7 +499,8 @@ public class PaperServiceImpl implements PaperService {
         		}
         		
         		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum++) + "、" + (questions.get(i).getSubject()));
-            	
+        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
         		++i;
         		if(i >= len){ fileEnd = true; break; }
         		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
@@ -490,7 +510,7 @@ public class PaperServiceImpl implements PaperService {
         	
         	//录入填空题
         	typeFlag = true;
-        	while(questions.get(i).getType().equals("问答题")){
+        	while(questions.get(i).getType().equals("应用题")){
         		int questionNum = 1;
         		if(typeFlag) {
         			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[4]);
@@ -498,7 +518,8 @@ public class PaperServiceImpl implements PaperService {
         		}
         		
         		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum++) + "、" + (questions.get(i).getSubject()));
-            	
+        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
         		++i;
         		if(i >= len){ fileEnd = true; break; }
         		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
@@ -508,7 +529,7 @@ public class PaperServiceImpl implements PaperService {
         	
         	//录入填空题
         	typeFlag = true;
-        	while(questions.get(i).getType().equals("简述题")){
+        	while(questions.get(i).getType().equals("设计题")){
         		int questionNum = 1;
         		if(typeFlag) {
         			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionType[5]);
@@ -516,7 +537,8 @@ public class PaperServiceImpl implements PaperService {
         		}
         		
         		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum++) + "、" + (questions.get(i).getSubject()));
-            	
+        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
         		++i;
         		if(i >= len){ fileEnd = true; break; }
         		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
@@ -532,7 +554,8 @@ public class PaperServiceImpl implements PaperService {
         		}
         		
         		template.getMainDocumentPart().addStyledParagraphOfText("Normal",Integer.toString(questionNum++) + "、" + (questions.get(i).getSubject()));
-            	
+        		if(StringUtils.isNotBlank((questions.get(i).getPictureUrl())))
+    				addPicture(template, questions.get(i).getPictureUrl()); //添加试题的图片
         		++i;
         		if(i >= len){ fileEnd = true; break; }
         		System.out.println("/paper/question:" + (questions.get(i).getSubject()));
@@ -550,6 +573,19 @@ public class PaperServiceImpl implements PaperService {
 		
 	}
 	
+	public static void addPicture(WordprocessingMLPackage template, String pic) throws Exception{
+		String[] quesPic = pic.split("&");
+		for(int i = 0; i < quesPic.length; ++i){
+			String[] picture = quesPic[i].split("#");
+			for(int j = 0; j < picture.length; ++j){
+				System.out.println(picture[j]);
+				File file = new File(picture[j]);//得分表格
+		        byte[] bytes = convertImageToByteArray(file);
+		        addImageToPackage(template, bytes);
+			}
+		}
+		
+	}
 	public static WordprocessingMLPackage getTemplate(String name) throws Docx4JException, FileNotFoundException {
 		WordprocessingMLPackage template = WordprocessingMLPackage.load(new FileInputStream(new File(name)));
 		return template;

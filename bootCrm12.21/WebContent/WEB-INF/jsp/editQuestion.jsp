@@ -18,7 +18,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>添加试题</title>
+<title>编辑试题</title>
 
 <!-- Bootstrap Core CSS -->
 <link href="<%=basePath%>css/bootstrap.min.css" rel="stylesheet">
@@ -73,7 +73,7 @@
 				<ul class="nav" id="side-menu">
 					<li><a href="${pageContext.request.contextPath }/question/list.action" class="active"><i
 							class="fa fa-edit fa-fw"></i> 题目管理</a></li>
-					<li><a href="${pageContext.request.contextPath }/customer/list.action"><i
+					<li><a href="${pageContext.request.contextPath }/paper/list.action"><i
 							class="fa fa-dashboard fa-fw"></i> 试卷管理</a></li>
 				</ul>
 			</div>
@@ -92,12 +92,19 @@
 						<form class="form-inline" action="${pageContext.request.contextPath }/question/update.action" method="post" enctype="multipart/form-data" onsubmit="return checkAddQuestion()">	
 
 							<div class="batch-type">
+										<span class="intro course">科目</span>
+										<input id="editQuestionCourse" type="hidden"  value="${row.courseName}" >
+										<select	class="form-control" id = "questionCourse" style="width:100px;" name = "course" onchange="updateChapterSel();">
+											<option value="">--请选择--</option>
+										</select>
 										<span class="intro chapter">章节</span>
-										<select	class="form-control" name = "chapter">
+										<input id="editQuestionChapter" type="hidden"  value="${row.chapter}" >
+										<select	class="form-control"  id = "questionChapter" style="width:100px;" name = "chapter" onchange="updateKnowpointSel();">
 											<option value="">--请选择--</option>
 										</select>
 										<span class="intro knowpoint">知识点</span>
-										<select	class="form-control" name = "knowPoint">
+										<input id="editQuestionKnowpoint" type="hidden"  value="${row.knowPoint}" >
+										<select	class="form-control" id = "questionKnowpoint" style="width:100px;" name = "knowPoint">
 											<option value="">--请选择--</option>
 										</select>
 				
@@ -109,9 +116,9 @@
 												<option value="多选题">多选题</option>
 												<option value="判断题">判断题</option>
 												<option value="填空题">填空题</option>
-												<option value="问答题">问答题</option>
-												<option value="简述题">简述题</option>
-												<option value="名词解释">名词解释</option>	
+												<option value="简答题">简答题</option>
+												<option value="应用题">应用题</option>
+												<option value="设计题">设计题</option>	
 											</select> 
 				
 											<span class="intro difficulty">难度</span>
@@ -237,31 +244,7 @@
 									<input type="checkbox" class="radioOrCheck" name="deleteAnswerPic" value="deleteAnswerPic" />
 								</div>        
 					
-<<<<<<< HEAD
-							                            
-			                     <div class="lccid">
-									<p class="title">
-									<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-											题干图片</p>
-									<img src="<%=basePath%>images/questionImg/${subjectPic}" / class="img">
-<%-- 									<img src='"<%=basePath%>images/questionImg/"+"add.png"'  class="img"> --%>
-									<input id = "subjectPic" type="file" class="file" placeholder="ICCID" accept="image/*" capture="camera" name="uploadfile" multiple="multiple">
-									<input type="checkbox" class="radioOrCheck" name="deleteSubjectPic" value="deleteSubjectPic" />
-								</div>
-								
-								<div class="lccid">
-									<p class="title">
-									<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-											答案图片</p>
-									<img src="<%=basePath%>images/questionImg/${answerPic }" / class="img">
-									<input type="file" class="file" placeholder="ICCID" accept="image/*" capture="camera" name="uploadfile" multiple="multiple">
-									<input type="checkbox" class="radioOrCheck" name="deleteAnswerPic" value="deleteAnswerPic" />
-								</div>        
- 					
-				
-=======
-<%-- 							<button class="btn btn-primary navbar-input-button" onclick="window.open('${pageContext.request.contextPath }/question/fileUpload.action', 'loadPicture')" type="button">添加图片</button>				 --%>
->>>>>>> 2f07fb16832f2dfdd64c97bbdb6b4099923ccf4a
+
 							<button type="submit" class="btn btn-primary">录入题目</button>
 						</form>
 					</c:forEach> 
@@ -358,8 +341,8 @@
 	
 	<!--根据题型显示不同的录入界面-->
 	<script type="text/javascript">
-		var  = new Array("radioOfQuestion", "fillOfQuestion", "judgeOfQuestion", "clozeOfQuestion");
-		var typeDict = {"--请选择--":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+		var typeArray = new Array("radioOfQuestion", "fillOfQuestion", "judgeOfQuestion", "clozeOfQuestion");
+		var typeDict = {"--请选择--":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "简答题":5, "应用题":6, "设计题":7};
 		var type = document.getElementById("questionType");
 		type.onchange = function(){
 			var val = typeDict[type.value];
@@ -470,7 +453,7 @@
 <!-- 录入题目前进行表单验证 -->
 	<script type="text/javascript">
 		function checkAddQuestion(){
-			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "简答题":5, "应用题":6, "设计题":7};
 			var type = $("#questionType");
 			var typeNum =typeDict[type.val()];
 			var subject = $("#subject").val();
@@ -589,19 +572,60 @@
 	</script>
 
 <!-- 	根据后台的传值选择需要编辑题目的题型与难度 -->
+<!--    选择科目 章节 知识点 -->
 	<script type="text/javascript">
+		var courseList = eval('${course}');
+	    var chapterList = eval('${chapter}');
+	    var knowpointList = eval('${knowpoint}');
+	    //根据值让option选中 
+	    courseSelNode = document.getElementById("questionCourse");
+	    chapterSelNode = document.getElementById("questionChapter");
+    	knowpointSelNode = document.getElementById("questionKnowpoint");
+    	
 		$(document).ready(function(){ 
-			
+		var flagCourse = $("#editQuestionCourse").val();
+		var flagChapter = $("#editQuestionChapter").val();
+		var flagKnowpoint = $("#editQuestionKnowpoint").val();
 	    var flagType=$("#editQuestionType").val();
 	    var flagDifficulty=$("#editQuestionDifficulty").val();
-	    //根据值让option选中 
+	    
+	    
+        //1.初始化科目下拉菜单
+        for(var i=0;i<courseList.length;i++){
+
+            //更简洁的操作
+            var optNode = new Option(courseList[i],courseList[i]);
+            courseSelNode.appendChild(optNode);
+        }
+       
+       console.log("course: " + flagCourse);
+       $("#questionCourse option[value='"+flagCourse+"']").attr("selected","selected");
+       var index1 = courseSelNode.selectedIndex - 1;
+       
+     	//清空章节下拉菜单
+       chapterSelNode.options.length = 0;
+       for(var i=0;i<chapterList[index1].length;i++){
+           var optNode = new Option(chapterList[index1][i],chapterList[index1][i]);
+           chapterSelNode.appendChild(optNode);
+       } 
+       console.log("course: " + flagChapter);
+       $("#questionChapter option[value='"+flagChapter+"']").attr("selected","selected");
+       var index2 = chapterSelNode.selectedIndex;
+     	//清空知识点下拉菜单
+		knowpointSelNode.options.length = 0;
+       for(var i=0;i<knowpointList[index1][index2].length;i++){
+           var optNode = new Option(knowpointList[index1][index2][i],knowpointList[index1][index2][i]);
+           knowpointSelNode.appendChild(optNode);
+       } 
+       $("#questionKnowpoint option[value='"+flagKnowpoint+"']").attr("selected","selected");
        $("#questionType option[value='"+flagType+"']").attr("selected","selected");
        $("#questionDifficulty option[value='"+flagDifficulty+"']").attr("selected","selected");
 	   
+       
 	   	
 	   /*  根据type显示不同的界面 */
 	   	var typeArray = new Array("radioOfQuestion", "fillOfQuestion", "judgeOfQuestion", "clozeOfQuestion");
-	    var typeDict = {"--请选择--":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+	    var typeDict = {"--请选择--":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "简答题":5, "应用题":6, "设计题":7};
 	    var alphaDict = {"A":0, "B":1, "C":2, "D":3, "E":4, "F":5, "G":6};
 	    var optionArray = new Array("A", "B", "C", "D", "E", "F", "G");
 	    var val = typeDict[flagType];
@@ -760,13 +784,55 @@
 		</c:forEach>
 
 		}); 
+		
+		//更新章节下拉列表
+		function updateChapterSel(){
+	        //清空章节下拉菜单
+	       chapterSelNode.options.length = 0;
+			//清空知识点下拉菜单
+			knowpointSelNode.options.length = 0;
+	        //更新章节下拉菜单
+	        var index = courseSelNode.selectedIndex - 1;
+	        if(index < 0 || (chapterList[index].length == 0 || chapterList[index] == [] || typeof chapterList[index] == "undefined")){
+	        	chapterSelNode.options.length = 0;
+	        	knowpointSelNode.options.length = 0;
+	        }
+	        else{
+	        	for(var i=0;i<chapterList[index].length;i++){
+		            var optNode = new Option(chapterList[index][i],chapterList[index][i]);
+		            chapterSelNode.appendChild(optNode);
+		            if(i == 0){
+		            	for(var j=0;j<knowpointList[index][0].length; j++){
+		            		var optNode = new Option(knowpointList[index][0][j],knowpointList[index][0][j]);
+		     	            knowpointSelNode.appendChild(optNode);
+		            	}
+		            }
+		        }
+	        }
+	         
+	    }
+		//更新知识点下拉列表
+	    function updateKnowpointSel(){
+	    	//清空知识点下拉菜单
+			knowpointSelNode.options.length = 0;
+			var index1 = courseSelNode.selectedIndex - 1;
+			var index2 = chapterSelNode.selectedIndex;
+			if(knowpointList[index1][index2].length == 0 || knowpointList[index1][index2] == [] || typeof knowpointList[index1][index2] == "undefined"){
+				knowpointSelNode.options.length = 0;
+			}
+			else{
+				for(var i=0;i<knowpointList[index1][index2].length;i++){
+		            var optNode = new Option(knowpointList[index1][index2][i],knowpointList[index1][index2][i]);
+		            knowpointSelNode.appendChild(optNode);
+		        } 
+			}
+			
+	    }
 	</script>
 	
-<<<<<<< HEAD
-		<!--         显示上传的图片 -->
-=======
+
 	<!--         显示上传的图片 -->
->>>>>>> 2f07fb16832f2dfdd64c97bbdb6b4099923ccf4a
+
          <script type="text/javascript">
 			$(".lccid").on("change", "input[type=file]", function() {
 

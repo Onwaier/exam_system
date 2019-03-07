@@ -288,7 +288,7 @@
 		function typeChange(obj){
 			var questionForm = $(obj).parent().parent();
 			var typeArray = new Array("radioOfQuestion", "fillOfQuestion", "judgeOfQuestion", "clozeOfQuestion");
-			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "简答题":5, "应用题":6, "设计题":7};
 			var type = $(questionForm).find(".questionType");
 			var val = typeDict[type.val()];
 			var index;
@@ -324,7 +324,7 @@
 			}
 		}
 		var typeArray = new Array("radioOfQuestion", "fillOfQuestion", "judgeOfQuestion", "clozeOfQuestion");
-		var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+		var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "简答题":5, "应用题":6, "设计题":7};
 		for(var i = 0; i < $(".questionForm").length; ++i){
 			$(".questionForm:eq(" + i + ") questionType").change(function(){
 				alert(i);
@@ -456,7 +456,7 @@
 <!-- 录入题目前进行表单验证 -->
 	<script type="text/javascript">
 		function checkAddQuestion(obj){
-			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "简答题":5, "应用题":6, "设计题":7};
 			var type = $(obj).find(".questionType");
 			var typeNum =typeDict[type.val()];
 			var subject = $(obj).find(".subject").val();
@@ -572,7 +572,11 @@
 </script>
 
 <!-- 	根据后台的传值选择需要编辑题目的题型与难度 -->
+<!--    根据后台的传值选择题目的科目 章节 知识点 -->
 	<script type="text/javascript">
+		var courseList = eval('${course}');
+	    var chapterList = eval('${chapter}');
+	    var knowpointList = eval('${knowpoint}');
 		$(document).ready(function(){ 
 			var cnt = 0, judgeNum = 0;
 			<c:forEach items="${page.rows}" var="row">
@@ -585,10 +589,46 @@
 		        // 难度
 		        $(".questionForm:eq(" + cnt + ") .questionDifficulty option[value='"+'${row.difficulty}'+"']").attr("selected","selected");
 			   
-			   	
+		        //初始化科目下拉列表
+		        var nowCourse = $(".questionForm:eq(" + cnt + ") .questionCourse");
+		        var nowChapter = $(".questionForm:eq(" + cnt + ") .questionChapter");
+		        var nowKnowpoint = $(".questionForm:eq(" + cnt + ") .questionKnowpoint");
+		        for(var i=0;i<courseList.length;i++){
+
+		            //更简洁的操作
+		            var optNode = "<option value='" + courseList[i] + "'>" + courseList[i] +"</option>";
+		            //var optNode = new Option(courseList[i],courseList[i]);
+		            //courseSelNode.appendChild(optNode);
+		            nowCourse.append(optNode);
+		        }
+		        //选中该题的科目
+		        $(".questionForm:eq(" + cnt + ") .questionCourse option[value='"+'${row.courseName}'+"']").attr("selected","selected");
+		        //初始化章节下拉列表
+		       //获取选中科目的index
+		       var index1 = $(nowCourse).get(0).selectedIndex - 1;
+		       nowChapter.empty();//清空章节列表
+		       for(var i=0;i<chapterList[index1].length;i++){
+		           //var optNode = new Option(chapterList[index1][i],chapterList[index1][i]);
+		           //chapterSelNode.appendChild(optNode);
+		           var optNode = "<option value='" + chapterList[index1][i] + "'>" + chapterList[index1][i] +"</option>";
+		           nowChapter.append(optNode);
+		       } 
+		       $(".questionForm:eq(" + cnt + ") .questionChapter option[value='"+'${row.chapter}'+"']").attr("selected","selected");
+		       //初始化知识点下拉列表
+		       //获取选中的章节index
+		       var index2 = $(nowChapter).get(0).selectedIndex;
+		       nowKnowpoint.empty();//清空知识点列表
+		       for(var i=0;i<knowpointList[index1][index2].length;i++){
+		           //var optNode = new Option(chapterList[index1][i],chapterList[index1][i]);
+		           //chapterSelNode.appendChild(optNode);
+		           var optNode = "<option value='" + knowpointList[index1][index2][i] + "'>" + knowpointList[index1][index2][i] +"</option>";
+		           nowKnowpoint.append(optNode);
+		       } 
+		       $(".questionForm:eq(" + cnt + ") .questionKnowpoint option[value='"+'${row.knowPoint}'+"']").attr("selected","selected");
+		       
 			   /*  根据type显示不同的界面 */
 			   	var typeArray = new Array("radioOfQuestion", "fillOfQuestion", "judgeOfQuestion", "clozeOfQuestion");
-			    var typeDict = {"--请选择--":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+			    var typeDict = {"--请选择--":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "简答题":5, "应用题":6, "设计题":7};
 			    var alphaDict = {"A":0, "B":1, "C":2, "D":3, "E":4, "F":5, "G":6};
 			    var optionArray = new Array("A", "B", "C", "D", "E", "F", "G");
 			    //题干内容缩略
@@ -786,12 +826,16 @@
 '						<!-- 分割线 -->'+
 '						<HR style="FILTER: alpha(opacity=100,finishopacity=0,style=3)" width="80%" color=#987cb9 SIZE=3>		'+
 '						<div class="batch-type" style="display: none">'+
+'							<span class="intro Course">科目</span>'+
+'							<select	class="form-control questionCourse" style="width:100px;" name = "course">'+
+'								<option value="">--请选择--</option>'+
+'							</select>'+
 '							<span class="intro chapter">章节</span>'+
-'							<select	class="form-control" name = "chapter">'+
+'							<select	class="form-control questionChapter" style="width:100px;" name = "chapter">'+
 '								<option value="">--请选择--</option>'+
 '							</select>'+
 '							<span class="intro knowpoint">知识点</span>'+
-'							<select	class="form-control" name = "knowPoint">'+
+'							<select	class="form-control questionKnowpoint" style="width:100px;" name = "knowPoint">'+
 '								<option value="">--请选择--</option>'+
 '							</select>'+
 '							<span class="intro type">试题类型</span>'+
@@ -801,9 +845,9 @@
 '								<option value="多选题">多选题</option>'+
 '								<option value="判断题">判断题</option>'+
 '								<option value="填空题">填空题</option>'+
-'								<option value="问答题">问答题</option>'+
-'								<option value="简述题">简述题</option>'+
-'								<option value="名词解释">名词解释</option>	'+
+'								<option value="简答题">简答题</option>'+
+'								<option value="应用题">应用题</option>'+
+'								<option value="设计题">设计题</option>	'+
 '							</select> '+
 '							<span class="intro difficulty">难度</span>'+
 '							<select	class="form-control questionDifficulty" name="difficulty">'+

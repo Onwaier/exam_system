@@ -139,9 +139,9 @@
 						<option value="多选题">多选题</option>
 						<option value="判断题">判断题</option>
 						<option value="填空题">填空题</option>
-						<option value="问答题">问答题</option>
-						<option value="简述题">简述题</option>
-						<option value="名词解释">名词解释</option>		    
+						<option value="简答题">简答题</option>
+						<option value="应用题">应用题</option>
+						<option value="设计题">设计题</option>		    
  					</select> 
 			</div>
 			<button type="submit" class="btn btn-primary">查询</button>

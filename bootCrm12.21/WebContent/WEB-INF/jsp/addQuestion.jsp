@@ -141,9 +141,9 @@
 											<option value="多选题">多选题</option>
 											<option value="判断题">判断题</option>
 											<option value="填空题">填空题</option>
-											<option value="问答题">问答题</option>
-											<option value="简述题">简述题</option>
-											<option value="名词解释">名词解释</option>	
+											<option value="简答题">简答题</option>
+											<option value="应用题">应用题</option>
+											<option value="设计题">设计题</option>	
 										</select> 
 			
 										<span class="intro difficulty">难度</span>
@@ -421,7 +421,7 @@
 	<!--根据题型显示不同的录入界面-->
 	<script type="text/javascript">
 		var typeArray = new Array("radioOfQuestion", "fillOfQuestion", "judgeOfQuestion", "clozeOfQuestion");
-		var typeDict = {"--请选择--":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+		var typeDict = {"--请选择--":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "简答题":5, "应用题":6, "设计题":7};
 		var type = document.getElementById("questionType");
 		type.onchange = function(){
 			var val = typeDict[type.value];
@@ -532,7 +532,7 @@
 <!-- 录入题目前进行表单验证 -->
 	<script type="text/javascript">
 		function checkAddQuestion(){
-			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "简答题":5, "应用题":6, "设计题":7};
 			var type = $("#questionType");
 			var typeNum =typeDict[type.val()];
 			var subject = $("#subject").val();
@@ -646,7 +646,7 @@
                     //wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
                     //wb.Sheets[Sheet名]获取第一个Sheet的数据
                     //document.getElementById("demo").innerHTML= JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
-                    var sheetNames = ["课程题库", "混合题", "单选题", "多选题", "判断题", "填空题", "问答题", "简述题", "名词解释"];
+                    var sheetNames = ["课程题库", "混合题", "单选题", "多选题", "判断题", "填空题", "简答题", "应用题", "设计题"];
                     var str = JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
                     var successCnt = 0;
                     var failCnt = 0;
@@ -702,12 +702,12 @@
                                 	/* 对题型处理*/
                                 	obj[j].type = obj[j].题型;
                                 	/*题型的容错处理*/
-                                	if(obj[j].type == "简答题"){
+                                	/* if(obj[j].type == "简答题"){
                                 		obj[j].type = "问答题";
                                 	}
                                 	if(obj[j].type == "论述题"){
                                 		obj[j].type = "简述题";
-                                	}
+                                	} */
                                 	/*对选项处理*/
                                 	obj[j].optionA = obj[j].A;
                                 	obj[j].optionB = obj[j].B;
@@ -738,7 +738,7 @@
                                 		}
                                 		obj[j].answer = res.join("#");
                                 	}
-                                	else if(obj[j].type == "问答题" || obj[j].type == "名词解释" || obj[j].type == "简述题"){
+                                	else if(obj[j].type == "简答题" || obj[j].type == "应用题" || obj[j].type == "设计题"){
                                 		obj[j].answer = obj[j][obj[j].answer];
                                 	}
                                 	obj[j].answerOption = obj[j].answer;
@@ -921,9 +921,9 @@
 	    var chapterSelNode;
 		var knowpointSelNode;
 	    function initSelect(){
-// 	    	alert("courses: " + courses);
-// 			alert("chapters: " + chapters);
-// 			alert("knowpoints: " + knowpoints);
+	    	/* alert("courses: " + courses);
+			alert("chapters: " + chapters);
+ 			alert("knowpoints: " + knowpoints); */
 	        //初始化科目、章节和知识点下拉菜单
 	
 	       	courseSelNode = document.getElementById("course");

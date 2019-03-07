@@ -113,7 +113,7 @@
 		function addQuestionInPage(question){
 			var type = question.type;
 			console.log(type);
-			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "简答题":5, "应用题":6, "设计题":7};
 			var resNum = typeDict[type], idx;
 			var mainHtml = 
 				'<div class="group_simple" num="' + resNum + '">'+
@@ -260,7 +260,7 @@
 	//显示试题的更多内容
 	<script type="text/javascript">
 		function showMore(obj, type){
-			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "简答题":5, "应用题":6, "设计题":7};
 			var typeNum = typeDict[type];
 			var typeArray = new Array("radioOfQuestion", "fillOfQuestion", "judgeOfQuestion", "clozeOfQuestion");
 			if($(obj).attr("class") == "fa fa-minus-square-o"){

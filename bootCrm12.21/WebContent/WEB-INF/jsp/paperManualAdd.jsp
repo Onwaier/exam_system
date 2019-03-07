@@ -153,9 +153,9 @@
 										<option value="多选题" num = "2">多选题</option>
 										<option value="判断题" num = "3">判断题</option>
 										<option value="填空题" num = "4">填空题</option>
-										<option value="问答题" num = "5">问答题</option>
-										<option value="简述题" num = "6">简述题</option>
-										<option value="名词解释" num = "7">名词解释</option>	
+										<option value="简答题" num = "5">简答题</option>
+										<option value="应用题" num = "6">应用题</option>
+										<option value="设计题" num = "7">设计题</option>	
 									</select>
 									<button href="#" class="btn btn-default showPaper" data-toggle="modal" data-target="#showPaperList" onclick="showPaper()">选择试卷（试卷选题）</button>
                                 </div>
@@ -505,7 +505,7 @@
 <!-- 添加试题类型 -->		
 	<script type = "text/javascript">
 		$("#questionType").change(function(e){
-			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "简答题":5, "应用题":6, "设计题":7};
 			var resNum = typeDict[$(this).val()];
 			var mainHtml = 
 				'<div class="group_simple" num="' + resNum + '">'+
@@ -1458,7 +1458,7 @@
 		function addQuestionInPage(question){
 			var type = question.type;
 			console.log(type);
-			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "简答题":5, "应用题":6, "设计题":7};
 			var resNum = typeDict[type], idx;
 			var mainHtml = 
 				'<div class="group_simple" num="' + resNum + '">'+
@@ -1653,7 +1653,7 @@
 		function addQuestionInPageFromPaper(question, pageIdx, quesIdx){
 			var type = question.type;
 			console.log(type);
-			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "问答题":5, "简述题":6, "名词解释":7};
+			var typeDict = {"0":0, "单选题":1, "多选题":2, "判断题":3, "填空题":4, "简答题":5, "应用题":6, "设计题":7};
 			var resNum = typeDict[type], idx;
 			var mainHtml = 
 				'<div class="group_simple" num="' + resNum + '">'+

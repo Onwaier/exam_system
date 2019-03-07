@@ -25,7 +25,6 @@ import cn.itcast.common.utils.Page;
 import cn.itcast.core.bean.BaseDict;
 import cn.itcast.core.bean.Course;
 import cn.itcast.core.bean.Customer;
-import cn.itcast.core.bean.Knowledgepoint;
 import cn.itcast.core.bean.Question;
 import cn.itcast.core.dao.PaperDao;
 import cn.itcast.core.service.CustomerService;
@@ -69,7 +68,6 @@ public class QuestionController {
 	private int index = 0;
 	boolean flag = true; //第一张图片的标识
 	List<Course> course;
-	List<Knowledgepoint> knowledgepoint;
 	
 	// 依赖注入
 	@Autowired
@@ -472,6 +470,41 @@ public class QuestionController {
 			model.addAttribute("subjectPic", subjectPic[subjectPic.length-1]);
 			model.addAttribute("answerPic", answerPic[answerPic.length-1]);
 		}
+		
+		ArrayList<String> Cour = new ArrayList<String>();
+		ArrayList<ArrayList<String>> Chapter = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<ArrayList<String>>> Konw = new ArrayList<ArrayList<ArrayList<String>>>();
+		List<Course> courseList;
+		courseList = paperService.findCourseList();
+		ArrayList<String> chapterList = null;
+		ArrayList<String> knowpointList = null;
+		for(int i = 0; i < courseList.size(); ++i){
+			Cour.add(courseList.get(i).getCourseName());
+			chapterList = paperDao.selectChapterList((courseList.get(i).getCourseId().intValue()));
+			Chapter.add(chapterList);
+			
+			ArrayList<ArrayList<String>> tempKonw = new ArrayList<ArrayList<String>>();
+			for(String chapter1 : chapterList){
+				knowpointList = paperDao.selectKnowpointList((courseList.get(i).getCourseId().intValue()), chapter1);
+				tempKonw.add(knowpointList);
+			}
+			Konw.add(tempKonw);
+
+		}
+		
+//		for(int i = 0;i < Chapter.size(); i ++){
+//            System.out.println(Chapter.get(i));
+//        }
+//		for(int i = 0;i < Konw.size(); i ++){
+//            System.out.println(Konw.get(i));
+//        }
+		 	
+		
+
+		model.addAttribute("course", JSONArray.fromObject(Cour));
+		model.addAttribute("chapter", JSONArray.fromObject(Chapter));
+		model.addAttribute("knowpoint", JSONArray.fromObject(Konw));
+		
 		model.addAttribute("page", questions);
 		
 
@@ -490,10 +523,41 @@ public class QuestionController {
 			System.out.println(" qids: " + Arrays.toString(qids) + "\n");
 			Page<Question> questions = questionService.findQuestionListByIds(page, rows, qids);
 			
+			ArrayList<String> Cour = new ArrayList<String>();
+			ArrayList<ArrayList<String>> Chapter = new ArrayList<ArrayList<String>>();
+			ArrayList<ArrayList<ArrayList<String>>> Konw = new ArrayList<ArrayList<ArrayList<String>>>();
+			List<Course> courseList;
+			courseList = paperService.findCourseList();
+			ArrayList<String> chapterList = null;
+			ArrayList<String> knowpointList = null;
+			for(int i = 0; i < courseList.size(); ++i){
+				Cour.add(courseList.get(i).getCourseName());
+				chapterList = paperDao.selectChapterList((courseList.get(i).getCourseId().intValue()));
+				Chapter.add(chapterList);
+				
+				ArrayList<ArrayList<String>> tempKonw = new ArrayList<ArrayList<String>>();
+				for(String chapter1 : chapterList){
+					knowpointList = paperDao.selectKnowpointList((courseList.get(i).getCourseId().intValue()), chapter1);
+					tempKonw.add(knowpointList);
+				}
+				Konw.add(tempKonw);
+
+			}
+			
+//			for(int i = 0;i < Chapter.size(); i ++){
+//	            System.out.println(Chapter.get(i));
+//	        }
+//			for(int i = 0;i < Konw.size(); i ++){
+//	            System.out.println(Konw.get(i));
+//	        }
+			 	
+			
+
+			model.addAttribute("course", JSONArray.fromObject(Cour));
+			model.addAttribute("chapter", JSONArray.fromObject(Chapter));
+			model.addAttribute("knowpoint", JSONArray.fromObject(Konw));
+			
 			model.addAttribute("page", questions);
-
-
-
 
 			return "batchEditQuestion";
 //			return "OK";
@@ -509,10 +573,44 @@ public class QuestionController {
 				System.out.println(" qids: " + Arrays.toString(qids) + "\n");
 				Page<Question> questions = questionService.findQuestionListByIds(page, rows, qids);
 				
+				ArrayList<String> Cour = new ArrayList<String>();
+				ArrayList<ArrayList<String>> Chapter = new ArrayList<ArrayList<String>>();
+				ArrayList<ArrayList<ArrayList<String>>> Konw = new ArrayList<ArrayList<ArrayList<String>>>();
+				List<Course> courseList;
+				courseList = paperService.findCourseList();
+				ArrayList<String> chapterList = null;
+				ArrayList<String> knowpointList = null;
+				for(int i = 0; i < courseList.size(); ++i){
+					Cour.add(courseList.get(i).getCourseName());
+					chapterList = paperDao.selectChapterList((courseList.get(i).getCourseId().intValue()));
+					Chapter.add(chapterList);
+					
+					ArrayList<ArrayList<String>> tempKonw = new ArrayList<ArrayList<String>>();
+					for(String chapter1 : chapterList){
+						knowpointList = paperDao.selectKnowpointList((courseList.get(i).getCourseId().intValue()), chapter1);
+						tempKonw.add(knowpointList);
+					}
+					Konw.add(tempKonw);
+
+				}
+				
+//				for(int i = 0;i < Chapter.size(); i ++){
+//		            System.out.println(Chapter.get(i));
+//		        }
+//				for(int i = 0;i < Konw.size(); i ++){
+//		            System.out.println(Konw.get(i));
+//		        }
+				 	
+				
+
+				model.addAttribute("course", JSONArray.fromObject(Cour));
+				model.addAttribute("chapter", JSONArray.fromObject(Chapter));
+				model.addAttribute("knowpoint", JSONArray.fromObject(Konw));
+				
 				model.addAttribute("page", questions);
 
 
-
+				
 
 				return "batchEditQuestion";
 //				return "OK";
@@ -541,6 +639,7 @@ public class QuestionController {
 					String[] temp = dirpath.split("\\\\");
 					int mark = dirpath.indexOf(".metadata");
 					dirpath = dirpath.substring(0, mark) + temp[temp.length-1];
+					dirpath = dirpath + "\\questionImg";
 					System.out.println(dirpath);
 					File filepath = new File(dirpath);
 					// 如果保存文件的目录不存在，创建upload文件夹
@@ -552,15 +651,15 @@ public class QuestionController {
 					String newFilename = UUID.randomUUID() + "_" + originalFilename;
 	                System.out.println(newFilename);
 					try {
-						System.out.println("目标路径："+dirpath + "\\WebContent\\image\\questionImg" +File.separator+ newFilename);
+						System.out.println("目标路径："+dirpath  +File.separator+ newFilename);
 						
 						if(originalFilename.equals("")){
 							pic[index] = "null"; ++index;
 						}
 						else{
 							// 使用MultipartFile的方法将文件上传到指定位置
-							file.transferTo(new File(dirpath + "\\WebContent\\images\\questionImg" + File.separator+ newFilename));
-							pic[index] = dirpath + "\\WebContent\\images\\questionImg" + File.separator+ newFilename; ++index;
+							file.transferTo(new File(dirpath  + File.separator+ newFilename));
+							pic[index] = dirpath  + File.separator+ newFilename; ++index;
 						}
 						
 					} catch (Exception e) {

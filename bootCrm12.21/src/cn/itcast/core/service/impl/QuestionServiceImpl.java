@@ -167,6 +167,16 @@ public class QuestionServiceImpl implements QuestionService {
 			}
 
 			if(StringUtils.isNotBlank(courseName)){
+				Course course = new Course();
+				Long courseId = null;
+				List<Course> courses = paperDao.selectCourseList(course);
+				for(int i = 0; i < courses.size(); ++i){
+					if(courses.get(i).getCourseName().equals(courseName)){
+						courseId = courses.get(i).getCourseId();
+						break;
+					}
+				}
+				question.setCourseId(courseId);
 				question.setCourseName(courseName);
 			}
 
@@ -185,7 +195,7 @@ public class QuestionServiceImpl implements QuestionService {
 			System.out.println("type:" + type);
 			if(type.equals("单选题") || type.equals("多选题")) question.setAnswer(answerOption);
 			if(type.equals("判断题")) question.setAnswer(answerJudge);
-			if(type.equals("问答题") || type.equals("简述题") || type.equals("名词解释")) question.setAnswer(answerCloze);
+			if(type.equals("简答题") || type.equals("应用题") || type.equals("名词解释") || type.equals("设计题")) question.setAnswer(answerCloze);
 			if(type.equals("填空题")) {
 				String temp = "";
 				for(int i = 0; i < answerFill.length-1; ++i)
@@ -299,7 +309,7 @@ public class QuestionServiceImpl implements QuestionService {
 		//根据题型对answer进行赋值
 		if(type.equals("单选题") || type.equals("多选题")) question.setAnswer(answerOption);
 		if(type.equals("判断题")) question.setAnswer(answerJudge);
-		if(type.equals("问答题") || type.equals("简述题") || type.equals("名词解释")) question.setAnswer(answerCloze);
+		if(type.equals("应用题") || type.equals("简答题") || type.equals("名词解释") || type.equals("设计题")) question.setAnswer(answerCloze);
 		if(type.equals("填空题")) {
 			String temp = "";
 			for(int i = 0; i < answerFill.length-1; ++i)
@@ -402,6 +412,16 @@ public class QuestionServiceImpl implements QuestionService {
 			
 			try{
 				clearQuestion(question);
+				Course course = new Course();
+				Long courseId = null;
+				List<Course> courses = paperDao.selectCourseList(course);
+				for(int i1 = 0; i1 < courses.size(); ++i1){
+					if(courses.get(i1).getCourseName().equals(courseName)){
+						courseId = courses.get(i1).getCourseId();
+						break;
+					}
+				}
+				question.setCourseId(courseId);
 				question.setCourseName(courseName);
 		
 				if(paragraph[i].substring(1, 3).equals("章节")){
