@@ -68,6 +68,7 @@ public class QuestionController {
 	private int index = 0;
 	boolean flag = true; //第一张图片的标识
 	List<Course> course;
+	int[] num = {-1, -1};
 	
 	// 依赖注入
 	@Autowired
@@ -406,7 +407,7 @@ public class QuestionController {
 	/*必须使用注释 @RequestParam("uploadfile")List<MultipartFile> uploadfile
 	 *否则报Failed to instantiate [java.util.List]: Specified class is an interface错误 
 	 * */
-	public String wordInput(String name, @RequestParam("uploadfile")List<MultipartFile> uploadfile, HttpServletRequest request) {
+	public String wordInput(Model model, String name, @RequestParam("uploadfile")List<MultipartFile> uploadfile, HttpServletRequest request) {
 
 		// 如果上传文件存在
 		if (!uploadfile.isEmpty() && uploadfile.size() > 0) {
@@ -432,7 +433,7 @@ public class QuestionController {
 					// 使用MultipartFile的方法将文件上传到指定位置
 					file.transferTo(new File(dirpath +File.separator+ newFilename));
 					System.out.println("\nwordInput 目标路径"+dirpath +File.separator+ newFilename + "\n");
-					questionService.addQuestionByword(request, dirpath +File.separator+ newFilename);
+					num = questionService.addQuestionByword(request, dirpath +File.separator+ newFilename);
 					System.out.println("wordInput 目标路径"+dirpath +File.separator+ newFilename);
 
 				} catch (Exception e) {
@@ -443,6 +444,10 @@ public class QuestionController {
 				}
 			}
 		}
+		
+		model.addAttribute("numQuestion", num[0]);
+		model.addAttribute("numSimilarQuestion", num[1]);
+		
 		return "addQuestion";
 	}
 	

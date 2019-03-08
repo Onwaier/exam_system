@@ -331,7 +331,7 @@ public class PaperServiceImpl implements PaperService {
 		public String questionToWord(HttpServletRequest request, List<Question> questions) throws Exception{
 			//题目类型
 			String[] questionSeq = {"一", "二", "三", "四", "五", "六"};
-			String[] questionType = {"单选题", "多选题", "填空题", "简答题", "应该题", "设计题"};
+			String[] questionType = {"单项选择题（每小题   分，共   分）", "多项选择题（每小题   分，共   分）", "填空题（每小题   分，共   分）", "简答题（每小题   分，共   分）", "应用题（每小题   分，共   分）", "设计题"};
 			int[] questionNum = {1, 1, 1, 1, 1, 1};
 			
 			// 设置上传文件保存的地址目录
@@ -354,7 +354,7 @@ public class PaperServiceImpl implements PaperService {
 			
 			//提取模板
 			String placeholder = "SJ_EX1";
-			String toAdd = "武汉工程大学计算机科学与工程学院";
+			String toAdd = "";
 			WordprocessingMLPackage template = null;
 			
 			String path = "HelloWord7.docx";
@@ -371,7 +371,7 @@ public class PaperServiceImpl implements PaperService {
 			examTitle(template,"出题教师签名  刘玮             审题教师签名",false);
 			examTitle(template,"考试方式   （开、闭）卷        适用专业     计算机",false);
 			examTitle(template,"考试时间   （ 120 ）分钟",false);
-			
+			template.getMainDocumentPart().addStyledParagraphOfText("Normal","\n");
 			String path1 = "exTable.png";
 			File file2 = new File(PaperServiceImpl.class.getClassLoader().getResource(path1).getPath());
 			String realPath1 = file2.getAbsolutePath();
@@ -452,7 +452,8 @@ public class PaperServiceImpl implements PaperService {
 	        	typeFlag = true; //每道题型第一题的标识
 	        	while(questions.get(i).getType().equals("多选题")){
 	        		if(typeFlag) {
-	        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[1]);
+	        			examTitle(template,questionSeq[s++]+','+questionType[1],false);
+	        			//template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[1]);
 	        			typeFlag = false;
 	        		}
 	        		
@@ -501,7 +502,8 @@ public class PaperServiceImpl implements PaperService {
 	        	typeFlag = true;
 	        	while(questions.get(i).getType().equals("填空题")){
 	        		if(typeFlag) {
-	        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[2]);
+	        			examTitle(template,questionSeq[s++]+','+questionType[2],false);
+	        			//template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[2]);
 	        			typeFlag = false;
 	        		}
 	        		
@@ -519,7 +521,8 @@ public class PaperServiceImpl implements PaperService {
 	        	typeFlag = true;
 	        	while(questions.get(i).getType().equals("简答题")){
 	        		if(typeFlag) {
-	        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[3]);
+	        			examTitle(template,questionSeq[s++]+','+questionType[3],false);
+	        			//template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[3]);
 	        			typeFlag = false;
 	        		}
 	        		
@@ -537,7 +540,8 @@ public class PaperServiceImpl implements PaperService {
 	        	typeFlag = true;
 	        	while(questions.get(i).getType().equals("应用题")){
 	        		if(typeFlag) {
-	        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[4]);
+	        			examTitle(template,questionSeq[s++]+','+questionType[4],false);
+	        			//template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[4]);
 	        			typeFlag = false;
 	        		}
 	        		
@@ -555,7 +559,8 @@ public class PaperServiceImpl implements PaperService {
 	        	typeFlag = true;
 	        	while(questions.get(i).getType().equals("设计题")){
 	        		if(typeFlag) {
-	        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[5]);
+	        			examTitle(template,questionSeq[s++]+','+questionType[5],false);
+	        			//template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[5]);
 	        			typeFlag = false;
 	        		}
 	        		
@@ -572,7 +577,8 @@ public class PaperServiceImpl implements PaperService {
 	        	typeFlag = true;
 	        	while(questions.get(i).getType().equals("名次解释")){
 	        		if(typeFlag) {
-	        			template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[6]);
+	        			examTitle(template,questionSeq[s++]+','+questionType[6],false);
+	        			//template.getMainDocumentPart().addStyledParagraphOfText("Subtitle", questionSeq[s++]+','+questionType[6]);
 	        			typeFlag = false;
 	        		}
 	        		

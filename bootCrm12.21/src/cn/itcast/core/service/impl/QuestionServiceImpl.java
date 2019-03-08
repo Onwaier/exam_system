@@ -348,7 +348,7 @@ public class QuestionServiceImpl implements QuestionService {
 	
 //	通过word模板添加试题
 	@Override
-	public void addQuestionByword(HttpServletRequest request, String position)  throws IOException{
+	public int[] addQuestionByword(HttpServletRequest request, String position)  throws IOException{
 		List<String> pictureLastParagraphText = new ArrayList(); //保存各个图片的上文
 		List<String> pictureUrl = new ArrayList(); //保存各个图片的存储位置
 		List<String> errorQuestion = new ArrayList(); //保存有问题题目的上一道题目
@@ -600,8 +600,12 @@ public class QuestionServiceImpl implements QuestionService {
 		}
 		
 		System.out.println("成功录入的题目:  " + numQuestion + "\n相似题目：" + similarQuestion + "\n有问题的行数：  " + errorQuestion.size());
+		int[] num = {numQuestion, similarQuestion};
 		numQuestion = 0;
 		similarQuestion = 0;
+		
+		
+		return num;
     }
 //	判断是否插入题目
 	public void judgeAddQuestion(Question question){

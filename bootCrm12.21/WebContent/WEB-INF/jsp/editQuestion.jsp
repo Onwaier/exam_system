@@ -232,7 +232,7 @@
 									<img src="<%=basePath%>images/questionImg/${subjectPic}" / class="img">
 <%-- 									<img src='"<%=basePath%>images/questionImg/"+"add.png"'  class="img"> --%>
 									<input id = "subjectPic" type="file" class="file" placeholder="ICCID" accept="image/*" capture="camera" name="uploadfile" multiple="multiple">
-									<input type="checkbox" class="radioOrCheck" name="deleteSubjectPic" value="deleteSubjectPic" />
+									<input type="checkbox" class="radioOrCheck" name="deleteSubjectPic" value="deleteSubjectPic" />选中即为删除
 								</div>
 								
 								<div class="lccid">
@@ -241,7 +241,7 @@
 											答案图片</p>
 									<img src="<%=basePath%>images/questionImg/${answerPic }" / class="img">
 									<input type="file" class="file" placeholder="ICCID" accept="image/*" capture="camera" name="uploadfile" multiple="multiple">
-									<input type="checkbox" class="radioOrCheck" name="deleteAnswerPic" value="deleteAnswerPic" />
+									<input type="checkbox" class="radioOrCheck" name="deleteAnswerPic" value="deleteAnswerPic" />选中即为删除
 								</div>        
 					
 

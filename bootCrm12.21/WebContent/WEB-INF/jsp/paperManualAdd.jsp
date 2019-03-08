@@ -1477,7 +1477,7 @@
 			'	            <div class="extract-box-tit">'+
 			'	                <span class="questionTypeText">' + type + '</span>'+
 			'	                <div class="extract-box-btnDiv">'+
-			'                        <a class="btn btn-blue-border2 selQuestionLink" href="javascript:void(0)" onclick = "addQuestion(this)">'+
+			'                        <a class="btn btn-blue-border2 selQuestionLink" data-toggle="modal" data-target="#questionChooseDialog" href="javascript:void(0)" onclick = "addQuestion(this)">'+
 			'                        	<span>选择试题</span>'+
 			'                        </a>'+
 			'	                </div>'+
@@ -1844,8 +1844,12 @@
 
 <!-- 删除、上移、下移多道题目 -->
 	<script type = "text/javascript">
+	
+	
 		function removeSome(obj){
 			var typeText = $(obj).parents(".right_group_simple").find(".test_tittle").html();
+			var quesNum = parseInt($(obj).parents(".right_group_simple").find(".test_num").html());
+			var totalQuesNum = parseInt($(".test_total").html());
 			var groupSimples = $(".group_simple");
 			for(var i = 0; i < groupSimples.length; ++i){
 				if($(groupSimples[i]).find(".questionTypeText").html() == typeText){
@@ -1854,6 +1858,7 @@
 					break;
 				}
 			}
+			$(".test_total").html(totalQuesNum - quesNum);
 			$(obj).parents(".right_group_simple").remove();
 		}
 		function moveUpSome(obj){
