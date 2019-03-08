@@ -7,6 +7,8 @@ package cn.itcast.core.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import cn.itcast.common.utils.Page;
 import cn.itcast.core.bean.Paper;
 import cn.itcast.core.bean.Question;
@@ -32,7 +34,7 @@ public interface PaperService {
 	public List<Course> findCourseList();
 	
 	//保存试卷到数据库并生成试卷到word中供下载
-	public String paperSave(Long[] qids, Long courseId, String paperName, String userId, String userName) throws Exception;
+	public String paperSave(HttpServletRequest request,Long[] qids, Long courseId, String paperName, String userId, String userName) throws Exception;
 		
 
 	//删除试卷

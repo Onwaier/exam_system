@@ -364,7 +364,7 @@
 		if(cnt == 0){
 			alert("请选择题目！");
 		}
-		else if(confirm('确实要删除已选中的' + cnt + '道题目吗?')) {
+		else if(confirm('确实要删除已选中的' + cnt + '套试卷吗?')) {
 			for(var i = 0; i < idArray.length; ++i){
 				$.post("<%=basePath%>paper/delete.action",{"id":idArray[i]},function(data){
 				});

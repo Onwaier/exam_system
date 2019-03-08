@@ -818,8 +818,8 @@
 				                    	console.log(response);
 						                console.log(successCnt);
 				                        if((successCnt + failCnt) == questions.length - 1){
-				                        var mes = successCnt + "道题录入成功";
-// 				                       	 alert(mes);
+				                        var mes = "录入成功";
+				                       	 alert(mes);
 				                       	 $(".loading").hide();
 				                      }
 				                    },

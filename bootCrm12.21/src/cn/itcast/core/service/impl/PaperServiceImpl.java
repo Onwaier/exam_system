@@ -292,7 +292,7 @@ public class PaperServiceImpl implements PaperService {
 	
 	//保存试卷到数据库并生成试卷到word中供下载，返回存储位置
 		@Override
-		public String paperSave(Long[] qids, Long courseId, String paperName, String userId, String userName) throws Exception{
+		public String paperSave(HttpServletRequest request, Long[] qids, Long courseId, String paperName, String userId, String userName) throws Exception{
 			Paper paper = new Paper();
 			SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String datetime = tempDate.format(new java.util.Date());  
@@ -319,7 +319,7 @@ public class PaperServiceImpl implements PaperService {
 						Question question = paperDao.selectQuestionListById(qids[i]);
 						questions.add(question);
 					}
-			String paperString = questionToWord(questions); //将试题生成到word试卷中
+			String paperString = questionToWord(request, questions); //将试题生成到word试卷中
 			
 //			return "/paper";
 			return paperString;
@@ -328,24 +328,41 @@ public class PaperServiceImpl implements PaperService {
 	
 	
 		//将试题生成到word试卷中
-		public String questionToWord(List<Question> questions) throws Exception{
+		public String questionToWord(HttpServletRequest request, List<Question> questions) throws Exception{
 			//题目类型
 			String[] questionSeq = {"一", "二", "三", "四", "五", "六"};
 			String[] questionType = {"单选题", "多选题", "填空题", "简答题", "应该题", "设计题"};
 			int[] questionNum = {1, 1, 1, 1, 1, 1};
 			
-			String paperPath = "D:\\";
+			// 设置上传文件保存的地址目录
+			String dirpath = request.getServletContext().getRealPath("");
+			String[] temp = dirpath.split("\\\\");
+			int mark = dirpath.indexOf(".metadata");
+			dirpath = dirpath.substring(0, mark) + temp[temp.length-1];
+			dirpath = dirpath + "\\questionImg\\";
+
+			System.out.println(dirpath);
+			File filepath = new File(dirpath);
+			// 如果保存文件的目录不存在，创建upload文件夹
+			if (!filepath.exists()) {
+				filepath.mkdirs();
+			}
+			
+			String paperPath = dirpath;
 			String wordName = UUID.randomUUID() + "_" + "paper.docx";
-//			String path = request.getContextPath();
-//			String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-//					+ path + "/";
-//			 System.out.println("basePath: " + basePath);
+
 			
 			//提取模板
 			String placeholder = "SJ_EX1";
 			String toAdd = "武汉工程大学计算机科学与工程学院";
 			WordprocessingMLPackage template = null;
-			template = getTemplate("d:/HelloWord7.docx");
+			
+			String path = "HelloWord7.docx";
+			File file = new File(PaperServiceImpl.class.getClassLoader().getResource(path).getPath());
+			String realPath = file.getAbsolutePath();
+			template = getTemplate(realPath);
+			
+			//template = getTemplate("https://github.com/breezelj/Template/raw/master/HelloWord7.docx");
 			replaceParagraph(placeholder, toAdd, template, template.getMainDocumentPart());
 			
 			//设置试卷信息
@@ -354,9 +371,18 @@ public class PaperServiceImpl implements PaperService {
 			examTitle(template,"出题教师签名  刘玮             审题教师签名",false);
 			examTitle(template,"考试方式   （开、闭）卷        适用专业     计算机",false);
 			examTitle(template,"考试时间   （ 120 ）分钟",false);
-			File file1 = new File("d:/exTable.png");//得分表格
+			
+			String path1 = "exTable.png";
+			File file2 = new File(PaperServiceImpl.class.getClassLoader().getResource(path1).getPath());
+			String realPath1 = file2.getAbsolutePath();
+			File file1 = new File(realPath1);//得分表格
 	        byte[] bytes1 = convertImageToByteArray(file1);
 	        addImageToPackage(template, bytes1);
+			
+			
+//			File file1 = new File("https://github.com/breezelj/Template/raw/master/temp.jpg");//得分表格
+//	        byte[] bytes1 = convertImageToByteArray(file1);
+//	        addImageToPackage(template, bytes1);
 			
 	        
 	        System.out.println("questionToWord: " + questions.size());

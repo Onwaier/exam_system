@@ -690,7 +690,8 @@ public class QuestionController {
 			
 			
 			
-			System.out.println(pictureUrl);		
+			System.out.println(pictureUrl);	
+			System.out.println("chapter: " + chapter + "\t" + "konw:" + knowPoint);	
 			questionService.updateQuestion(qid, subject, type, optionA, optionB, optionC, optionD, optionE, optionF, optionG, 
 					answerOption,  answerJudge, answerFills, answerCloze, courseName,  analysis,  chapter,  knowPoint,  difficulty, pictureUrl);
 			pictureUrl = null; //这里应该不会有内存泄漏

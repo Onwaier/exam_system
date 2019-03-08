@@ -140,7 +140,7 @@
 <!--                 			<h3 class = "intro title courseName">科目名称</h3> -->
 	                		<h3 class="intro title">章节</h3>
 	                		<HR style="FILTER: alpha(opacity=100,finishopacity=0,style=3)" width="80%" color=#987cb9 SIZE=3>
-	                		<div id="knowpointTree"></div>
+	                		<div id="knowpointTree" style = "text-align:left;"></div>
                 		</div>
 	                	<div class="paperContent col-sm-6">
 	                		<div class = "paper">
@@ -482,6 +482,13 @@
 		    dataType: "json",
 		  	success: function (result) { 
 			console.log(result);
+			//对json进行降序排序函数
+			var colId="text"
+			var asc = function(x,y)
+			{
+				return (x[colId] > y[colId]) ? 1 : -1;
+			}
+			result.sort(asc); //升序排序
 		    defaultData=result;
 		    $('#knowpointTree').treeview({
 			    data: defaultData,

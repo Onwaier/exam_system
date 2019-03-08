@@ -134,6 +134,12 @@ public class QuestionServiceImpl implements QuestionService {
 			if(StringUtils.isNotBlank(type)){
 					question.setType(type);
 			}
+			if(StringUtils.isNotBlank(chapter)){
+				question.setChapter(chapter);
+			}
+			if(StringUtils.isNotBlank(knowPoint)){
+				question.setKnowPoint(knowPoint);
+			}
 			
 			if(StringUtils.isNotBlank(optionA)){
 				question.setOptionA(optionA);

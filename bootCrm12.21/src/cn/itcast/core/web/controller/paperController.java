@@ -275,7 +275,7 @@ public class paperController {
 
 		
 		System.out.println("/paper/Generate:" + " qids: " + Arrays.toString(qids) + "   courseId:" + courseId + "   paperName: " + paperName + "   userId: " + userId + "   userName: " + userName);
-		String paperPath = paperService.paperSave(qids, courseId, paperName, userId, userName);
+		String paperPath = paperService.paperSave(request, qids, courseId, paperName, userId, userName);
 		
 //		ServletContext servletContext = request.getServletContext();
 //	    String path=servletContext.getRealPath("/paper");
