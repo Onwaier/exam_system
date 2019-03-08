@@ -107,7 +107,8 @@
 										<select	class="form-control" id = "questionKnowpoint" style="width:100px;" name = "knowPoint">
 											<option value="">--请选择--</option>
 										</select>
-				
+							</div>
+							<div class = "batch-type">
 											<span class="intro type">试题类型</span>
 											<input id="editQuestionType" type="hidden"  value="${row.type}" >
 											<select	class="form-control" id="questionType" name="type">
@@ -591,6 +592,9 @@
 	    
 	    
         //1.初始化科目下拉菜单
+        var maxCourseWidth = getMaxWidth(courseList) + 50;
+        courseSelNode.style.width = maxCourseWidth + "px";
+        console.log("maxCourseWidth:" + maxCourseWidth);
         for(var i=0;i<courseList.length;i++){
 
             //更简洁的操作
@@ -603,6 +607,9 @@
        var index1 = courseSelNode.selectedIndex - 1;
        
      	//清空章节下拉菜单
+     	var maxChapterWidth = getMaxWidth(chapterList[index1]) + 50;
+        chapterSelNode.style.width = maxChapterWidth + "px";
+        console.log("maxChapterWidth:" + maxChapterWidth);
        chapterSelNode.options.length = 0;
        for(var i=0;i<chapterList[index1].length;i++){
            var optNode = new Option(chapterList[index1][i],chapterList[index1][i]);
@@ -612,7 +619,10 @@
        $("#questionChapter option[value='"+flagChapter+"']").attr("selected","selected");
        var index2 = chapterSelNode.selectedIndex;
      	//清空知识点下拉菜单
-		knowpointSelNode.options.length = 0;
+       var maxKnowpointWidth = getMaxWidth(knowpointList[index1][index2]) + 50;
+	   knowpointSelNode.style.width = maxKnowpointWidth + "px";
+	   console.log("maxKnowpointWidth:" + maxKnowpointWidth);
+	   knowpointSelNode.options.length = 0;
        for(var i=0;i<knowpointList[index1][index2].length;i++){
            var optNode = new Option(knowpointList[index1][index2][i],knowpointList[index1][index2][i]);
            knowpointSelNode.appendChild(optNode);
@@ -798,10 +808,14 @@
 	        	knowpointSelNode.options.length = 0;
 	        }
 	        else{
+	        	var maxChapterWidth = getMaxWidth(chapterList[index]) + 50;
+		        chapterSelNode.style.width = maxChapterWidth + "px";
 	        	for(var i=0;i<chapterList[index].length;i++){
 		            var optNode = new Option(chapterList[index][i],chapterList[index][i]);
 		            chapterSelNode.appendChild(optNode);
 		            if(i == 0){
+		            	var maxKnowpointWidth = getMaxWidth(knowpointList[index][0]) + 50;
+		    	        knowpointSelNode.style.width = maxKnowpointWidth + "px";
 		            	for(var j=0;j<knowpointList[index][0].length; j++){
 		            		var optNode = new Option(knowpointList[index][0][j],knowpointList[index][0][j]);
 		     	            knowpointSelNode.appendChild(optNode);
@@ -821,12 +835,37 @@
 				knowpointSelNode.options.length = 0;
 			}
 			else{
+				var maxKnowpointWidth = getMaxWidth(knowpointList[index1][index2]) + 50;
+		        knowpointSelNode.style.width = maxKnowpointWidth + "px";
 				for(var i=0;i<knowpointList[index1][index2].length;i++){
 		            var optNode = new Option(knowpointList[index1][index2][i],knowpointList[index1][index2][i]);
 		            knowpointSelNode.appendChild(optNode);
 		        } 
 			}
 			
+			
+	    }
+	  //判断一段文本具体长度为多少px
+	    function getTextWidth(str) {
+	        var width = 0;
+	        var html = document.createElement('span');
+	        html.innerText = str;
+	        html.className = 'getTextWidth';
+	        document.querySelector('body').appendChild(html);
+	        width = document.querySelector('.getTextWidth').offsetWidth;
+	        document.querySelector('.getTextWidth').remove();
+	        return width;
+	    }
+	    //获取所有文本的最大长度
+	    function getMaxWidth(str){
+	    	var maxWidth = getTextWidth("--请选择--");
+	    	for(var i = 0; i < str.length; ++i){
+	    		var len = getTextWidth(str[i]);
+	    		if(len > maxWidth){
+	    			maxWidth = len;
+	    		}
+	    	}
+	    	return maxWidth;
 	    }
 	</script>
 	

@@ -593,6 +593,9 @@
 		        var nowCourse = $(".questionForm:eq(" + cnt + ") .questionCourse");
 		        var nowChapter = $(".questionForm:eq(" + cnt + ") .questionChapter");
 		        var nowKnowpoint = $(".questionForm:eq(" + cnt + ") .questionKnowpoint");
+		        var maxCourseWidth = getMaxWidth(courseList) + 50;
+		        $(nowCourse).css("width", maxCourseWidth + "px");
+		        console.log("maxCourseWidth:" + maxCourseWidth);
 		        for(var i=0;i<courseList.length;i++){
 
 		            //更简洁的操作
@@ -607,6 +610,9 @@
 		       //获取选中科目的index
 		       var index1 = $(nowCourse).get(0).selectedIndex - 1;
 		       nowChapter.empty();//清空章节列表
+		       var maxChapterWidth = getMaxWidth(chapterList[index1]) + 50;
+		       $(nowChapter).css("width", maxChapterWidth + "px");
+		       console.log("maxChapterWidth:" + maxChapterWidth);
 		       for(var i=0;i<chapterList[index1].length;i++){
 		           //var optNode = new Option(chapterList[index1][i],chapterList[index1][i]);
 		           //chapterSelNode.appendChild(optNode);
@@ -618,6 +624,9 @@
 		       //获取选中的章节index
 		       var index2 = $(nowChapter).get(0).selectedIndex;
 		       nowKnowpoint.empty();//清空知识点列表
+		       var maxKnowpointWidth = getMaxWidth(knowpointList[index1][index2]) + 50;
+		       $(nowKnowpoint).css("width", maxKnowpointWidth + "px");
+		       console.log("maxKnowpointWidth:" + maxKnowpointWidth);
 		       for(var i=0;i<knowpointList[index1][index2].length;i++){
 		           //var optNode = new Option(chapterList[index1][i],chapterList[index1][i]);
 		           //chapterSelNode.appendChild(optNode);
@@ -809,6 +818,29 @@
 			</c:forEach>
 
 		}); 
+		
+		//判断一段文本具体长度为多少px
+	    function getTextWidth(str) {
+	        var width = 0;
+	        var html = document.createElement('span');
+	        html.innerText = str;
+	        html.className = 'getTextWidth';
+	        document.querySelector('body').appendChild(html);
+	        width = document.querySelector('.getTextWidth').offsetWidth;
+	        document.querySelector('.getTextWidth').remove();
+	        return width;
+	    }
+	    //获取所有文本的最大长度
+	    function getMaxWidth(str){
+	    	var maxWidth = getTextWidth("--请选择--");
+	    	for(var i = 0; i < str.length; ++i){
+	    		var len = getTextWidth(str[i]);
+	    		if(len > maxWidth){
+	    			maxWidth = len;
+	    		}
+	    	}
+	    	return maxWidth;
+	    }
 	</script>
 	
 	
@@ -838,6 +870,8 @@
 '							<select	class="form-control questionKnowpoint" style="width:100px;" name = "knowPoint">'+
 '								<option value="">--请选择--</option>'+
 '							</select>'+
+'						</div>'+
+'						<div class="batch-type" style="display: none">'+
 '							<span class="intro type">试题类型</span>'+
 '							<select	class="form-control questionType" name = "type" onchange = "typeChange(this)">'+
 '								<option value="0">--请选择--</option>'+

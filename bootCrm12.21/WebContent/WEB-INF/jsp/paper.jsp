@@ -61,6 +61,7 @@
 					class="icon-bar"></span>
 			</button>
 			<a class="navbar-brand" href="${pageContext.request.contextPath }/question/list.action">e卷题库抽题组卷系统v1.0</a>
+			<a class = "navbar-text" href="${pageContext.request.contextPath }/logout.action">退出</a>
 		</div>
 		<!-- /.navbar-header -->
 		

@@ -1024,7 +1024,7 @@
 	    }
 	    //获取所有文本的最大长度
 	    function getMaxWidth(str){
-	    	var maxWidth = 0;
+	    	var maxWidth = getTextWidth("--请选择--");
 	    	for(var i = 0; i < str.length; ++i){
 	    		var len = getTextWidth(str[i]);
 	    		if(len > maxWidth){
