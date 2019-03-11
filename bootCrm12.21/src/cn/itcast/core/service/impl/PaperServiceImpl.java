@@ -331,7 +331,7 @@ public class PaperServiceImpl implements PaperService {
 		public String questionToWord(HttpServletRequest request, List<Question> questions) throws Exception{
 			//题目类型
 			String[] questionSeq = {"一", "二", "三", "四", "五", "六"};
-			String[] questionType = {"单项选择题（每小题   分，共   分）", "多项选择题（每小题   分，共   分）", "填空题（每小题   分，共   分）", "简答题（每小题   分，共   分）", "应用题（每小题   分，共   分）", "设计题"};
+			String[] questionType = {"单项选择题（每小题   分，共   分）", "多项选择题（每小题   分，共   分）", "填空题（每小题   分，共   分）", "简答题（每小题   分，共   分）", "应用题（每小题   分，共   分）", "设计题（每小题   分，共   分）"};
 			int[] questionNum = {1, 1, 1, 1, 1, 1};
 			
 			// 设置上传文件保存的地址目录
