@@ -46,7 +46,7 @@
 
 </head>
 
-<body>
+<body onload = "ready();">
 
 	<div class="panel panel-default">
 				<div class="panel-body">
@@ -95,3 +95,12 @@
 </body>
 
 </html>
+
+<script type = "text/javascript">
+	function ready(){
+		var errorMeg = '${errorMeg}';
+		if(errorMeg != ""){
+			alert(errorMeg);
+		}
+}
+</script>

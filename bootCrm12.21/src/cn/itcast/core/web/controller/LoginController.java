@@ -72,7 +72,7 @@ public class LoginController {
 	private SysService sysService;
 	//登陆提交地址，和applicationContext-shiro.xml中配置的loginurl一致
 	@RequestMapping(value = "login")
-	public String login(HttpServletRequest request)throws Exception{
+	public String login(HttpServletRequest request, Model model)throws Exception{
 		
 		//如果登陆失败从request中获取认证异常信息,shiroLoginFailure就是异常类的权限类名
 		String exceptionClassName = (String) request.getAttribute("shiroLoginFailure");
@@ -80,14 +80,23 @@ public class LoginController {
 		if(exceptionClassName!=null){
 			if (UnknownAccountException.class.getName().equals(exceptionClassName)) {
 				//最终会抛给异常处理器
-				throw new CustomException("账号不存在");
+				model.addAttribute("errorMeg", "账号不存在");
+				return "login";
+				//throw new CustomException("账号不存在");
+				
 			} else if (IncorrectCredentialsException.class.getName().equals(
 					exceptionClassName)) {
-				throw new CustomException("用户名/密码错误");
+				model.addAttribute("errorMeg", "用户名/密码错误");
+				return "login";
+				//throw new CustomException("用户名/密码错误");
 			}else if("randomCodeError".equals(exceptionClassName)){
-				throw new CustomException("验证码错误");
+				model.addAttribute("errorMeg", "验证码错误");
+				return "login";
+				//throw new CustomException("验证码错误");
 			}else{
-				throw new Exception();//最终在异常处理器生成未知错误
+				model.addAttribute("errorMeg", "未知错误");
+				return "login";
+				//throw new Exception();//最终在异常处理器生成未知错误
 			}	
 		}
 
